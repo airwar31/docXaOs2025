@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Pet Finding App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <h1 class="display-4 mb-4">Поиск потерянных животных</h1>
+        <p class="lead mb-4">
+            Наш сервис помогает владельцам найти потерянных питомцев и вернуть найденных животных их хозяевам.
+            Используйте современные технологии распознавания изображений для поиска совпадений.
+        </p>
+        
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Я потерял питомца</h5>
+                        <p class="card-text">
+                            Создайте объявление о пропаже, загрузите фото и получайте уведомления о возможных совпадениях.
+                        </p>
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('new_search') }}" class="btn btn-primary">Создать объявление</a>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-primary">Войти для создания</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Я нашел животное</h5>
+                        <p class="card-text">
+                            Помогите питомцу найти своего хозяина. Создайте объявление о находке и проверьте совпадения.
+                        </p>
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('new_search') }}" class="btn btn-primary">Создать объявление</a>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-primary">Войти для создания</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="feature-box text-center">
+                    <i class="fas fa-camera fa-3x mb-3"></i>
+                    <h3>Распознавание фото</h3>
+                    <p>Используем современные алгоритмы для сравнения фотографий животных</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box text-center">
+                    <i class="fas fa-bell fa-3x mb-3"></i>
+                    <h3>Уведомления</h3>
+                    <p>Получайте мгновенные уведомления о возможных совпадениях</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box text-center">
+                    <i class="fas fa-database fa-3x mb-3"></i>
+                    <h3>Единая база</h3>
+                    <p>Интеграция с государственной базой данных животных</p>
+                </div>
+            </div>
+        </div>
+
+        {% if not current_user.is_authenticated %}
+        <div class="cta-section text-center mt-5">
+            <h2>Начните поиск прямо сейчас</h2>
+            <p class="mb-4">Зарегистрируйтесь, чтобы получить доступ ко всем возможностям сервиса</p>
+            <a href="{{ url_for('register') }}" class="btn btn-lg btn-primary me-3">Регистрация</a>
+            <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-primary">Вход</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+.feature-box {
+    padding: 20px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    margin-bottom: 20px;
+}
+.feature-box i {
+    color: #007bff;
+}
+.cta-section {
+    background: #f8f9fa;
+    padding: 40px;
+    border-radius: 10px;
+}
+</style>
+{% endblock %}

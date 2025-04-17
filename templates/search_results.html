@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Результаты поиска - Pet Finding App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Результаты поиска</h2>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Вернуться в личный кабинет
+                </a>
+            </div>
+            <div class="card-body">
+                {% if results %}
+                    <div class="alert alert-success">
+                        <h4 class="alert-heading">Найдены потенциальные совпадения!</h4>
+                        <p>Мы нашли {{ results|length }} возможных совпадений с вашим запросом.</p>
+                    </div>
+
+                    {% for result in results %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <span class="badge {% if result.section == 'lost' %}bg-danger{% elif result.section == 'found' %}bg-success{% else %}bg-info{% endif %}">
+                                {% if result.section == 'lost' %}
+                                    Потерянное животное
+                                {% elif result.section == 'found' %}
+                                    Найденное животное
+                                {% else %}
+                                    Ищет дом
+                                {% endif %}
+                            </span>
+                            {% if result.get('similarity') %}
+                            <span class="badge bg-primary ms-2">
+                                Схожесть: {{ "%.1f"|format(result.similarity * 100) }}%
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {% if result.get('photoUrl') %}
+                                    <img src="{{ result.photoUrl }}" class="img-fluid rounded" alt="Pet photo">
+                                    {% else %}
+                                    <div class="text-center text-muted">
+                                        <i class="fas fa-image fa-4x"></i>
+                                        <p>Фото недоступно</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-8">
+                                    <h5 class="card-title">
+                                        {{ result.get('category', 'Животное') }}
+                                        {% if result.get('breed') %}
+                                        - {{ result.breed }}
+                                        {% endif %}
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="mb-1">
+                                                <strong>Пол:</strong> 
+                                                {{ result.get('gender', 'Не указан') }}
+                                            </p>
+                                            <p class="mb-1">
+                                                <strong>Размер:</strong>
+                                                {{ result.get('size', 'Не указан') }}
+                                            </p>
+                                            <p class="mb-1">
+                                                <strong>Шерсть:</strong>
+                                                {{ result.get('hair', 'Не указано') }}
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1">
+                                                <strong>Место:</strong>
+                                                {{ result.get('location', 'Не указано') }}
+                                            </p>
+                                            {% if result.get('chipNumber') %}
+                                            <p class="mb-1">
+                                                <strong>Номер чипа:</strong>
+                                                {{ result.chipNumber }}
+                                            </p>
+                                            {% endif %}
+                                            <p class="mb-1">
+                                                <strong>Дата:</strong>
+                                                {{ result.get('placementDate', result.get('shelterArrival', 'Не указана')) }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {% if result.get('description') %}
+                                    <div class="mt-3">
+                                        <strong>Описание:</strong>
+                                        <p class="mb-0">{{ result.description }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if result.get('contactInfo') %}
+                                    <div class="mt-3">
+                                        <strong>Контактная информация:</strong>
+                                        <p class="mb-0">{{ result.contactInfo }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                        <h3>Совпадений не найдено</h3>
+                        {% if search and search.notify_on_match %}
+                        <p class="text-muted">
+                            Мы продолжим поиск и уведомим вас по email, если найдем потенциальные совпадения.
+                        </p>
+                        {% else %}
+                        <p class="text-muted">
+                            Попробуйте изменить параметры поиска или проверить позже.
+                        </p>
+                        {% endif %}
+                        <div class="mt-4">
+                            <a href="{{ url_for('new_search') }}" class="btn btn-primary">
+                                Новый поиск
+                            </a>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary ms-2">
+                                Вернуться в личный кабинет
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+.card-header .badge {
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}
