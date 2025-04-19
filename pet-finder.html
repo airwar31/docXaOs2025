@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск животных</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background-color: #f8f8f8;
+        }
+
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .search-results {
+            margin-top: 20px;
+        }
+
+        .pet-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .pet-image {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        #loginForm, #registerForm {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Authentication Forms -->
+        <div id="authSection">
+            <div class="tabs">
+                <div class="tab active" onclick="showForm('loginForm')">Вход</div>
+                <div class="tab" onclick="showForm('registerForm')">Регистрация</div>
+            </div>
+
+            <form id="loginForm" class="form-section">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Пароль:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit">Войти</button>
+            </form>
+
+            <form id="registerForm" class="form-section hidden">
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Пароль:</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+
+        <!-- Main Application (hidden until authenticated) -->
+        <div id="mainApp" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('lost')">Я потерял животное</div>
+                    <div class="tab" onclick="switchTab('found')">Я нашел животное</div>
+                </div>
+                <button onclick="logout()" style="background-color: #ff4444;">Выйти</button>
+            </div>
+
+            <div class="form-section">
+                <form id="searchForm">
+                    <div class="form-group">
+                        <label for="petImage">Фотография животного:</label>
+                        <input type="file" id="petImage" accept="image/*" multiple required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petCategory">Категория:</label>
+                        <select id="petCategory" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="dog">Собака</option>
+                            <option value="cat">Кошка</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="breed">Порода:</label>
+                        <input type="text" id="breed">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Пол:</label>
+                        <select id="gender">
+                            <option value="">Не указано</option>
+                            <option value="male">Мужской</option>
+                            <option value="female">Женский</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="size">Размер:</label>
+                        <select id="size">
+                            <option value="">Не указано</option>
+                            <option value="small">Маленький</option>
+                            <option value="medium">Средний</option>
+                            <option value="large">Большой</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fur">Шерсть:</label>
+                        <input type="text" id="fur">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Населенный пункт:</label>
+                        <input type="text" id="location" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chipNumber">Номер чипа (если есть):</label>
+                        <input type="text" id="chipNumber">
+                    </div>
+
+                    <button type="submit">Искать</button>
+                </form>
+            </div>
+
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication status on page load
+        window.addEventListener('load', async function() {
+            try {
+                const response = await fetch('/api/check-auth');
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    document.getElementById('authSection').classList.add('hidden');
+                    document.getElementById('mainApp').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+            }
+        });
+
+        // Authentication handling
+        function showForm(formId) {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById(formId).classList.remove('hidden');
+            
+            // Update active tab
+            const tabs = document.querySelectorAll('#authSection .tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Tab switching for main app
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('#mainApp .tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Form submissions
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('authSection').classList.add('hidden');
+                    document.getElementById('mainApp').classList.remove('hidden');
+                } else {
+                    alert(data.error || 'Ошибка входа');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при входе');
+            }
+        });
+
+        // Logout functionality
+        async function logout() {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    document.getElementById('mainApp').classList.add('hidden');
+                    document.getElementById('authSection').classList.remove('hidden');
+                    document.getElementById('loginForm').classList.remove('hidden');
+                    document.getElementById('registerForm').classList.add('hidden');
+                } else {
+                    alert('Ошибка при выходе');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при выходе');
+            }
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Регистрация успешна! Теперь вы можете войти.');
+                    showForm('loginForm');
+                } else {
+                    alert(data.error || 'Ошибка регистрации');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при регистрации');
+            }
+        });
+
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchPets();
+        });
+
+        // Pet search function
+        async function searchPets() {
+            const formData = new FormData();
+            const images = document.getElementById('petImage').files;
+            
+            for (let image of images) {
+                formData.append('images[]', image);
+            }
+
+            formData.append('category', document.getElementById('petCategory').value);
+            formData.append('breed', document.getElementById('breed').value);
+            formData.append('gender', document.getElementById('gender').value);
+            formData.append('size', document.getElementById('size').value);
+            formData.append('fur', document.getElementById('fur').value);
+            formData.append('location', document.getElementById('location').value);
+            formData.append('chipNumber', document.getElementById('chipNumber').value);
+
+            try {
+                // API endpoints from the requirements
+                const endpoints = [
+                    'https://animals.admhmao.ru/pets-api/open/lost',
+                    'https://animals.admhmao.ru/pets-api/open/found',
+                    'https://animals.admhmao.ru/pets-api/open/find-home'
+                ];
+
+                const results = await Promise.all(endpoints.map(endpoint => 
+                    fetch(endpoint + '?sort=placementDate,desc&sort=id,desc&page=0&size=8')
+                ));
+
+                const searchResults = document.getElementById('searchResults');
+                searchResults.innerHTML = ''; // Clear previous results
+
+                // Process and display results
+                results.forEach(async result => {
+                    const data = await result.json();
+                    data.forEach(pet => {
+                        const petCard = createPetCard(pet);
+                        searchResults.appendChild(petCard);
+                    });
+                });
+            } catch (error) {
+                console.error('Error searching for pets:', error);
+                alert('Произошла ошибка при поиске. Пожалуйста, попробуйте позже.');
+            }
+        }
+
+        // Create pet card element
+        function createPetCard(pet) {
+            const card = document.createElement('div');
+            card.className = 'pet-card';
+            
+            // Fetch pet photos
+            const photoEndpoint = `https://animals.admhmao.ru/pets-api/open/lost-photo/${pet.id}/files`;
+            fetch(photoEndpoint)
+                .then(response => response.json())
+                .then(photos => {
+                    if (photos && photos.length > 0) {
+                        const img = document.createElement('img');
+                        img.className = 'pet-image';
+                        img.src = `https://animals.admhmao.ru/pets-api/open/lost-photo/${pet.id}/files/${photos[0]}`;
+                        card.insertBefore(img, card.firstChild);
+                    }
+                });
+
+            // Add pet details
+            card.innerHTML += `
+                <h3>${pet.breed || 'Неизвестная порода'}</h3>
+                <p>Категория: ${pet.category}</p>
+                <p>Пол: ${pet.gender || 'Не указан'}</p>
+                <p>Размер: ${pet.size || 'Не указан'}</p>
+                <p>Место: ${pet.location}</p>
+                ${pet.chipNumber ? `<p>Номер чипа: ${pet.chipNumber}</p>` : ''}
+                <p>Контакты: ${pet.contactInfo || 'Не указаны'}</p>
+            `;
+
+            return card;
+        }
+
+        // Background search
+        setInterval(async function() {
+            if (document.getElementById('mainApp').classList.contains('hidden')) {
+                return; // Don't search if not logged in
+            }
+            await searchPets();
+        }, 300000); // Check every 5 minutes
+    </script>
+</body>
+</html>
+
+
+
