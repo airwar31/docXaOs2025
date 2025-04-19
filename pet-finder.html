@@ -140,6 +140,80 @@
         .hidden {
             display: none;
         }
+
+        /* Form overlay styles */
+        #addPetForm {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        #addPetForm h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #addPetForm .form-group {
+            margin-bottom: 20px;
+        }
+
+        #addPetForm label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        #addPetForm input[type="text"],
+        #addPetForm input[type="file"],
+        #addPetForm select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #addPetForm input[type="file"] {
+            padding: 8px;
+            background-color: #f8f8f8;
+        }
+
+        #addPetForm button {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        #addPetForm button[type="submit"] {
+            background-color: #4CAF50;
+        }
+
+        #addPetForm button[type="button"] {
+            background-color: #666;
+        }
+
+        /* Overlay background */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -183,7 +257,76 @@
                     <div class="tab active" onclick="switchTab('lost')">Потерянные животные</div>
                     <div class="tab" onclick="switchTab('found')">Найденные животные</div>
                 </div>
-                <button onclick="logout()" style="background-color: #ff4444;">Выйти</button>
+                <div>
+                    <button onclick="showAddPetForm()" style="background-color: #4CAF50; margin-right: 10px;">Добавить питомца</button>
+                    <button onclick="logout()" style="background-color: #ff4444;">Выйти</button>
+                </div>
+            </div>
+
+            <!-- Add Pet Form -->
+            <div id="formOverlay" class="overlay hidden"></div>
+            <div id="addPetForm" class="form-section hidden">
+                <h2>Добавить питомца</h2>
+                <form id="petForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="petType">Тип объявления:</label>
+                        <select id="petType" name="type" required>
+                            <option value="lost">Потерянный питомец</option>
+                            <option value="found">Найденный питомец</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petCategory">Категория:</label>
+                        <select id="petCategory" name="category" required>
+                            <option value="dog">Собака</option>
+                            <option value="cat">Кошка</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petBreed">Порода:</label>
+                        <input type="text" id="petBreed" name="breed" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petGender">Пол:</label>
+                        <select id="petGender" name="gender" required>
+                            <option value="male">Мужской</option>
+                            <option value="female">Женский</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petSize">Размер:</label>
+                        <input type="text" id="petSize" name="size" required placeholder="Например: маленький, средний, большой">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petFur">Шерсть:</label>
+                        <input type="text" id="petFur" name="fur" required placeholder="Например: короткая, длинная, кудрявая">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petLocation">Населенный пункт:</label>
+                        <input type="text" id="petLocation" name="location" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petChipNumber">Номер чипа (если есть):</label>
+                        <input type="text" id="petChipNumber" name="chip_number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petPhotos">Фотографии:</label>
+                        <input type="file" id="petPhotos" name="photos" multiple accept="image/*" required>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit">Добавить</button>
+                        <button type="button" onclick="hideAddPetForm()" style="background-color: #666;">Отмена</button>
+                    </div>
+                </form>
             </div>
 
             <div id="petsGrid" class="pets-grid">
@@ -199,9 +342,10 @@
     </div>
 
     <script>
-        // Global variables for pagination
+        // Global variables for pagination and user state
         let currentPage = 0;
         let currentTab = 'lost';
+        let currentUserId = null;
         const pageSize = 8;
 
         // Check authentication status on page load
@@ -213,10 +357,86 @@
                 if (data.authenticated) {
                     document.getElementById('authSection').classList.add('hidden');
                     document.getElementById('mainApp').classList.remove('hidden');
+                    currentUserId = data.user_id;
                     loadPets();
                 }
             } catch (error) {
                 console.error('Error checking auth status:', error);
+            }
+        });
+
+        // Delete pet function
+        async function deletePet(petId) {
+            if (!confirm('Вы уверены, что хотите удалить этого питомца?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/pets/${petId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Питомец успешно удален');
+                    loadPets(); // Reload the pets grid
+                } else {
+                    alert(data.error || 'Ошибка при удалении питомца');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при удалении питомца');
+            }
+        }
+
+        // Form handling functions
+        function showAddPetForm() {
+            document.getElementById('formOverlay').classList.remove('hidden');
+            document.getElementById('addPetForm').classList.remove('hidden');
+            document.getElementById('petsGrid').classList.add('hidden');
+            document.querySelector('.pagination').classList.add('hidden');
+        }
+
+        function hideAddPetForm() {
+            document.getElementById('formOverlay').classList.add('hidden');
+            document.getElementById('addPetForm').classList.add('hidden');
+            document.getElementById('petsGrid').classList.remove('hidden');
+            document.querySelector('.pagination').classList.remove('hidden');
+            document.getElementById('petForm').reset();
+        }
+
+        // Close form when clicking overlay
+        document.getElementById('formOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideAddPetForm();
+            }
+        });
+
+        // Handle pet form submission
+        document.getElementById('petForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/api/pets', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Питомец успешно добавлен');
+                    hideAddPetForm();
+                    loadPets(); // Reload the pets grid
+                } else {
+                    alert(data.error || 'Ошибка при добавлении питомца');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при добавлении питомца');
             }
         });
 
@@ -291,7 +511,10 @@
             let cardContent = '';
             
             // Handle photo display
-            if (pet.photo_url) {
+            if (pet.photos && pet.photos.length > 0) {
+                const photoUrl = `/api/uploads/${pet.photos[0]}`;
+                cardContent += `<img src="${photoUrl}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
+            } else if (pet.photo_url) {
                 cardContent += `<img src="${pet.photo_url}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
             } else {
                 cardContent += `<div class="pet-image" style="display: flex; align-items: center; justify-content: center; background-color: #ddd;"><span>Фото отсутствует</span></div>`;
@@ -303,18 +526,20 @@
             const gender = typeof pet.gender === 'object' ? (pet.gender?.name || 'Не указан') : (pet.gender || 'Не указан');
             const size = typeof pet.size === 'object' ? (pet.size?.name || 'Не указан') : (pet.size || 'Не указан');
             const location = pet.location || pet.address || 'Не указано';
+            const fur = pet.fur || 'Не указано';
 
             cardContent += `
                 <h3>${breed}</h3>
                 <p>Категория: ${category}</p>
                 <p>Пол: ${gender}</p>
                 <p>Размер: ${size}</p>
+                <p>Шерсть: ${fur}</p>
                 <p>Место: ${location}</p>
             `;
 
-            // Add optional information if available
-            if (pet.chipNumber && pet.chipNumber !== '[object Object]') {
-                cardContent += `<p>Номер чипа: ${pet.chipNumber}</p>`;
+            // Add chip number if available
+            if (pet.chip_number) {
+                cardContent += `<p>Номер чипа: ${pet.chip_number}</p>`;
             }
             
             if (pet.contactInfo && pet.contactInfo !== '[object Object]') {
@@ -322,11 +547,20 @@
             }
 
             // Add date information if available
-            if (pet.placementDate) {
-                const date = new Date(pet.placementDate);
+            if (pet.created_at) {
+                const date = new Date(pet.created_at);
                 if (!isNaN(date)) {
                     cardContent += `<p>Дата: ${date.toLocaleDateString('ru-RU')}</p>`;
                 }
+            }
+
+            // Add delete button if the pet belongs to the current user
+            if (pet.user_id === currentUserId) {
+                cardContent += `
+                    <button onclick="deletePet(${pet.id})" style="background-color: #ff4444; margin-top: 10px;">
+                        Удалить
+                    </button>
+                `;
             }
 
             card.innerHTML = cardContent;
@@ -417,6 +651,16 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 
