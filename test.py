@@ -37,7 +37,6 @@ class AnimalAPI:
 
     @staticmethod
     def extract_animal_info(animal: Dict) -> Dict:
-        """Улучшенный метод извлечения информации с проверкой всех полей"""
         info = {
             "id": animal.get("id", "N/A"),
             "category": {
@@ -59,12 +58,10 @@ class AnimalAPI:
             "aviary": "Не указан"
         }
 
-        # Обработка для find-home
         if animal.get("api_type") == "find-home":
             animal_data = animal.get("animal", {})
             characters = animal_data.get("characters", {})
             
-            # Тип животного
             if isinstance(characters, dict):
                 pet_category = characters.get("petCategory")
                 if pet_category:
@@ -74,11 +71,9 @@ class AnimalAPI:
                         "OTHER": "Другое"
                     }.get(pet_category, pet_category)
             
-            # Пол
             if isinstance(characters, dict) and "gender" in characters:
                 info["gender"] = "Мальчик" if characters["gender"] else "Девочка"
             
-            # Порода
             breed = animal_data.get("breed")
             if breed:
                 if isinstance(breed, dict):
@@ -86,34 +81,27 @@ class AnimalAPI:
                 else:
                     info["breed"] = str(breed)
             
-            # Окрас и особые приметы
             if isinstance(characters, dict):
                 info["color"] = characters.get("color", "Не указан")
                 info["special_marks"] = characters.get("specialSigns", "Нет")
             
-            # Чип и стерилизация
             info["chip"] = "Да" if animal_data.get("chip") else "Нет"
             info["sterilization"] = "Да" if animal_data.get("sterilization") else "Нет"
             
-            # Район
             if animal_data.get("catchMunicipality"):
                 if isinstance(animal_data["catchMunicipality"], dict):
                     info["district"] = animal_data["catchMunicipality"].get("name", "Не указан")
             
-            # Дата
             info["date"] = animal.get("shelterArrival") or animal_data.get("cardDate") or "Не указана"
             
-            # Приют
             if animal.get("shelter"):
                 if isinstance(animal["shelter"], dict):
                     org_info = animal["shelter"].get("organizationInformation", {})
                     if isinstance(org_info, dict):
                         info["shelter"] = org_info.get("name", "Не указано")
             
-            # Вольер
             info["aviary"] = animal.get("aviary", "Не указан")
         
-        # Обработка для lost и found
         else:
             info["type"] = animal.get("animalType", "Не указан")
             info["gender"] = animal.get("gender", "Не указан")
@@ -128,7 +116,6 @@ class AnimalAPI:
             info["color"] = animal.get("color", "Не указан")
             info["date"] = animal.get("placementDate", "Не указана")
         
-        # Фотографии для всех типов
         if animal.get("id") and animal.get("api_type"):
             info["photos"] = AnimalAPI.get_animal_photos(animal["id"], animal["api_type"])
         
@@ -136,7 +123,6 @@ class AnimalAPI:
 
     @staticmethod
     def get_animal_photos(animal_id: int, api_type: str) -> List[str]:
-        """Получает фотографии с проверкой ошибок"""
         endpoints = {
             "lost": "/lost-photo",
             "found": "/found-photo", 
@@ -162,7 +148,6 @@ class AnimalAPI:
         return []
 
 def display_animals(animals: List[Dict]):
-    """Улучшенный вывод информации о животных"""
     if not animals:
         print("\nЖивотные не найдены")
         return
@@ -174,7 +159,6 @@ def display_animals(animals: List[Dict]):
     for i, animal in enumerate(animals, 1):
         info = AnimalAPI.extract_animal_info(animal)
         
-        # Формируем строку с основной информацией
         animal_info = [
             f"Животное #{i}",
             f"Категория: {info['category']}",
@@ -190,17 +174,14 @@ def display_animals(animals: List[Dict]):
             f"Дата: {info['date']}"
         ]
         
-        # Добавляем дополнительную информацию для "Ищут дом"
         if info['category'] == "Ищут дом":
             animal_info.extend([
                 f"Приют: {info['shelter']}",
                 f"Вольер: {info['aviary']}"
             ])
         
-        # Выводим основную информацию
         print("\n".join(animal_info))
         
-        # Фотографии
         if info["photos"]:
             print("\nФотографии:")
             for j, photo in enumerate(info["photos"][:3], 1):
@@ -208,19 +189,15 @@ def display_animals(animals: List[Dict]):
         else:
             print("\nФотографии отсутствуют")
         
-        # Добавляем пустую строку между животными вместо разделителей
         print()
 
 if __name__ == "__main__":
     print("Начинаем загрузку данных...\n")
     
-    # Получаем данные
     animals = AnimalAPI.get_all_animals(animal_type="all", size=10)
     
-    # Выводим информацию
     display_animals(animals)
     
-    # Сохраняем полные данные
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"animals_full_data_{timestamp}.json"
     with open(filename, 'w', encoding='utf-8') as f:
