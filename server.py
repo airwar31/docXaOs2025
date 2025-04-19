@@ -4,19 +4,30 @@ from werkzeug.utils import secure_filename
 import sqlite3
 import os
 import requests
+import json
 from functools import wraps
 from datetime import datetime
+from image_processor import ImageProcessor
+from task_scheduler import TaskScheduler
+from telegram_bot import start_bot, notify_match
+import asyncio
 
-# Configure upload folder
+
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)  # For session management
+app.secret_key = os.urandom(24)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 DB_NAME = 'petfinder.db'
 
-# Create upload folder if it doesn't exist
+
+image_processor = ImageProcessor()
+task_scheduler = None
+
+telegram_bot_task = None
+
+
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -27,18 +38,18 @@ def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     
-    # Create users table
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
+            telegram_chat_id TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login TIMESTAMP
+            last_login TIMESTAMP,
+            notification_preferences JSON
         )
     ''')
     
-    # Create pets table
     c.execute('''
         CREATE TABLE IF NOT EXISTS pets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,7 +67,6 @@ def init_db():
         )
     ''')
     
-    # Create table for pet photos
     c.execute('''
         CREATE TABLE IF NOT EXISTS pet_photos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,6 +74,48 @@ def init_db():
             photo_path TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (pet_id) REFERENCES pets(id)
+        )
+    ''')
+    
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS image_features (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            photo_id INTEGER NOT NULL,
+            features BLOB NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (photo_id) REFERENCES pet_photos(id)
+        )
+    ''')
+    
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS searches (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            pet_id INTEGER NOT NULL,
+            is_active BOOLEAN DEFAULT 1,
+            search_params JSON,
+            last_check_time TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (pet_id) REFERENCES pets(id)
+        )
+    ''')
+    
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS matches (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            search_id INTEGER NOT NULL,
+            external_pet_id INTEGER NOT NULL,
+            similarity_score FLOAT NOT NULL,
+            is_archived BOOLEAN DEFAULT 0,
+            matched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (search_id) REFERENCES searches(id)
+        )
+    ''')
+    
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS app_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     
@@ -84,7 +136,6 @@ def login_required(f):
     return decorated_function
 
 def process_pet_data(pet_data, photo_type='lost'):
-    """Helper function to process pet data and handle nested objects"""
     if not isinstance(pet_data, dict):
         return None
         
@@ -92,16 +143,13 @@ def process_pet_data(pet_data, photo_type='lost'):
         if 'id' not in pet_data:
             return None
             
-        # Process nested objects
         for field in ['breed', 'category', 'gender', 'size']:
             if isinstance(pet_data.get(field), dict):
                 pet_data[field] = pet_data[field].get('name')
             
-        # Handle location/address
         if 'location' not in pet_data and 'address' in pet_data:
             pet_data['location'] = pet_data['address']
             
-        # Get photo
         photo_response = requests.get(
             f'https://animals.admhmao.ru/pets-api/open/{photo_type}-photo/{pet_data["id"]}/files'
         )
@@ -113,7 +161,6 @@ def process_pet_data(pet_data, photo_type='lost'):
         else:
             pet_data['photo_url'] = None
 
-        # Clean up any remaining [object Object] strings
         for key, value in pet_data.items():
             if str(value) == '[object Object]':
                 pet_data[key] = None
@@ -202,13 +249,11 @@ def get_lost_pets():
         )
         response.raise_for_status()
         
-        # Parse and validate response
         try:
             pets_data = response.json()
         except ValueError as e:
             return jsonify({'error': 'Invalid JSON response from API'}), 500
             
-        # Handle both possible response formats (direct list or paginated object)
         if isinstance(pets_data, dict) and 'content' in pets_data:
             pets = pets_data['content']
         elif isinstance(pets_data, list):
@@ -216,7 +261,6 @@ def get_lost_pets():
         else:
             return jsonify({'error': 'Unexpected API response format'}), 500
             
-        # Process each pet
         processed_pets = []
         for pet in pets:
             processed_pet = process_pet_data(pet, 'lost')
@@ -249,7 +293,6 @@ def get_found_pets():
         except ValueError as e:
             return jsonify({'error': 'Invalid JSON response from API'}), 500
             
-        # Handle both possible response formats (direct list or paginated object)
         if isinstance(pets_data, dict) and 'content' in pets_data:
             pets = pets_data['content']
         elif isinstance(pets_data, list):
@@ -257,7 +300,6 @@ def get_found_pets():
         else:
             return jsonify({'error': 'Unexpected API response format'}), 500
             
-        # Process each pet
         processed_pets = []
         for pet in pets:
             processed_pet = process_pet_data(pet, 'found')
@@ -298,7 +340,6 @@ def add_pet():
         db = get_db()
         cursor = db.cursor()
         
-        # Insert pet record
         cursor.execute('''
             INSERT INTO pets (user_id, type, breed, category, gender, size, fur, location, chip_number)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -316,7 +357,6 @@ def add_pet():
         
         pet_id = cursor.lastrowid
         
-        # Save photos
         for photo in photos:
             if photo and allowed_file(photo.filename):
                 filename = secure_filename(f"{pet_id}_{photo.filename}")
@@ -327,6 +367,29 @@ def add_pet():
                     INSERT INTO pet_photos (pet_id, photo_path)
                     VALUES (?, ?)
                 ''', (pet_id, filename))
+                photo_id = cursor.lastrowid
+                
+                features = image_processor.extract_features(photo_path)
+                if features:
+                    cursor.execute('''
+                        INSERT INTO image_features (photo_id, features)
+                        VALUES (?, ?)
+                    ''', (photo_id, json.dumps(features)))
+        
+        search_params = {
+            'breed': data['breed'],
+            'category': data['category'],
+            'gender': data['gender'],
+            'size': data['size'],
+            'fur': data['fur'],
+            'location': data['location'],
+            'chip_number': data.get('chip_number')
+        }
+        
+        cursor.execute('''
+            INSERT INTO searches (pet_id, search_params, last_check_time)
+            VALUES (?, ?, datetime('now'))
+        ''', (pet_id, json.dumps(search_params)))
         
         db.commit()
         return jsonify({
@@ -345,7 +408,6 @@ def get_pet(pet_id):
         db = get_db()
         cursor = db.cursor()
         
-        # Get pet details
         cursor.execute('''
             SELECT p.*, u.email as user_email
             FROM pets p
@@ -357,7 +419,6 @@ def get_pet(pet_id):
         if not pet:
             return jsonify({'error': 'Pet not found'}), 404
             
-        # Get pet photos
         cursor.execute('SELECT photo_path FROM pet_photos WHERE pet_id = ?', (pet_id,))
         photos = cursor.fetchall()
         
@@ -378,7 +439,6 @@ def delete_pet(pet_id):
         db = get_db()
         cursor = db.cursor()
         
-        # Check if pet belongs to user
         cursor.execute('SELECT user_id FROM pets WHERE id = ?', (pet_id,))
         pet = cursor.fetchone()
         
@@ -387,23 +447,180 @@ def delete_pet(pet_id):
         if pet['user_id'] != session['user_id']:
             return jsonify({'error': 'Unauthorized'}), 403
             
-        # Get photos to delete
         cursor.execute('SELECT photo_path FROM pet_photos WHERE pet_id = ?', (pet_id,))
         photos = cursor.fetchall()
         
-        # Delete photos from filesystem
         for photo in photos:
             try:
                 os.remove(os.path.join(app.config['UPLOAD_FOLDER'], photo['photo_path']))
             except OSError:
-                pass  # Ignore errors if file doesn't exist
+                pass
                 
-        # Delete from database
         cursor.execute('DELETE FROM pet_photos WHERE pet_id = ?', (pet_id,))
         cursor.execute('DELETE FROM pets WHERE id = ?', (pet_id,))
         
         db.commit()
         return jsonify({'message': 'Pet deleted successfully'}), 200
+        
+    except sqlite3.Error as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        db.close()
+
+@app.route('/api/notification-preferences', methods=['GET', 'PUT'])
+@login_required
+def notification_preferences():
+    db = get_db()
+    cursor = db.cursor()
+    
+    if request.method == 'GET':
+        cursor.execute('SELECT notification_preferences FROM users WHERE id = ?', (session['user_id'],))
+        prefs = cursor.fetchone()
+        return jsonify(json.loads(prefs['notification_preferences'] or '{}'))
+        
+    elif request.method == 'PUT':
+        data = request.get_json()
+        try:
+            if 'telegram_enabled' not in data:
+                data['telegram_enabled'] = False
+                
+            cursor.execute('''
+                UPDATE users 
+                SET notification_preferences = ?
+                WHERE id = ?
+            ''', (json.dumps(data), session['user_id']))
+            db.commit()
+            return jsonify({'message': 'Preferences updated successfully'})
+        except sqlite3.Error as e:
+            return jsonify({'error': str(e)}), 500
+        finally:
+            db.close()
+
+@app.route('/api/searches', methods=['GET'])
+@login_required
+def get_searches():
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        
+        cursor.execute('''
+            SELECT s.*, p.type, p.category, p.breed, p.location,
+                   m.id as match_id, m.external_pet_id, m.similarity_score, m.matched_at
+            FROM searches s
+            JOIN pets p ON s.pet_id = p.id
+            LEFT JOIN matches m ON s.id = m.search_id AND m.is_archived = 0
+            WHERE p.user_id = ?
+            ORDER BY s.created_at DESC
+        ''', (session['user_id'],))
+        
+        searches = cursor.fetchall()
+        result = []
+        
+        for search in searches:
+            search_dict = dict(search)
+            search_dict['search_params'] = json.loads(search_dict['search_params'])
+            result.append(search_dict)
+            
+        return jsonify(result)
+        
+    except sqlite3.Error as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        db.close()
+
+@app.route('/api/searches/<int:search_id>', methods=['PUT', 'DELETE'])
+@login_required
+def manage_search(search_id):
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('''
+            SELECT s.id
+            FROM searches s
+            JOIN pets p ON s.pet_id = p.id
+            WHERE s.id = ? AND p.user_id = ?
+        ''', (search_id, session['user_id']))
+        
+        if not cursor.fetchone():
+            return jsonify({'error': 'Search not found or unauthorized'}), 404
+            
+        if request.method == 'PUT':
+            data = request.get_json()
+            cursor.execute('''
+                UPDATE searches
+                SET is_active = ?, search_params = ?
+                WHERE id = ?
+            ''', (data.get('is_active', True), json.dumps(data.get('search_params', {})), search_id))
+            
+        elif request.method == 'DELETE':
+            cursor.execute('DELETE FROM matches WHERE search_id = ?', (search_id,))
+            cursor.execute('DELETE FROM searches WHERE id = ?', (search_id,))
+            
+        db.commit()
+        return jsonify({'message': 'Search updated successfully'})
+        
+    except sqlite3.Error as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        db.close()
+
+@app.route('/api/matches', methods=['GET'])
+@login_required
+def get_matches():
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        
+        cursor.execute('''
+            SELECT m.*, s.pet_id, p.type, p.category, p.breed, p.location
+            FROM matches m
+            JOIN searches s ON m.search_id = s.id
+            JOIN pets p ON s.pet_id = p.id
+            WHERE p.user_id = ? AND m.is_archived = 0
+            ORDER BY m.matched_at DESC
+        ''', (session['user_id'],))
+        
+        matches = cursor.fetchall()
+        result = []
+        
+        for match in matches:
+            match_dict = dict(match)
+            result.append(match_dict)
+            
+        return jsonify(result)
+        
+    except sqlite3.Error as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        db.close()
+
+@app.route('/api/matches/<int:match_id>', methods=['PUT'])
+@login_required
+def update_match(match_id):
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        
+        cursor.execute('''
+            SELECT m.id
+            FROM matches m
+            JOIN searches s ON m.search_id = s.id
+            JOIN pets p ON s.pet_id = p.id
+            WHERE m.id = ? AND p.user_id = ?
+        ''', (match_id, session['user_id']))
+        
+        if not cursor.fetchone():
+            return jsonify({'error': 'Match not found or unauthorized'}), 404
+            
+        data = request.get_json()
+        cursor.execute('''
+            UPDATE matches
+            SET is_archived = ?
+            WHERE id = ?
+        ''', (data.get('is_archived', False), match_id))
+        
+        db.commit()
+        return jsonify({'message': 'Match updated successfully'})
         
     except sqlite3.Error as e:
         return jsonify({'error': str(e)}), 500
@@ -448,17 +665,27 @@ def get_my_pets():
     finally:
         db.close()
 
-# Initialize the database when the application starts
 with app.app_context():
     try:
         init_db()
         print("Database initialized successfully")
+        
+        task_scheduler = TaskScheduler(app, DB_NAME)
+        print("Task scheduler initialized successfully")
+        
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        telegram_bot_task = loop.create_task(start_bot())
+        print("Telegram bot initialized successfully")
+        
     except sqlite3.Error as e:
         print(f"Error initializing database: {e}")
         raise
+    except Exception as e:
+        print(f"Error initializing services: {e}")
+        raise
 
 if __name__ == '__main__':
-    # Create upload folder if it doesn't exist
     if not os.path.exists(UPLOAD_FOLDER):
         try:
             os.makedirs(UPLOAD_FOLDER)
@@ -467,6 +694,24 @@ if __name__ == '__main__':
             print(f"Error creating upload folder: {e}")
             raise
 
-    # Run the application
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    try:
+        app.run(host='localhost', port=5000, debug=True)
+    finally:
+        if task_scheduler:
+            task_scheduler.shutdown()
+        if telegram_bot_task:
+            telegram_bot_task.cancel()
+
+
+
+
+
+
+
+
+
+
+
+
+
 

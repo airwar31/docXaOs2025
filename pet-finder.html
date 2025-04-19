@@ -141,7 +141,6 @@
             display: none;
         }
 
-        /* Form overlay styles */
         #addPetForm {
             position: fixed;
             top: 50%;
@@ -204,7 +203,6 @@
             background-color: #666;
         }
 
-        /* Overlay background */
         .overlay {
             position: fixed;
             top: 0;
@@ -218,7 +216,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Authentication Forms -->
         <div id="authSection">
             <div class="tabs">
                 <div class="tab active" onclick="showForm('loginForm')">Вход</div>
@@ -250,20 +247,60 @@
             </form>
         </div>
 
-        <!-- Main Application (hidden until authenticated) -->
         <div id="mainApp" class="hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div class="tabs">
                     <div class="tab active" onclick="switchTab('lost')">Потерянные животные</div>
                     <div class="tab" onclick="switchTab('found')">Найденные животные</div>
+                    <div class="tab" onclick="switchTab('matches')">Совпадения</div>
                 </div>
                 <div>
+                    <button onclick="showNotificationPrefs()" style="background-color: #4CAF50; margin-right: 10px;">Настройки уведомлений</button>
                     <button onclick="showAddPetForm()" style="background-color: #4CAF50; margin-right: 10px;">Добавить питомца</button>
                     <button onclick="logout()" style="background-color: #ff4444;">Выйти</button>
                 </div>
             </div>
 
-            <!-- Add Pet Form -->
+            <div id="notificationPrefsForm" class="form-section hidden">
+                <h2>Настройки уведомлений</h2>
+                <form id="notificationForm">
+                    <div class="form-group">
+                        <label>Подписка на уведомления в Telegram:</label>
+                        <div style="margin: 10px 0;">
+                            <p>Для получения уведомлений:</p>
+                            <ol>
+                                <li>Перейдите к нашему боту: <a href="https://t.me/docXaOs_bot" target="_blank">@your_bot_username</a></li>
+                                <li>Отправьте боту команду /start</li>
+                                <li>Введите email, который вы использовали при регистрации</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="telegramEnabled" name="telegram_enabled">
+                        <label for="telegramEnabled">Включить уведомления в Telegram</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="notificationFrequency">Частота проверки:</label>
+                        <select id="notificationFrequency" name="frequency">
+                            <option value="1">Каждый час</option>
+                            <option value="3">Каждые 3 часа</option>
+                            <option value="6">Каждые 6 часов</option>
+                            <option value="12">Каждые 12 часов</option>
+                            <option value="24">Раз в день</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="minSimilarity">Минимальное сходство для уведомлений:</label>
+                        <input type="range" id="minSimilarity" name="min_similarity" min="0" max="100" value="70">
+                        <span id="similarityValue">70%</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit">Сохранить</button>
+                        <button type="button" onclick="hideNotificationPrefs()" style="background-color: #666;">Отмена</button>
+                    </div>
+                </form>
+            </div>
+
             <div id="formOverlay" class="overlay hidden"></div>
             <div id="addPetForm" class="form-section hidden">
                 <h2>Добавить питомца</h2>
@@ -322,6 +359,18 @@
                         <input type="file" id="petPhotos" name="photos" multiple accept="image/*" required>
                     </div>
 
+                    <div class="form-group">
+                        <label>Настройки уведомлений:</label>
+                        <div style="margin-left: 20px;">
+                            <p>Для получения уведомлений в Telegram:</p>
+                            <ol>
+                                <li>Перейдите к нашему боту: <a href="https://t.me/your_bot_username" target="_blank">@your_bot_username</a></li>
+                                <li>Отправьте боту команду /start</li>
+                                <li>Введите email, который вы использовали при регистрации</li>
+                            </ol>
+                        </div>
+                    </div>
+
                     <div style="display: flex; gap: 10px;">
                         <button type="submit">Добавить</button>
                         <button type="button" onclick="hideAddPetForm()" style="background-color: #666;">Отмена</button>
@@ -330,7 +379,6 @@
             </div>
 
             <div id="petsGrid" class="pets-grid">
-                <!-- Pet cards will be dynamically inserted here -->
             </div>
 
             <div class="pagination">
@@ -342,13 +390,11 @@
     </div>
 
     <script>
-        // Global variables for pagination and user state
         let currentPage = 0;
         let currentTab = 'lost';
         let currentUserId = null;
         const pageSize = 8;
 
-        // Check authentication status on page load
         window.addEventListener('load', async function() {
             try {
                 const response = await fetch('/api/check-auth');
@@ -365,7 +411,6 @@
             }
         });
 
-        // Delete pet function
         async function deletePet(petId) {
             if (!confirm('Вы уверены, что хотите удалить этого питомца?')) {
                 return;
@@ -380,7 +425,7 @@
                 
                 if (response.ok) {
                     alert('Питомец успешно удален');
-                    loadPets(); // Reload the pets grid
+                    loadPets();
                 } else {
                     alert(data.error || 'Ошибка при удалении питомца');
                 }
@@ -390,7 +435,6 @@
             }
         }
 
-        // Form handling functions
         function showAddPetForm() {
             document.getElementById('formOverlay').classList.remove('hidden');
             document.getElementById('addPetForm').classList.remove('hidden');
@@ -406,14 +450,12 @@
             document.getElementById('petForm').reset();
         }
 
-        // Close form when clicking overlay
         document.getElementById('formOverlay').addEventListener('click', function(e) {
             if (e.target === this) {
                 hideAddPetForm();
             }
         });
 
-        // Handle pet form submission
         document.getElementById('petForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -440,19 +482,16 @@
             }
         });
 
-        // Authentication handling
         function showForm(formId) {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('registerForm').classList.add('hidden');
             document.getElementById(formId).classList.remove('hidden');
             
-            // Update active tab
             const tabs = document.querySelectorAll('#authSection .tab');
             tabs.forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
         }
 
-        // Tab switching for main app
         function switchTab(tab) {
             currentTab = tab;
             currentPage = 0;
@@ -462,7 +501,6 @@
             loadPets();
         }
 
-        // Pagination controls
         function previousPage() {
             if (currentPage > 0) {
                 currentPage--;
@@ -475,27 +513,32 @@
             loadPets();
         }
 
-        // Load pets from API
         async function loadPets() {
             try {
-                const response = await fetch(`/api/pets/${currentTab}?page=${currentPage}&size=${pageSize}`);
-                const pets = await response.json();
+                let endpoint = '/api/pets/lost';
+                if (currentTab === 'found') {
+                    endpoint = '/api/pets/found';
+                } else if (currentTab === 'matches') {
+                    endpoint = '/api/matches';
+                }
+                
+                const response = await fetch(`${endpoint}?page=${currentPage}&size=${pageSize}`);
+                const data = await response.json();
                 
                 if (!response.ok) {
-                    throw new Error(pets.error || 'Failed to load pets');
+                    throw new Error(data.error || 'Failed to load pets');
                 }
 
                 const petsGrid = document.getElementById('petsGrid');
                 petsGrid.innerHTML = '';
 
-                pets.forEach(pet => {
+                data.forEach(pet => {
                     const card = createPetCard(pet);
                     petsGrid.appendChild(card);
                 });
 
-                // Update pagination controls
                 document.getElementById('prevButton').disabled = currentPage === 0;
-                document.getElementById('nextButton').disabled = pets.length < pageSize;
+                document.getElementById('nextButton').disabled = data.length < pageSize;
                 document.getElementById('pageInfo').textContent = `Страница ${currentPage + 1}`;
             } catch (error) {
                 console.error('Error loading pets:', error);
@@ -503,14 +546,97 @@
             }
         }
 
-        // Create pet card element
+        function showNotificationPrefs() {
+            document.getElementById('notificationPrefsForm').classList.remove('hidden');
+            document.getElementById('petsGrid').classList.add('hidden');
+            document.querySelector('.pagination').classList.add('hidden');
+            
+            loadNotificationPreferences();
+        }
+
+        function hideNotificationPrefs() {
+            document.getElementById('notificationPrefsForm').classList.add('hidden');
+            document.getElementById('petsGrid').classList.remove('hidden');
+            document.querySelector('.pagination').classList.remove('hidden');
+        }
+
+        async function loadNotificationPreferences() {
+            try {
+                const response = await fetch('/api/notification-preferences');
+                const prefs = await response.json();
+                
+                document.getElementById('emailEnabled').checked = prefs.email_enabled || false;
+                document.getElementById('notificationFrequency').value = prefs.frequency || '1';
+                document.getElementById('minSimilarity').value = (prefs.min_similarity || 70) * 100;
+                document.getElementById('similarityValue').textContent = `${document.getElementById('minSimilarity').value}%`;
+            } catch (error) {
+                console.error('Error loading preferences:', error);
+            }
+        }
+
+        document.getElementById('minSimilarity').addEventListener('input', function(e) {
+            document.getElementById('similarityValue').textContent = `${e.target.value}%`;
+        });
+
+        document.getElementById('notificationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const prefs = {
+                email_enabled: document.getElementById('emailEnabled').checked,
+                frequency: parseInt(document.getElementById('notificationFrequency').value),
+                min_similarity: parseInt(document.getElementById('minSimilarity').value) / 100
+            };
+            
+            try {
+                const response = await fetch('/api/notification-preferences', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(prefs)
+                });
+                
+                if (response.ok) {
+                    alert('Настройки уведомлений сохранены');
+                    hideNotificationPrefs();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Ошибка при сохранении настроек');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при сохранении настроек');
+            }
+        });
+
+        async function archiveMatch(matchId) {
+            try {
+                const response = await fetch(`/api/matches/${matchId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ is_archived: true })
+                });
+                
+                if (response.ok) {
+                    loadPets();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Ошибка при архивации совпадения');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при архивации совпадения');
+            }
+        }
+
         function createPetCard(pet) {
             const card = document.createElement('div');
             card.className = 'pet-card';
             
             let cardContent = '';
             
-            // Handle photo display
             if (pet.photos && pet.photos.length > 0) {
                 const photoUrl = `/api/uploads/${pet.photos[0]}`;
                 cardContent += `<img src="${photoUrl}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
@@ -520,7 +646,6 @@
                 cardContent += `<div class="pet-image" style="display: flex; align-items: center; justify-content: center; background-color: #ddd;"><span>Фото отсутствует</span></div>`;
             }
 
-            // Extract and format pet data
             const breed = typeof pet.breed === 'object' ? (pet.breed?.name || 'Неизвестная порода') : (pet.breed || 'Неизвестная порода');
             const category = typeof pet.category === 'object' ? (pet.category?.name || 'Не указана') : (pet.category || 'Не указана');
             const gender = typeof pet.gender === 'object' ? (pet.gender?.name || 'Не указан') : (pet.gender || 'Не указан');
@@ -537,7 +662,6 @@
                 <p>Место: ${location}</p>
             `;
 
-            // Add chip number if available
             if (pet.chip_number) {
                 cardContent += `<p>Номер чипа: ${pet.chip_number}</p>`;
             }
@@ -546,7 +670,6 @@
                 cardContent += `<p>Контакты: ${pet.contactInfo}</p>`;
             }
 
-            // Add date information if available
             if (pet.created_at) {
                 const date = new Date(pet.created_at);
                 if (!isNaN(date)) {
@@ -554,7 +677,15 @@
                 }
             }
 
-            // Add delete button if the pet belongs to the current user
+            if (pet.similarity_score !== undefined) {
+                const score = Math.round(pet.similarity_score * 100);
+                cardContent += `<p>Сходство: ${score}%</p>`;
+            }
+
+            if (pet.match_status) {
+                cardContent += `<p>Статус: ${pet.match_status}</p>`;
+            }
+
             if (pet.user_id === currentUserId) {
                 cardContent += `
                     <button onclick="deletePet(${pet.id})" style="background-color: #ff4444; margin-top: 10px;">
@@ -563,11 +694,18 @@
                 `;
             }
 
+            if (pet.match_id) {
+                cardContent += `
+                    <button onclick="archiveMatch(${pet.match_id})" style="background-color: #666; margin-top: 10px;">
+                        Архивировать
+                    </button>
+                `;
+            }
+
             card.innerHTML = cardContent;
             return card;
         }
 
-        // Form submissions
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -597,7 +735,6 @@
             }
         });
 
-        // Logout functionality
         async function logout() {
             try {
                 const response = await fetch('/api/logout', {
@@ -651,6 +788,12 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
