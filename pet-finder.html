@@ -105,6 +105,23 @@
             margin-bottom: 10px;
         }
 
+        .pet-details {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+
+        .pet-details p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+
+        .pet-details strong {
+            color: #444;
+            font-weight: 600;
+        }
+
         .pagination {
             display: flex;
             justify-content: center;
@@ -472,7 +489,7 @@
                 if (response.ok) {
                     alert('Питомец успешно добавлен');
                     hideAddPetForm();
-                    loadPets(); // Reload the pets grid
+                    loadPets();
                 } else {
                     alert(data.error || 'Ошибка при добавлении питомца');
                 }
@@ -515,34 +532,52 @@
 
         async function loadPets() {
             try {
-                let endpoint = '/api/pets/lost';
-                if (currentTab === 'found') {
-                    endpoint = '/api/pets/found';
+                let endpoint = '/api/pets';
+                let animalType = 'all';
+                
+                if (currentTab === 'lost') {
+                    animalType = 'lost';
+                } else if (currentTab === 'found') {
+                    animalType = 'found';
                 } else if (currentTab === 'matches') {
                     endpoint = '/api/matches';
                 }
                 
-                const response = await fetch(`${endpoint}?page=${currentPage}&size=${pageSize}`);
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to load pets');
+                let data;
+                if (endpoint === '/api/matches') {
+                    const response = await fetch(`${endpoint}?page=${currentPage}&size=${pageSize}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to load matches');
+                    }
+                    data = await response.json();
+                } else {
+
+                    const response = await fetch(`${endpoint}?type=${animalType}&page=${currentPage}&size=${pageSize}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to load pets');
+                    }
+                    data = await response.json();
                 }
 
                 const petsGrid = document.getElementById('petsGrid');
                 petsGrid.innerHTML = '';
 
-                data.forEach(pet => {
-                    const card = createPetCard(pet);
-                    petsGrid.appendChild(card);
-                });
+                if (!data || data.length === 0) {
+                    petsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;">Животные не найдены</div>';
+                } else {
+                    data.forEach(pet => {
+                        const card = createPetCard(pet);
+                        petsGrid.appendChild(card);
+                    });
+                }
 
                 document.getElementById('prevButton').disabled = currentPage === 0;
                 document.getElementById('nextButton').disabled = data.length < pageSize;
                 document.getElementById('pageInfo').textContent = `Страница ${currentPage + 1}`;
             } catch (error) {
                 console.error('Error loading pets:', error);
-                alert('Произошла ошибка при загрузке данных о животных');
+                const petsGrid = document.getElementById('petsGrid');
+                petsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: red;">Произошла ошибка при загрузке данных о животных</div>';
             }
         }
 
@@ -637,53 +672,120 @@
             
             let cardContent = '';
             
+            // Handle photos from the API
             if (pet.photos && pet.photos.length > 0) {
-                const photoUrl = `/api/uploads/${pet.photos[0]}`;
-                cardContent += `<img src="${photoUrl}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
+                // If photos come from the AnimalAPI
+                if (typeof pet.photos[0] === 'string' && pet.photos[0].startsWith('http')) {
+                    cardContent += `<img src="${pet.photos[0]}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
+                } else {
+                    // If photos come from local uploads
+                    const photoUrl = `/api/uploads/${pet.photos[0]}`;
+                    cardContent += `<img src="${photoUrl}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
+                }
             } else if (pet.photo_url) {
                 cardContent += `<img src="${pet.photo_url}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
             } else {
                 cardContent += `<div class="pet-image" style="display: flex; align-items: center; justify-content: center; background-color: #ddd;"><span>Фото отсутствует</span></div>`;
             }
 
-            const breed = typeof pet.breed === 'object' ? (pet.breed?.name || 'Неизвестная порода') : (pet.breed || 'Неизвестная порода');
-            const category = typeof pet.category === 'object' ? (pet.category?.name || 'Не указана') : (pet.category || 'Не указана');
-            const gender = typeof pet.gender === 'object' ? (pet.gender?.name || 'Не указан') : (pet.gender || 'Не указан');
-            const size = typeof pet.size === 'object' ? (pet.size?.name || 'Не указан') : (pet.size || 'Не указан');
-            const location = pet.location || pet.address || 'Не указано';
-            const fur = pet.fur || 'Не указано';
+            // Extract information using the same logic as AnimalAPI.extract_animal_info
+            const category = pet.api_type ? {
+                'lost': 'Пропавшие',
+                'found': 'Найденные',
+                'find-home': 'Ищут дом'
+            }[pet.api_type] || 'Неизвестно' : (
+                typeof pet.category === 'object' ? 
+                (pet.category?.name || 'Не указана') : 
+                (pet.category || 'Не указана')
+            );
+
+            const type = pet.api_type === 'find-home' && pet.animal?.characters?.petCategory ? 
+                {'DOG': 'Собака', 'CAT': 'Кошка', 'OTHER': 'Другое'}[pet.animal.characters.petCategory] || pet.animal.characters.petCategory :
+                pet.type || 'Не указан';
+
+            const breed = pet.animal?.breed?.name || 
+                (typeof pet.breed === 'object' ? pet.breed?.name : pet.breed) || 
+                'Неизвестная порода';
+
+            const gender = pet.api_type === 'find-home' && pet.animal?.characters?.gender !== undefined ?
+                (pet.animal.characters.gender ? 'Мальчик' : 'Девочка') :
+                (typeof pet.gender === 'object' ? pet.gender?.name : pet.gender) || 'Не указан';
+
+            const color = pet.api_type === 'find-home' ? 
+                (pet.animal?.characters?.color || 'Не указан') :
+                pet.color || 'Не указан';
+
+            const district = pet.api_type === 'find-home' && pet.animal?.catchMunicipality?.name ?
+                pet.animal.catchMunicipality.name :
+                pet.district || 'Не указан';
+
+            const chip = pet.api_type === 'find-home' ?
+                (pet.animal?.chip ? 'Да' : 'Нет') :
+                pet.chip || 'Нет данных';
+
+            const sterilization = pet.api_type === 'find-home' ?
+                (pet.animal?.sterilization ? 'Да' : 'Нет') :
+                pet.sterilization || 'Нет данных';
+
+            const special_marks = pet.api_type === 'find-home' ?
+                (pet.animal?.characters?.specialSigns || 'Нет') :
+                pet.special_marks || 'Нет';
+
+            const date = pet.api_type === 'find-home' ?
+                (pet.shelterArrival || pet.animal?.cardDate || 'Не указана') :
+                (pet.placementDate || pet.created_at || 'Не указана');
+
+            const shelter = pet.api_type === 'find-home' && pet.shelter?.organizationInformation?.name ?
+                pet.shelter.organizationInformation.name :
+                pet.shelter || 'Не указано';
 
             cardContent += `
-                <h3>${breed}</h3>
-                <p>Категория: ${category}</p>
-                <p>Пол: ${gender}</p>
-                <p>Размер: ${size}</p>
-                <p>Шерсть: ${fur}</p>
-                <p>Место: ${location}</p>
+                <h3>${type} - ${breed}</h3>
+                <div class="pet-details">
+                    <p><strong>Категория:</strong> ${category}</p>
+                    <p><strong>Пол:</strong> ${gender}</p>
+                    <p><strong>Порода:</strong> ${breed}</p>
+                    <p><strong>Окрас:</strong> ${color}</p>
+                    <p><strong>Район:</strong> ${district}</p>
+                    <p><strong>Чип:</strong> ${chip}</p>
+                    <p><strong>Стерилизация:</strong> ${sterilization}</p>
+                    <p><strong>Особые приметы:</strong> ${special_marks}</p>
+                    <p><strong>Дата:</strong> ${typeof date === 'string' ? date : new Date(date).toLocaleDateString('ru-RU')}</p>
+                </div>
             `;
 
-            if (pet.chip_number) {
-                cardContent += `<p>Номер чипа: ${pet.chip_number}</p>`;
-            }
-            
-            if (pet.contactInfo && pet.contactInfo !== '[object Object]') {
-                cardContent += `<p>Контакты: ${pet.contactInfo}</p>`;
+            if (category === 'Ищут дом') {
+                cardContent += `
+                    <div class="pet-details">
+                        <p><strong>Приют:</strong> ${shelter}</p>
+                        <p><strong>Вольер:</strong> ${pet.aviary || 'Не указан'}</p>
+                    </div>
+                `;
             }
 
-            if (pet.created_at) {
-                const date = new Date(pet.created_at);
-                if (!isNaN(date)) {
-                    cardContent += `<p>Дата: ${date.toLocaleDateString('ru-RU')}</p>`;
-                }
+            if (pet.contactInfo && pet.contactInfo !== '[object Object]') {
+                cardContent += `
+                    <div class="pet-details">
+                        <p><strong>Контакты:</strong> ${pet.contactInfo}</p>
+                    </div>
+                `;
             }
 
             if (pet.similarity_score !== undefined) {
                 const score = Math.round(pet.similarity_score * 100);
-                cardContent += `<p>Сходство: ${score}%</p>`;
+                cardContent += `
+                    <div class="pet-details">
+                        <p><strong>Сходство:</strong> ${score}%</p>
+                    </div>
+                `;
             }
 
             if (pet.match_status) {
-                cardContent += `<p>Статус: ${pet.match_status}</p>`;
+                cardContent += `
+                    <div class="pet-details">
+                        <p><strong>Статус:</strong> ${pet.match_status}</p>
+                    </div>
+                `;
             }
 
             if (pet.user_id === currentUserId) {
@@ -788,6 +890,15 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 

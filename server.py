@@ -10,6 +10,7 @@ from datetime import datetime
 from image_processor import ImageProcessor
 from task_scheduler import TaskScheduler
 from telegram_bot import start_bot, notify_match
+from animal_api import AnimalAPI
 import asyncio
 
 
@@ -55,13 +56,17 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
             type TEXT NOT NULL CHECK(type IN ('lost', 'found')),
-            breed TEXT NOT NULL,
+            breed TEXT,
             category TEXT NOT NULL CHECK(category IN ('dog', 'cat')),
-            gender TEXT NOT NULL CHECK(gender IN ('male', 'female')),
-            size TEXT NOT NULL,
-            fur TEXT NOT NULL,
-            location TEXT NOT NULL,
-            chip_number TEXT,
+            gender TEXT,
+            color TEXT,
+            district TEXT,
+            chip TEXT,
+            sterilization TEXT,
+            special_marks TEXT,
+            size TEXT,
+            fur TEXT,
+            location TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
@@ -233,81 +238,26 @@ def check_auth():
         'user_id': None
     }), 200
 
-@app.route('/api/pets/lost', methods=['GET'])
-def get_lost_pets():
+@app.route('/api/pets', methods=['GET'])
+def get_pets():
+    animal_type = request.args.get('type', 'all')
     page = request.args.get('page', 0, type=int)
     size = request.args.get('size', 8, type=int)
     
     try:
-        response = requests.get(
-            f'https://animals.admhmao.ru/pets-api/open/lost',
-            params={
-                'sort': ['placementDate,desc', 'id,desc'],
-                'page': page,
-                'size': size
-            }
-        )
-        response.raise_for_status()
+        animals = AnimalAPI.get_all_animals(animal_type=animal_type, size=size)
         
-        try:
-            pets_data = response.json()
-        except ValueError as e:
-            return jsonify({'error': 'Invalid JSON response from API'}), 500
-            
-        if isinstance(pets_data, dict) and 'content' in pets_data:
-            pets = pets_data['content']
-        elif isinstance(pets_data, list):
-            pets = pets_data
-        else:
-            return jsonify({'error': 'Unexpected API response format'}), 500
-            
-        processed_pets = []
-        for pet in pets:
-            processed_pet = process_pet_data(pet, 'lost')
-            if processed_pet:
-                processed_pets.append(processed_pet)
+        processed_animals = []
+        for animal in animals:
+            processed_animal = AnimalAPI.extract_animal_info(animal)
+            processed_animals.append(processed_animal)
         
-        return jsonify(processed_pets)
-    except requests.RequestException as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/pets/found', methods=['GET'])
-def get_found_pets():
-    page = request.args.get('page', 0, type=int)
-    size = request.args.get('size', 8, type=int)
-    
-    try:
-        response = requests.get(
-            f'https://animals.admhmao.ru/pets-api/open/found',
-            params={
-                'sort': ['placementDate,desc', 'id,desc'],
-                'page': page,
-                'size': size
-            }
-        )
-        response.raise_for_status()
+        start_idx = page * size
+        end_idx = start_idx + size
+        paginated_animals = processed_animals[start_idx:end_idx]
         
-        # Parse and validate response
-        try:
-            pets_data = response.json()
-        except ValueError as e:
-            return jsonify({'error': 'Invalid JSON response from API'}), 500
-            
-        if isinstance(pets_data, dict) and 'content' in pets_data:
-            pets = pets_data['content']
-        elif isinstance(pets_data, list):
-            pets = pets_data
-        else:
-            return jsonify({'error': 'Unexpected API response format'}), 500
-            
-        processed_pets = []
-        for pet in pets:
-            processed_pet = process_pet_data(pet, 'found')
-            if processed_pet:
-                processed_pets.append(processed_pet)
-        
-        return jsonify(processed_pets)
-    except requests.RequestException as e:
+        return jsonify(paginated_animals)
+    except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/pets', methods=['POST'])
@@ -320,39 +270,48 @@ def add_pet():
     if not photos or photos[0].filename == '':
         return jsonify({'error': 'No photos selected'}), 400
 
-    # Validate form data
-    required_fields = ['type', 'breed', 'category', 'gender', 'size', 'fur', 'location']
     data = request.form.to_dict()
     
-    for field in required_fields:
-        if field not in data:
-            return jsonify({'error': f'Missing required field: {field}'}), 400
-            
-    # Validate type and category
-    if data['type'] not in ['lost', 'found']:
+    if 'type' not in data or data['type'] not in ['lost', 'found']:
         return jsonify({'error': 'Invalid type. Must be "lost" or "found"'}), 400
-    if data['category'] not in ['dog', 'cat']:
+    if 'category' not in data or data['category'] not in ['dog', 'cat']:
         return jsonify({'error': 'Invalid category. Must be "dog" or "cat"'}), 400
-    if data['gender'] not in ['male', 'female']:
-        return jsonify({'error': 'Invalid gender. Must be "male" or "female"'}), 400
+        
+    data.setdefault('breed', 'Не указан')
+    data.setdefault('gender', 'Не указан')
+    data.setdefault('color', 'Не указан')
+    data.setdefault('district', 'Не указан')
+    data.setdefault('chip', 'Нет данных')
+    data.setdefault('sterilization', 'Нет данных')
+    data.setdefault('special_marks', 'Нет')
+    data.setdefault('size', 'Не указан')
+    data.setdefault('fur', 'Не указан')
+    data.setdefault('location', 'Не указан')
 
     try:
         db = get_db()
         cursor = db.cursor()
         
         cursor.execute('''
-            INSERT INTO pets (user_id, type, breed, category, gender, size, fur, location, chip_number)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO pets (
+                user_id, type, breed, category, gender, color, district,
+                chip, sterilization, special_marks, size, fur, location
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             session['user_id'],
             data['type'],
             data['breed'],
             data['category'],
             data['gender'],
+            data['color'],
+            data['district'],
+            data['chip'],
+            data['sterilization'],
+            data['special_marks'],
             data['size'],
             data['fur'],
-            data['location'],
-            data.get('chip_number')
+            data['location']
         ))
         
         pet_id = cursor.lastrowid
@@ -380,10 +339,14 @@ def add_pet():
             'breed': data['breed'],
             'category': data['category'],
             'gender': data['gender'],
+            'color': data['color'],
+            'district': data['district'],
+            'chip': data['chip'],
+            'sterilization': data['sterilization'],
+            'special_marks': data['special_marks'],
             'size': data['size'],
             'fur': data['fur'],
-            'location': data['location'],
-            'chip_number': data.get('chip_number')
+            'location': data['location']
         }
         
         cursor.execute('''
@@ -701,6 +664,14 @@ if __name__ == '__main__':
             task_scheduler.shutdown()
         if telegram_bot_task:
             telegram_bot_task.cancel()
+
+
+
+
+
+
+
+
 
 
 

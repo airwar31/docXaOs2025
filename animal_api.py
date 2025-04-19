@@ -44,18 +44,18 @@ class AnimalAPI:
                 "found": "Найденные",
                 "find-home": "Ищут дом"
             }.get(animal.get("api_type"), "Неизвестно"),
-            "type": "Не указан",
-            "gender": "Не указан",
-            "breed": "Не указана",
-            "color": "Не указан",
-            "district": "Не указан",
-            "chip": "Нет данных",
-            "sterilization": "Нет данных",
-            "special_marks": "Нет",
-            "date": "Не указана",
+            "type": None,
+            "gender": None,
+            "breed": None,
+            "color": None,
+            "district": None,
+            "chip": None,
+            "sterilization": None,
+            "special_marks": None,
+            "date": None,
             "photos": [],
-            "shelter": "Не указано",
-            "aviary": "Не указан"
+            "shelter": None,
+            "aviary": None
         }
 
         if animal.get("api_type") == "find-home":
@@ -77,47 +77,70 @@ class AnimalAPI:
             breed = animal_data.get("breed")
             if breed:
                 if isinstance(breed, dict):
-                    info["breed"] = breed.get("name", "Не указана")
+                    info["breed"] = breed.get("name")
                 else:
                     info["breed"] = str(breed)
             
             if isinstance(characters, dict):
-                info["color"] = characters.get("color", "Не указан")
-                info["special_marks"] = characters.get("specialSigns", "Нет")
+                info["color"] = characters.get("color")
+                special_marks = characters.get("specialSigns")
+                info["special_marks"] = special_marks if special_marks else None
             
-            info["chip"] = "Да" if animal_data.get("chip") else "Нет"
-            info["sterilization"] = "Да" if animal_data.get("sterilization") else "Нет"
+            info["chip"] = "Да" if animal_data.get("chip") else None
+            info["sterilization"] = "Да" if animal_data.get("sterilization") else None
             
             if animal_data.get("catchMunicipality"):
                 if isinstance(animal_data["catchMunicipality"], dict):
-                    info["district"] = animal_data["catchMunicipality"].get("name", "Не указан")
+                    info["district"] = animal_data["catchMunicipality"].get("name")
             
-            info["date"] = animal.get("shelterArrival") or animal_data.get("cardDate") or "Не указана"
+            info["date"] = animal.get("shelterArrival") or animal_data.get("cardDate")
             
             if animal.get("shelter"):
                 if isinstance(animal["shelter"], dict):
                     org_info = animal["shelter"].get("organizationInformation", {})
                     if isinstance(org_info, dict):
-                        info["shelter"] = org_info.get("name", "Не указано")
+                        info["shelter"] = org_info.get("name")
             
-            info["aviary"] = animal.get("aviary", "Не указан")
+            info["aviary"] = animal.get("aviary")
         
         else:
-            info["type"] = animal.get("animalType", "Не указан")
-            info["gender"] = animal.get("gender", "Не указан")
+            info["type"] = animal.get("animalType")
+            info["gender"] = animal.get("gender")
             
             breed = animal.get("breed")
             if breed:
                 if isinstance(breed, dict):
-                    info["breed"] = breed.get("name", "Не указана")
+                    info["breed"] = breed.get("name")
                 else:
                     info["breed"] = str(breed)
             
-            info["color"] = animal.get("color", "Не указан")
-            info["date"] = animal.get("placementDate", "Не указана")
+            info["color"] = animal.get("color")
+            info["district"] = animal.get("district")
+            info["chip"] = animal.get("chip")
+            info["sterilization"] = animal.get("sterilization")
+            info["special_marks"] = animal.get("special_marks")
+            info["date"] = animal.get("placementDate")
         
         if animal.get("id") and animal.get("api_type"):
             info["photos"] = AnimalAPI.get_animal_photos(animal["id"], animal["api_type"])
+        
+        display_messages = {
+            "type": "Не указан",
+            "gender": "Не указан",
+            "breed": "Не указан",
+            "color": "Не указан",
+            "district": "Не указан",
+            "chip": "Нет данных",
+            "sterilization": "Нет данных",
+            "special_marks": "Нет",
+            "date": "Не указана",
+            "shelter": "Не указано",
+            "aviary": "Не указан"
+        }
+        
+        for key, default_msg in display_messages.items():
+            if info[key] is None:
+                info[key] = default_msg
         
         return info
 
@@ -204,3 +227,4 @@ if __name__ == "__main__":
         json.dump(animals, f, ensure_ascii=False, indent=2)
     
     print(f"\nПолные данные сохранены в файл: {filename}")
+
