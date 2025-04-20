@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 from image_processor import ImageProcessor
 from telegram_bot import notify_match
+import os
 
 class TaskScheduler:
     def __init__(self, app, db_name: str):
@@ -26,7 +27,6 @@ class TaskScheduler:
         )
 
     def get_db(self) -> sqlite3.Connection:
-        """Get database connection"""
         conn = sqlite3.connect(self.db_name)
         conn.row_factory = sqlite3.Row
         return conn

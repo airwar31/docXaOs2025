@@ -406,6 +406,7 @@
         </div>
     </div>
 
+    <script src="createPetCard.js"></script>
     <script>
         let currentPage = 0;
         let currentTab = 'lost';
@@ -665,6 +666,7 @@
                 alert('Произошла ошибка при архивации совпадения');
             }
         }
+        // The createPetCard function is now imported from createPetCard.js
 
         function createPetCard(pet) {
             const card = document.createElement('div');
@@ -742,9 +744,12 @@
             cardContent += `
                 <h3>${type} - ${breed}</h3>
                 <div class="pet-details">
-                    <p><strong>Категория:</strong> ${category}</p>
-                    <p><strong>Пол:</strong> ${gender}</p>
-                    <p><strong>Порода:</strong> ${breed}</p>
+                    <p><strong>Категория:</strong></p>
+                    <p>${category}</p>
+                    <p><strong>Пол:</strong></p>
+                    <p>${gender}</p>
+                    <p><strong>Порода:</strong></p>
+                    <p>${breed}</p>
                     <p><strong>Окрас:</strong> ${color}</p>
                     <p><strong>Район:</strong> ${district}</p>
                     <p><strong>Чип:</strong> ${chip}</p>
@@ -890,6 +895,11 @@
     </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
