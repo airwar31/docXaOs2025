@@ -1,93 +1,88 @@
-from animal_api import AnimalAPI
+from animal_requests import AnimalAPI
 import json
-print("Testing AnimalAPI.get_all_animals...")
-animals = AnimalAPI.get_all_animals(animal_type="lost", size=2)
-print(f"Retrieved {len(animals)} animals")
-if animals:
-    print("\nTesting AnimalAPI.get_animal_photos...")
-    animal_id = animals[0].get("id")
-    photos = AnimalAPI.get_animal_photos(animal_id, "lost")
-    print(f"Retrieved {len(photos)} photos for animal {animal_id}")
-print("\nTesting AnimalAPI.extract_animal_info with new JSON structure...")
-test_animal = {
-    "id": 85,
-    "phone": "9044670390",
-    "placementDate": "2025-03-10",
-    "lostDate": "2025-03-10",
-    "location": "ул. Садовая 13.",
-    "petName": "Василиса",
-    "coordinate": None,
-    "characters": {
+
+print("Testing AnimalAPI.extract_animal_info with the provided JSON structure...")
+
+test_json = {
+  "content": [
+    {
+      "id": 32,
+      "phone": "9825040795",
+      "placementDate": "2025-04-07",
+      "foundDate": "2025-04-02",
+      "location": "ул Майская 6",
+      "petName": "ч/б",
+      "coordinate": None,
+      "characters": {
         "gender": False,
         "petSize": "AVERAGE",
         "hair": "SHORTHAIR",
-        "tail": "STRAIGHT",
-        "ears": "SHORT",
-        "petCategory": "DOG",
-        "color": "Светлая с рыжими и черными пятнами",
-        "specialSigns": None,
+        "tail": None,
+        "ears": None,
+        "petCategory": "CAT",
+        "color": "чернобелый",
+        "specialSigns": "Контактное лицо Виктория Викторовна +79825040795",
         "weight": None
-    },
-    "breed": {
-        "id": 92,
-        "name": "Метис",
-        "isAggressive": False
-    },
-    "age": 8,
-    "additionalInfo": "Без ошейника, шустрая.",
-    "dicMunicipality": {
-        "id": 193,
-        "name": "г Мегион",
+      },
+      "breed": None,
+      "dicMunicipality": {
+        "id": 197,
+        "name": "г Сургут",
         "coordinate": {
-            "coordX": 76.098187,
-            "coordY": 61.033157
+          "coordX": 73.3962,
+          "coordY": 61.2541
         },
-        "okato": 71133000000,
+        "okato": 71136000000,
         "okrug": {
-            "id": 97,
-            "oktmo": 71873000,
-            "name": "город Мегион",
+          "id": 100,
+          "oktmo": 71876000,
+          "name": "город Сургут",
+          "dicTypeMo": {
+            "id": 2,
+            "name": "Городской округ"
+          },
+          "okrug": {
+            "id": 2,
+            "oktmo": 71800000,
+            "name": "Ханты-Мансийский автономный округ - Югра",
             "dicTypeMo": {
-                "id": 2,
-                "name": "Городской округ"
+              "id": 5,
+              "name": "Субъект"
             },
-            "okrug": {
-                "id": 2,
-                "oktmo": 71800000,
-                "name": "Ханты-Мансийский автономный округ - Югра",
-                "dicTypeMo": {
-                    "id": 5,
-                    "name": "Субъект"
-                },
-                "okrug": None,
-                "firstOrder": False
-            },
-            "firstOrder": True
+            "okrug": None,
+            "firstOrder": False
+          },
+          "firstOrder": True
         },
         "showOkrug": {
-            "id": 97,
-            "oktmo": 71873000,
-            "name": "город Мегион",
+          "id": 100,
+          "oktmo": 71876000,
+          "name": "город Сургут",
+          "dicTypeMo": {
+            "id": 2,
+            "name": "Городской округ"
+          },
+          "okrug": {
+            "id": 2,
+            "oktmo": 71800000,
+            "name": "Ханты-Мансийский автономный округ - Югра",
             "dicTypeMo": {
-                "id": 2,
-                "name": "Городской округ"
+              "id": 5,
+              "name": "Субъект"
             },
-            "okrug": {
-                "id": 2,
-                "oktmo": 71800000,
-                "name": "Ханты-Мансийский автономный округ - Югра",
-                "dicTypeMo": {
-                    "id": 5,
-                    "name": "Субъект"
-                },
-                "okrug": None,
-                "firstOrder": False
-            },
-            "firstOrder": True
+            "okrug": None,
+            "firstOrder": False
+          },
+          "firstOrder": True
         }
-    },
-    "api_type": "lost"
+      },
+      "additionalInfo": "Контактное лицо Виктория Викторовна +79825040795"
+    }
+  ]
 }
+
+test_animal = test_json["content"][0]
+test_animal["api_type"] = "found"
 
 info = AnimalAPI.extract_animal_info(test_animal)
 

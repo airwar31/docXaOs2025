@@ -1,18 +1,29 @@
-from aiogram import Bot, Dispatcher, types, F
-from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
-from aiogram.filters import Command
+try:
+    from aiogram import Bot, Dispatcher
+    from aiogram import types
+    from aiogram.filters import Command
+    from aiogram import F
+    from aiogram.fsm.storage.memory import MemoryStorage
+    from aiogram.fsm.context import FSMContext
+    from aiogram.fsm.state import State, StatesGroup
+except ImportError as e:
+    print(f"Error importing aiogram components: {e}")
+    raise
+
 import sqlite3
 import os
 import json
 import asyncio
 from datetime import datetime
 API_TOKEN = ('7237195300:AAFo-56TNpLaxOl28k49_8htoJCVQfE13sU')
-bot = Bot(token=API_TOKEN)
-storage = MemoryStorage()
-
-dp = Dispatcher(storage=storage)
+try:
+    bot = Bot(token=API_TOKEN, parse_mode="HTML")
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
+    print("Bot and dispatcher initialized successfully")
+except Exception as e:
+    print(f"Error initializing bot or dispatcher: {e}")
+    raise
 
 DB_NAME = 'petfinder.db'
 
@@ -173,11 +184,65 @@ async def notify_match(user_id: int, match_data: dict):
         db.close()
     return False
 
-async def start_bot():
+async def notify_no_match(user_id: int, pet_data: dict):
     try:
-        dp.bot = bot
-        await dp.start_polling(bot)
+        db = get_db()
+        cursor = db.cursor()
+        
+        cursor.execute(
+            'SELECT telegram_chat_id FROM users WHERE id = ?',
+            (user_id,)
+        )
+        user = cursor.fetchone()
+        
+        if user and user['telegram_chat_id']:
+            message = (
+                "🔍 Подтверждение поиска\n\n"
+                "К сожалению, мы не нашли совпадений для вашего питомца:\n"
+                f"Тип: {pet_data.get('type', 'Не указан')}\n"
+                f"Порода: {pet_data.get('breed', 'Не указана')}\n"
+                f"Категория: {pet_data.get('category', 'Не указана')}\n\n"
+                "Мы будем продолжать поиск и уведомим вас, если найдем совпадение."
+            )
+            
+            await send_notification(user['telegram_chat_id'], message)
+            return True
+    except sqlite3.Error as e:
+        print(f"Database error in notify_no_match: {e}")
+    except Exception as e:
+        print(f"Error in notify_no_match: {e}")
+    finally:
+        db.close()
+    return False
+
+async def start_bot():
+    """Start the Telegram bot with proper error handling."""
+    try:
+        print("Starting Telegram bot...")
+        # Start polling
+        await dp.start_polling(bot, skip_updates=True)
+        return True
     except Exception as e:
         print(f"Error starting bot: {e}")
+        return False
+
+async def stop_bot():
+    """Gracefully stop the Telegram bot."""
+    try:
+        print("Stopping Telegram bot...")
+        await bot.session.close()
+        return True
+    except Exception as e:
+        print(f"Error stopping bot: {e}")
+        return False
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(start_bot())
+    except KeyboardInterrupt:
+        print("Bot stopped by user")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
 
 

@@ -9,7 +9,7 @@ from functools import wraps
 from datetime import datetime
 from image_processor import ImageProcessor
 from task_scheduler import TaskScheduler
-from telegram_bot import start_bot, notify_match
+from telegram_bot import start_bot, notify_match, stop_bot
 from animal_api import AnimalAPI
 import asyncio
 
@@ -664,6 +664,7 @@ if __name__ == '__main__':
             task_scheduler.shutdown()
         if telegram_bot_task:
             telegram_bot_task.cancel()
+
 
 
 

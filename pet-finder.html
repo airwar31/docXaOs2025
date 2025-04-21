@@ -229,6 +229,67 @@
             background-color: rgba(0,0,0,0.5);
             z-index: 999;
         }
+        .pet-summary {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+        
+        .pet-summary p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        
+        .pet-summary strong {
+            color: #444;
+            font-weight: 600;
+        }
+        
+        .pet-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .pet-card .hidden-details {
+            display: none !important;
+        }
+        
+        .pet-card h3 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .pet-card .pet-image {
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .pet-card:after {
+            content: "Нажмите для подробностей";
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: rgba(76, 175, 80, 0.8);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .pet-card:hover:after {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -286,7 +347,7 @@
                         <div style="margin: 10px 0;">
                             <p>Для получения уведомлений:</p>
                             <ol>
-                                <li>Перейдите к нашему боту: <a href="https://t.me/docXaOs_bot" target="_blank">@your_bot_username</a></li>
+                                <li>Перейдите к нашему боту: <a href="https://t.me/docXaOs_bot" target="_blank">@docXaOs_bot</a></li>
                                 <li>Отправьте боту команду /start</li>
                                 <li>Введите email, который вы использовали при регистрации</li>
                             </ol>
@@ -381,7 +442,7 @@
                         <div style="margin-left: 20px;">
                             <p>Для получения уведомлений в Telegram:</p>
                             <ol>
-                                <li>Перейдите к нашему боту: <a href="https://t.me/your_bot_username" target="_blank">@your_bot_username</a></li>
+                                <li>Перейдите к нашему боту: <a href="https://t.me/docXaOs_bot" target="_blank">@docXaOs_bot</a></li>
                                 <li>Отправьте боту команду /start</li>
                                 <li>Введите email, который вы использовали при регистрации</li>
                             </ol>
@@ -601,7 +662,7 @@
                 const response = await fetch('/api/notification-preferences');
                 const prefs = await response.json();
                 
-                document.getElementById('emailEnabled').checked = prefs.email_enabled || false;
+                document.getElementById('telegramEnabled').checked = prefs.telegram_enabled || false;
                 document.getElementById('notificationFrequency').value = prefs.frequency || '1';
                 document.getElementById('minSimilarity').value = (prefs.min_similarity || 70) * 100;
                 document.getElementById('similarityValue').textContent = `${document.getElementById('minSimilarity').value}%`;
@@ -618,7 +679,7 @@
             e.preventDefault();
             
             const prefs = {
-                email_enabled: document.getElementById('emailEnabled').checked,
+                telegram_enabled: document.getElementById('telegramEnabled').checked,
                 frequency: parseInt(document.getElementById('notificationFrequency').value),
                 min_similarity: parseInt(document.getElementById('minSimilarity').value) / 100
             };
@@ -666,21 +727,16 @@
                 alert('Произошла ошибка при архивации совпадения');
             }
         }
-        // The createPetCard function is now imported from createPetCard.js
-
         function createPetCard(pet) {
             const card = document.createElement('div');
             card.className = 'pet-card';
             
             let cardContent = '';
             
-            // Handle photos from the API
             if (pet.photos && pet.photos.length > 0) {
-                // If photos come from the AnimalAPI
                 if (typeof pet.photos[0] === 'string' && pet.photos[0].startsWith('http')) {
                     cardContent += `<img src="${pet.photos[0]}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
                 } else {
-                    // If photos come from local uploads
                     const photoUrl = `/api/uploads/${pet.photos[0]}`;
                     cardContent += `<img src="${photoUrl}" class="pet-image" alt="Фото животного" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect width=%22200%22 height=%22200%22 fill=%22%23ddd%22/><text x=%22100%22 y=%22100%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Фото отсутствует</text></svg>';">`;
                 }
@@ -690,7 +746,6 @@
                 cardContent += `<div class="pet-image" style="display: flex; align-items: center; justify-content: center; background-color: #ddd;"><span>Фото отсутствует</span></div>`;
             }
 
-            // Extract information using the same logic as AnimalAPI.extract_animal_info
             const category = pet.api_type ? {
                 'lost': 'Пропавшие',
                 'found': 'Найденные',
@@ -895,6 +950,15 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 
