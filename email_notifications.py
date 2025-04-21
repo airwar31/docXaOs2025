@@ -114,9 +114,6 @@ def notify_match_by_email(user_id, match_data):
             db.close()
 
 def send_no_match_confirmation_email(user_id, pet_data):
-    """
-    Send an email to confirm receiving notifications when no match is found
-    """
     try:
         db = get_db()
         cursor = db.cursor()

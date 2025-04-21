@@ -1,0 +1,337 @@
+2025-04-21 16:20:35,560 - task_scheduler - ERROR - Failed to start scheduler: unsupported operand type(s) for &: 'int' and 'str'
+2025-04-21 16:26:53,994 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:26:53,994 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:26:53,994 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:26:53,994 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:26:54,127 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-21 16:26:54,132 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-21 16:26:54,138 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:26:54,594 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:26:54,595 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:26:54,596 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:27:04,777 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:27:04,777 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:27:04,780 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:27:04,780 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:27:04,807 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-21 16:27:04,811 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-21 16:27:04,812 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:27:07,450 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:27:07,450 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:27:07,451 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:27:07,451 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:27:07,454 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:27:07,468 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:27:39,701 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 16:27:39] "POST /api/login HTTP/1.1" 200 -
+2025-04-21 16:27:42,274 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 16:27:42] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-21 16:30:55,289 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\animal_api_improved.py', reloading
+2025-04-21 16:30:55,289 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:30:55,289 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:30:55,309 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:30:55,672 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:30:59,151 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:30:59,154 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:30:59,154 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:30:59,154 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:30:59,291 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:30:59,295 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:31:03,694 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\animal_api_improved.py', reloading
+2025-04-21 16:31:03,694 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:31:03,694 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:31:03,694 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:31:04,015 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:31:06,788 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:31:06,788 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:31:06,788 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:31:06,788 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:31:06,812 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:31:06,814 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:37:13,168 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\server.py', reloading
+2025-04-21 16:37:13,168 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:37:13,168 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:37:13,168 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:37:13,509 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:37:16,809 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:37:16,812 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:37:16,813 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:37:16,813 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:37:16,837 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:37:16,841 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:42:04,834 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 11:57:04 UTC)" (scheduled at 2025-04-21 11:42:04.777985+00:00)
+2025-04-21 16:42:04,850 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 16:42:04,864 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-21 16:42:04,866 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-21 16:42:12,170 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-21 16:42:12,170 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-21 16:42:16,132 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-21 16:42:16,136 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-21 16:42:42,719 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-21 16:42:42,730 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-21 16:42:42,730 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-19 18:42:30
+2025-04-21 16:42:42,738 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-21 16:42:42,752 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 16:42:42,758 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 11:57:04 UTC)" executed successfully
+2025-04-21 16:45:44,332 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\image_processor_improved.py', reloading
+2025-04-21 16:45:44,332 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:45:44,332 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:45:44,335 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:45:44,658 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:45:48,697 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:45:48,698 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:45:48,699 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:45:48,699 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:45:48,721 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:45:48,723 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:45:51,065 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\image_processor_improved.py', reloading
+2025-04-21 16:45:51,065 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:45:51,065 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:45:51,065 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:45:51,346 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:45:54,029 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:45:54,029 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:45:54,030 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:45:54,030 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:45:54,045 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:45:54,050 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:46:55,626 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\task_scheduler.py', reloading
+2025-04-21 16:46:55,626 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:46:55,629 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:46:55,629 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:46:55,981 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:46:59,547 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:46:59,547 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:46:59,547 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:46:59,551 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:46:59,573 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:46:59,576 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:47:02,972 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\task_scheduler.py', reloading
+2025-04-21 16:47:02,973 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:47:02,973 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:47:02,973 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:47:03,364 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:47:07,083 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:47:07,083 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:47:07,083 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:47:07,083 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:47:07,102 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:47:07,103 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:47:11,447 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\task_scheduler.py', reloading
+2025-04-21 16:47:11,447 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:47:11,447 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:47:11,456 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:47:11,791 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:47:15,196 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:47:15,196 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:47:15,196 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:47:15,196 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:47:15,210 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:47:15,217 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:47:16,516 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\task_scheduler.py', reloading
+2025-04-21 16:47:16,516 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:47:16,516 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:47:16,516 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:47:16,859 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:47:20,428 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:47:20,428 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:47:20,428 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:47:20,428 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:47:20,445 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:47:20,452 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:49:20,371 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\data_web.py', reloading
+2025-04-21 16:49:20,372 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:49:20,373 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:49:20,374 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:49:20,656 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:49:23,625 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:49:23,626 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:49:23,626 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:49:23,627 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:49:23,643 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:49:23,652 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:49:25,902 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\data_web.py', reloading
+2025-04-21 16:49:25,902 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:49:25,902 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:49:25,902 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:49:26,177 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:49:30,494 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:49:30,503 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:49:30,505 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:49:30,506 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:49:30,524 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:49:30,553 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:49:33,981 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\data_web.py', reloading
+2025-04-21 16:49:33,994 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:49:33,994 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:49:33,994 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:49:34,272 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:49:37,058 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:49:37,060 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:49:37,060 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:49:37,060 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:49:37,072 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:49:37,075 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:49:41,491 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\data_web.py', reloading
+2025-04-21 16:49:41,491 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 16:49:41,491 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 16:49:41,491 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 16:49:41,823 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 16:49:45,031 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 16:49:45,031 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 16:49:45,033 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 16:49:45,033 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 16:49:45,049 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 16:49:45,068 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 16:57:04,834 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:12:04 UTC)" (scheduled at 2025-04-21 11:57:04.777985+00:00)
+2025-04-21 16:57:04,840 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 16:57:04,845 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-21 16:57:04,845 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-21 16:57:10,451 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-21 16:57:10,451 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-21 16:57:15,348 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-21 16:57:15,348 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-21 16:57:40,714 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-21 16:57:40,715 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-21 16:57:40,716 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-21 11:42:42
+2025-04-21 16:57:40,719 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-21 16:57:40,724 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 16:57:40,727 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:12:04 UTC)" executed successfully
+2025-04-21 17:04:45,041 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:19:45 UTC)" (scheduled at 2025-04-21 12:04:45.033339+00:00)
+2025-04-21 17:04:45,041 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 17:04:45,042 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-21 17:04:45,042 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-21 17:04:49,333 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-21 17:04:49,334 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-21 17:04:52,302 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-21 17:04:52,303 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-21 17:05:15,702 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-21 17:05:15,703 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-21 17:05:15,703 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-21 11:57:40
+2025-04-21 17:05:15,705 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-21 17:05:15,709 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 17:05:15,712 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:19:45 UTC)" executed successfully
+2025-04-21 17:12:04,779 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:27:04 UTC)" (scheduled at 2025-04-21 12:12:04.777985+00:00)
+2025-04-21 17:12:04,779 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 17:12:04,781 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-21 17:12:04,781 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-21 17:12:09,532 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-21 17:12:09,534 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-21 17:12:12,739 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-21 17:12:12,739 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-21 17:12:34,528 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-21 17:12:34,528 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-21 17:12:34,528 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-21 12:05:15
+2025-04-21 17:12:34,531 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-21 17:12:34,536 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 17:12:34,536 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:27:04 UTC)" executed successfully
+2025-04-21 17:18:09,006 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\data_web.py', reloading
+2025-04-21 17:18:09,014 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 17:18:09,014 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 17:18:09,014 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 17:18:09,462 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 17:18:13,407 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 17:18:13,409 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 17:18:13,410 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 17:18:13,410 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 17:18:13,431 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 17:18:13,442 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 17:21:38,114 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\data_web.py', reloading
+2025-04-21 17:21:38,115 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 17:21:38,115 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 17:21:38,116 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 17:21:38,378 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 17:21:41,716 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 17:21:41,716 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 17:21:41,717 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 17:21:41,717 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 17:21:41,740 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 17:21:41,744 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 17:22:16,069 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 17:22:16,073 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 17:22:16,078 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 17:22:16,373 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-21 17:22:16,375 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-21 17:22:16,377 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-21 17:22:22,202 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 17:22:22,210 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 17:22:22,210 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 17:22:22,212 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 17:22:22,247 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-21 17:22:22,247 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-21 17:22:22,249 - werkzeug - INFO -  * Restarting with stat
+2025-04-21 17:22:25,033 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-21 17:22:25,034 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-21 17:22:25,034 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-21 17:22:25,034 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-21 17:22:25,051 - werkzeug - WARNING -  * Debugger is active!
+2025-04-21 17:22:25,055 - werkzeug - INFO -  * Debugger PIN: 134-468-763
+2025-04-21 17:22:31,101 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 17:22:31] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-21 17:22:31,258 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 17:22:31] "[33mGET /createPetCard.js HTTP/1.1[0m" 404 -
+2025-04-21 17:22:32,738 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 17:22:32] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-21 17:22:34,752 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 17:22:34] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
+2025-04-21 17:22:38,080 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 17:22:38] "POST /api/login HTTP/1.1" 200 -
+2025-04-21 17:22:39,437 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 17:22:39] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-21 17:22:48,982 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 17:22:48] "GET /api/pets?type=lost&page=1&size=8 HTTP/1.1" 200 -
+2025-04-21 17:22:51,472 - werkzeug - INFO - 127.0.0.1 - - [21/Apr/2025 17:22:51] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-21 17:37:22,247 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:52:22 UTC)" (scheduled at 2025-04-21 12:37:22.210063+00:00)
+2025-04-21 17:37:22,255 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 17:37:22,258 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 17:37:22,259 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 17:37:22,260 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:52:22 UTC)" executed successfully
+2025-04-21 17:37:25,048 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:52:25 UTC)" (scheduled at 2025-04-21 12:37:25.034516+00:00)
+2025-04-21 17:37:25,052 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 17:37:25,060 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 17:37:25,061 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 17:37:25,063 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 12:52:25 UTC)" executed successfully
+2025-04-21 17:52:22,228 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:07:22 UTC)" (scheduled at 2025-04-21 12:52:22.210063+00:00)
+2025-04-21 17:52:22,228 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 17:52:22,231 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 17:52:22,231 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 17:52:22,231 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:07:22 UTC)" executed successfully
+2025-04-21 17:52:25,044 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:07:25 UTC)" (scheduled at 2025-04-21 12:52:25.034516+00:00)
+2025-04-21 17:52:25,044 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 17:52:25,044 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 17:52:25,044 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 17:52:25,044 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:07:25 UTC)" executed successfully
+2025-04-21 18:07:22,228 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:22:22 UTC)" (scheduled at 2025-04-21 13:07:22.210063+00:00)
+2025-04-21 18:07:22,230 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 18:07:22,234 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 18:07:22,239 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 18:07:22,241 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:22:22 UTC)" executed successfully
+2025-04-21 18:07:25,038 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:22:25 UTC)" (scheduled at 2025-04-21 13:07:25.034516+00:00)
+2025-04-21 18:07:25,039 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 18:07:25,046 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 18:07:25,050 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 18:07:25,050 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:22:25 UTC)" executed successfully
+2025-04-21 18:22:22,218 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:37:22 UTC)" (scheduled at 2025-04-21 13:22:22.210063+00:00)
+2025-04-21 18:22:22,222 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 18:22:22,225 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 18:22:22,228 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 18:22:22,229 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:37:22 UTC)" executed successfully
+2025-04-21 18:22:25,039 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:37:25 UTC)" (scheduled at 2025-04-21 13:22:25.034516+00:00)
+2025-04-21 18:22:25,040 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 18:22:25,042 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 18:22:25,042 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 18:22:25,048 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:37:25 UTC)" executed successfully
+2025-04-21 18:37:22,228 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:52:22 UTC)" (scheduled at 2025-04-21 13:37:22.210063+00:00)
+2025-04-21 18:37:22,230 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 18:37:22,237 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 18:37:22,238 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 18:37:22,239 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:52:22 UTC)" executed successfully
+2025-04-21 18:37:25,035 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:52:25 UTC)" (scheduled at 2025-04-21 13:37:25.034516+00:00)
+2025-04-21 18:37:25,037 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 18:37:25,038 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 18:37:25,040 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 18:37:25,040 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 13:52:25 UTC)" executed successfully
+2025-04-21 18:52:22,221 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 14:07:22 UTC)" (scheduled at 2025-04-21 13:52:22.210063+00:00)
+2025-04-21 18:52:22,222 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 18:52:22,227 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 18:52:22,228 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 18:52:22,229 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 14:07:22 UTC)" executed successfully
+2025-04-21 18:52:25,050 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 14:07:25 UTC)" (scheduled at 2025-04-21 13:52:25.034516+00:00)
+2025-04-21 18:52:25,052 - task_scheduler - INFO - Starting to process active searches
+2025-04-21 18:52:25,062 - task_scheduler - INFO - Found 0 active searches to process
+2025-04-21 18:52:25,063 - task_scheduler - INFO - Finished processing active searches
+2025-04-21 18:52:25,064 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-21 14:07:25 UTC)" executed successfully

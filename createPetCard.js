@@ -160,7 +160,7 @@ function createPetCard(pet) {
     }
     
     if (date !== 'Не указана') {
-        cardContent += `<p><strong>Дата:</strong> ${date}</p>`;
+        cardContent += `<p><strong>Дата пропажи:</strong> ${date}</p>`;
     }
 
     let coordinates = pet.coordinates;

@@ -7,10 +7,10 @@ import requests
 import json
 from functools import wraps
 from datetime import datetime
-from image_processor import ImageProcessor
+from image_processor_improved import ImageProcessor
 from task_scheduler import TaskScheduler
 from telegram_bot import start_bot, notify_match, stop_bot
-from animal_api import AnimalAPI
+from animal_api_improved import AnimalAPI
 import asyncio
 
 
@@ -46,7 +46,6 @@ def init_db():
             password TEXT NOT NULL,
             telegram_chat_id TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login TIMESTAMP,
             notification_preferences JSON
         )
     ''')
@@ -664,6 +663,8 @@ if __name__ == '__main__':
             task_scheduler.shutdown()
         if telegram_bot_task:
             telegram_bot_task.cancel()
+
+
 
 
 
