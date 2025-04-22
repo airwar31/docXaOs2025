@@ -2,6 +2,13 @@ let currentPage = 0;
 let currentTab = 'lost';
 let currentUserId = null;
 const pageSize = 8;
+let searchQuery = '';
+let activeFilters = {
+    category: '',
+    gender: '',
+    size: '',
+    fur: ''
+};
 
 window.addEventListener('load', async function() {
     try {
@@ -121,6 +128,94 @@ function nextPage() {
     loadPets();
 }
 
+// Search and Filter Functions
+function toggleFilters() {
+    const filtersContainer = document.getElementById('filtersContainer');
+    filtersContainer.classList.toggle('hidden');
+}
+
+function performSearch() {
+    searchQuery = document.getElementById('searchInput').value.trim();
+    currentPage = 0;
+    loadPets();
+}
+
+function applyFilters() {
+    activeFilters = {
+        category: document.getElementById('filterCategory').value,
+        gender: document.getElementById('filterGender').value,
+        size: document.getElementById('filterSize').value,
+        fur: document.getElementById('filterFur').value
+    };
+    currentPage = 0;
+    loadPets();
+}
+
+function resetFilters() {
+    document.getElementById('filterCategory').value = '';
+    document.getElementById('filterGender').value = '';
+    document.getElementById('filterSize').value = '';
+    document.getElementById('filterFur').value = '';
+    document.getElementById('searchInput').value = '';
+    
+    searchQuery = '';
+    activeFilters = {
+        category: '',
+        gender: '',
+        size: '',
+        fur: ''
+    };
+    
+    currentPage = 0;
+    loadPets();
+}
+
+// Filter pets based on search query and active filters
+function filterPets(pets) {
+    if (!pets) return [];
+    
+    return pets.filter(pet => {
+        // Search query filtering
+        if (searchQuery) {
+            const searchFields = [
+                pet.breed || '',
+                pet.location || '',
+                pet.district || '',
+                pet.municipality || '',
+                pet.description || '',
+                pet.special_marks || ''
+            ];
+            
+            const searchText = searchFields.join(' ').toLowerCase();
+            if (!searchText.includes(searchQuery.toLowerCase())) {
+                return false;
+            }
+        }
+        
+        // Category filtering
+        if (activeFilters.category && pet.type !== activeFilters.category) {
+            return false;
+        }
+        
+        // Gender filtering
+        if (activeFilters.gender && pet.gender !== activeFilters.gender) {
+            return false;
+        }
+        
+        // Size filtering
+        if (activeFilters.size && !pet.size.toLowerCase().includes(activeFilters.size.toLowerCase())) {
+            return false;
+        }
+        
+        // Fur filtering
+        if (activeFilters.fur && !pet.fur.toLowerCase().includes(activeFilters.fur.toLowerCase())) {
+            return false;
+        }
+        
+        return true;
+    });
+}
+
 async function loadPets() {
     try {
         let endpoint = '/api/pets';
@@ -142,12 +237,20 @@ async function loadPets() {
             }
             data = await response.json();
         } else {
-
-            const response = await fetch(`${endpoint}?type=${animalType}&page=${currentPage}&size=${pageSize}`);
+            // Add search query to API request if available
+            let url = `${endpoint}?type=${animalType}&page=${currentPage}&size=${pageSize}`;
+            if (searchQuery) {
+                url += `&search=${encodeURIComponent(searchQuery)}`;
+            }
+            
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Failed to load pets');
             }
             data = await response.json();
+            
+            // Apply client-side filtering
+            data = filterPets(data);
         }
 
         const petsGrid = document.getElementById('petsGrid');
@@ -345,4 +448,9 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     }
 });
 
-
+// Add event listener for search input to allow searching by pressing Enter
+document.getElementById('searchInput').addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+        performSearch();
+    }
+});

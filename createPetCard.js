@@ -21,6 +21,18 @@ function createPetCard(pet) {
                     pet.municipality || 
                     'Не указано';
     
+    // Define district before using it
+    let district = 'Не указан';
+    if (pet.dicMunicipality) {
+        if (pet.dicMunicipality.showOkrug && pet.dicMunicipality.showOkrug.name) {
+            district = pet.dicMunicipality.showOkrug.name;
+        } else {
+            district = pet.dicMunicipality.name || 'Не указан';
+        }
+    } else if (pet.district) {
+        district = pet.district;
+    }
+    
     let cardContent = '';
     
     if (pet.photos && pet.photos.length > 0) {
@@ -40,7 +52,7 @@ function createPetCard(pet) {
         <h3>${petName}</h3>
         <div class="pet-summary">
             <p><strong>Пол:</strong> ${gender}</p>
-            <p><strong>Город:</strong> ${location}</p>
+            <p><strong>Город:</strong> ${district}</p>
         </div>
     `;
 
@@ -74,17 +86,6 @@ function createPetCard(pet) {
     
     const color = pet.characters?.color || pet.color || 'Не указан';
     
-    let district = 'Не указан';
-    if (pet.dicMunicipality) {
-        if (pet.dicMunicipality.showOkrug && pet.dicMunicipality.showOkrug.name) {
-            district = pet.dicMunicipality.showOkrug.name;
-        } else {
-            district = pet.dicMunicipality.name || 'Не указан';
-        }
-    } else if (pet.district) {
-        district = pet.district;
-    }
-    
     const date = pet.placementDate || pet.foundDate || pet.date || 'Не указана';
     
     const age = pet.age !== undefined ? pet.age : 'Не указан';
@@ -106,6 +107,7 @@ function createPetCard(pet) {
                        (pet.characters?.specialSigns ? `${pet.characters.specialSigns}` : 
                        (pet.additionalInfo ? `${pet.additionalInfo}` : 'Контактная информация отсутствует'))));
     
+    // Use the translated values from the backend
     const size = pet.size || (pet.characters?.petSize || 'Не указан');
     const fur = pet.fur || (pet.characters?.hair || 'Не указана');
     const tail = pet.tail || (pet.characters?.tail || 'Не указан');
@@ -155,8 +157,8 @@ function createPetCard(pet) {
         cardContent += `<p><strong>Особые приметы:</strong> ${specialMarks}</p>`;
     }
 
-    if (district !== 'Не указан') {
-        cardContent += `<p><strong>Район:</strong> ${district}</p>`;
+    if (location !== 'Не указано') {
+        cardContent += `<p><strong>Район:</strong> ${location}</p>`;
     }
     
     if (date !== 'Не указана') {
@@ -184,9 +186,7 @@ function createPetCard(pet) {
 
     cardContent += `<p><strong>Контакты для связи:</strong> ${contactInfo}</p>`;
 
-    if (description && description !== 'Описание отсутствует') {
-        cardContent += `<p><strong>Описание:</strong> ${description}</p>`;
-    }
+
 
     if (additionalInfo) {
         cardContent += `<p><strong>Дополнительная информация:</strong> ${additionalInfo}</p>`;
@@ -247,3 +247,7 @@ function createPetCard(pet) {
     
     return card;
 }
+
+
+
+

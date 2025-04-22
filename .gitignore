@@ -1,1 +1,3 @@
 search_images/images
+/venv
+__pycache__/

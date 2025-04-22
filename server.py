@@ -8,6 +8,7 @@ import json
 from functools import wraps
 from datetime import datetime
 from image_processor import ImageProcessor
+from translate_utils import translate_size, translate_fur, translate_tail, translate_ears
 from task_scheduler import TaskScheduler
 from telegram_bot import start_bot, notify_match, stop_bot
 from animal_api import AnimalAPI
@@ -675,6 +676,7 @@ if __name__ == '__main__':
             task_scheduler.shutdown()
         if telegram_bot_task:
             telegram_bot_task.cancel()
+
 
 
 

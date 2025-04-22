@@ -170,6 +170,59 @@
                 </form>
             </div>
 
+            <div id="searchFilterSection" class="search-filter-section">
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Поиск по породе, месту и др..." />
+                    <button id="searchButton" onclick="performSearch()">Поиск</button>
+                    <button id="toggleFiltersButton" onclick="toggleFilters()">Фильтры</button>
+                </div>
+                
+                <div id="filtersContainer" class="filters-container hidden">
+                    <div class="filter-group">
+                        <label for="filterCategory">Категория:</label>
+                        <select id="filterCategory">
+                            <option value="">Все</option>
+                            <option value="dog">Собака</option>
+                            <option value="cat">Кошка</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterGender">Пол:</label>
+                        <select id="filterGender">
+                            <option value="">Все</option>
+                            <option value="Мальчик">Мальчик</option>
+                            <option value="Девочка">Девочка</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterSize">Размер:</label>
+                        <select id="filterSize">
+                            <option value="">Все</option>
+                            <option value="маленький">Маленький</option>
+                            <option value="средний">Средний</option>
+                            <option value="большой">Большой</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterFur">Шерсть:</label>
+                        <select id="filterFur">
+                            <option value="">Все</option>
+                            <option value="короткая">Короткая</option>
+                            <option value="длинная">Длинная</option>
+                            <option value="кудрявая">Кудрявая</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <button onclick="applyFilters()" class="filter-button">Применить фильтры</button>
+                        <button onclick="resetFilters()" class="filter-button reset">Сбросить</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="petsGrid" class="pets-grid"></div>
 
             <div class="pagination">

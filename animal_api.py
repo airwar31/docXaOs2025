@@ -2,6 +2,8 @@ import requests
 import json
 from datetime import datetime
 from typing import List, Dict, Any, Optional
+from config import active_config
+from translate_utils import translate_size, translate_fur, translate_gender, translate_category, translate_tail, translate_ears
 
 class AnimalAPI:
     BASE_URL = "https://animals.admhmao.ru/pets-api/open"
@@ -47,6 +49,21 @@ class AnimalAPI:
                 print(f"Ошибка при загрузке {api_type}: {str(e)}")
         
         return animals
+
+    @staticmethod
+    def translate_attribute(attribute_value: str, translation_dict: Dict[str, str]) -> str:
+        if not attribute_value:
+            return translation_dict.get('UNKNOWN', 'Не указан')
+        upper_value = attribute_value.upper()
+        
+        if upper_value in translation_dict:
+            return translation_dict[upper_value]
+            
+        for key, value in translation_dict.items():
+            if key in upper_value:
+                return value
+                
+        return attribute_value
 
     @staticmethod
     def extract_animal_info(animal: Dict) -> Dict:
@@ -99,21 +116,31 @@ class AnimalAPI:
         if isinstance(characters, dict):
             pet_category = characters.get("petCategory")
             if pet_category:
-                info["type"] = {
-                    "DOG": "Собака",
-                    "CAT": "Кошка",
-                    "OTHER": "Другое"
-                }.get(pet_category, pet_category)
+                info["type"] = translate_category(pet_category)
             
             if "gender" in characters:
-                info["gender"] = "Мальчик" if characters["gender"] else "Девочка"
+                gender_value = "MALE" if characters["gender"] else "FEMALE"
+                info["gender"] = translate_gender(gender_value)
             
             info["color"] = characters.get("color")
             info["special_marks"] = characters.get("specialSigns")
-            info["size"] = characters.get("petSize") 
-            info["fur"] = characters.get("hair")  
-            info["tail"] = characters.get("tail")  
-            info["ears"] = characters.get("ears")  
+            
+            size_value = characters.get("petSize")
+            if size_value:
+                info["size"] = translate_size(size_value)
+            
+            fur_value = characters.get("hair")
+            if fur_value:
+                info["fur"] = translate_fur(fur_value)
+                
+            tail_value = characters.get("tail")
+            if tail_value:
+                info["tail"] = translate_tail(tail_value)
+                
+            ears_value = characters.get("ears")
+            if ears_value:
+                info["ears"] = translate_ears(ears_value)
+                
             info["weight"] = characters.get("weight")
         
         breed = animal.get("breed")
@@ -302,3 +329,5 @@ if __name__ == "__main__":
         json.dump(animals, f, ensure_ascii=False, indent=2)
     
     print(f"\nПолные данные сохранены в файл: {filename}")
+
+
