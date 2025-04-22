@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Поиск животных</title>
+    <link rel="stylesheet" href="pet-finder.css" />
+</head>
+<body>
+    <div class="container">
+        <div id="authSection">
+            <div class="tabs">
+                <div class="tab active" onclick="showForm('loginForm')">Вход</div>
+                <div class="tab" onclick="showForm('registerForm')">Регистрация</div>
+            </div>
+
+            <form id="loginForm" class="form-section">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required />
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Пароль:</label>
+                    <input type="password" id="loginPassword" required />
+                </div>
+                <button type="submit">Войти</button>
+            </form>
+
+            <form id="registerForm" class="form-section hidden">
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" required />
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Пароль:</label>
+                    <input type="password" id="registerPassword" required />
+                </div>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+
+        <div id="mainApp" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('lost')">Потерянные животные</div>
+                    <div class="tab" onclick="switchTab('found')">Найденные животные</div>
+                    <div class="tab" onclick="switchTab('matches')">Совпадения</div>
+                </div>
+                <div>
+                    <button onclick="showNotificationPrefs()" style="background-color: #4CAF50; margin-right: 10px;">Настройки уведомлений</button>
+                    <button onclick="showAddPetForm()" style="background-color: #4CAF50; margin-right: 10px;">Добавить питомца</button>
+                    <button onclick="logout()" style="background-color: #ff4444;">Выйти</button>
+                </div>
+            </div>
+
+            <div id="notificationPrefsForm" class="form-section hidden">
+                <h2>Настройки уведомлений</h2>
+                <form id="notificationForm">
+                    <div class="form-group">
+                        <label>Подписка на уведомления в Telegram:</label>
+                        <div style="margin: 10px 0;">
+                            <p>Для получения уведомлений:</p>
+                            <ol>
+                                <li>Перейдите к нашему боту: <a href="https://t.me/docXaOs_bot" target="_blank">@docXaOs_bot</a></li>
+                                <li>Отправьте боту команду /start</li>
+                                <li>Введите email, который вы использовали при регистрации</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="telegramEnabled" name="telegram_enabled" />
+                        <label for="telegramEnabled">Включить уведомления в Telegram</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="notificationFrequency">Частота проверки:</label>
+                        <select id="notificationFrequency" name="frequency">
+                            <option value="1">Каждый час</option>
+                            <option value="3">Каждые 3 часа</option>
+                            <option value="6">Каждые 6 часов</option>
+                            <option value="12">Каждые 12 часов</option>
+                            <option value="24">Раз в день</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="minSimilarity">Минимальное сходство для уведомлений:</label>
+                        <input type="range" id="minSimilarity" name="min_similarity" min="0" max="100" value="70" />
+                        <span id="similarityValue">70%</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit">Сохранить</button>
+                        <button type="button" onclick="hideNotificationPrefs()" style="background-color: #666;">Отмена</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="formOverlay" class="overlay hidden"></div>
+            <div id="addPetForm" class="form-section hidden">
+                <h2>Добавить питомца</h2>
+                <form id="petForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="petType">Тип объявления:</label>
+                        <select id="petType" name="type" required>
+                            <option value="lost">Потерянный питомец</option>
+                            <option value="found">Найденный питомец</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petCategory">Категория:</label>
+                        <select id="petCategory" name="category" required>
+                            <option value="dog">Собака</option>
+                            <option value="cat">Кошка</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petBreed">Порода:</label>
+                        <input type="text" id="petBreed" name="breed" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petGender">Пол:</label>
+                        <select id="petGender" name="gender" required>
+                            <option value="male">Мужской</option>
+                            <option value="female">Женский</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petSize">Размер:</label>
+                        <input type="text" id="petSize" name="size" required placeholder="Например: маленький, средний, большой" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petFur">Шерсть:</label>
+                        <input type="text" id="petFur" name="fur" required placeholder="Например: короткая, длинная, кудрявая" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petLocation">Населенный пункт:</label>
+                        <input type="text" id="petLocation" name="location" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petChipNumber">Номер чипа (если есть):</label>
+                        <input type="text" id="petChipNumber" name="chip_number" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petPhotos">Фотографии:</label>
+                        <input type="file" id="petPhotos" name="photos" multiple accept="image/*" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Настройки уведомлений:</label>
+                        <div style="margin-left: 20px;">
+                            <p>Для получения уведомлений в Telegram:</p>
+                            <ol>
+                                <li>Перейдите к нашему боту: <a href="https://t.me/docXaOs_bot" target="_blank">@docXaOs_bot</a></li>
+                                <li>Отправьте боту команду /start</li>
+                                <li>Введите email, который вы использовали при регистрации</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit">Добавить</button>
+                        <button type="button" onclick="hideAddPetForm()" style="background-color: #666;">Отмена</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="petsGrid" class="pets-grid"></div>
+
+            <div class="pagination">
+                <button onclick="previousPage()" id="prevButton">Предыдущая</button>
+                <span id="pageInfo">Страница 1</span>
+                <button onclick="nextPage()" id="nextButton">Следующая</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="createPetCard.js"></script>
+    <script src="pet-finder.js"></script>
+</body>
+</html>
