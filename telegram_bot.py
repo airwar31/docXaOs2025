@@ -216,7 +216,6 @@ async def notify_no_match(user_id: int, pet_data: dict):
     return False
 
 async def start_bot():
-    """Start the Telegram bot with proper error handling."""
     try:
         print("Starting Telegram bot...")
         # Start polling
@@ -227,7 +226,6 @@ async def start_bot():
         return False
 
 async def stop_bot():
-    """Gracefully stop the Telegram bot."""
     try:
         print("Stopping Telegram bot...")
         await bot.session.close()

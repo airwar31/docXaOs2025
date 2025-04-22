@@ -4,29 +4,44 @@ from io import BytesIO
 import requests
 import json
 import os
+import logging
 from typing import List, Tuple, Optional, Dict, Any
+from functools import lru_cache
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('image_processor.log')
+    ]
+)
+logger = logging.getLogger('image_processor')
 
 class ImageProcessor:
     def __init__(self):
-        self.target_size = (224, 224)
-        self.similarity_threshold = 0.7
 
+        self.target_size = (224, 224)
+        self.similarity_threshold = 0.7 
+        self.feature_cache = {}
+        
+    @lru_cache(maxsize=100)
     def load_image(self, image_path_or_url: str) -> Optional[Image.Image]:
         try:
             if image_path_or_url.startswith(('http://', 'https://')):
-                response = requests.get(image_path_or_url)
+                response = requests.get(image_path_or_url, timeout=10)
                 response.raise_for_status()
                 return Image.open(BytesIO(response.content))
             else:
                 return Image.open(image_path_or_url)
         except Exception as e:
-            print(f"Error loading image from {image_path_or_url}: {e}")
+            logger.error(f"Error loading image from {image_path_or_url}: {e}")
             return None
 
     def preprocess_image(self, image: Image.Image) -> np.ndarray:
         if image.mode != 'RGB':
             image = image.convert('RGB')
-        
+    
         image = image.resize(self.target_size)
         
         img_array = np.array(image)
@@ -35,6 +50,10 @@ class ImageProcessor:
         return img_array
 
     def extract_features(self, image_path: str) -> Optional[List[float]]:
+        if image_path in self.feature_cache:
+            logger.debug(f"Using cached features for {image_path}")
+            return self.feature_cache[image_path]
+            
         try:
             image = self.load_image(image_path)
             if image is None:
@@ -61,10 +80,12 @@ class ImageProcessor:
                     float(np.median(channel_data)),
                 ])
             
+            self.feature_cache[image_path] = features
+            
             return features
             
         except Exception as e:
-            print(f"Error extracting features from {image_path}: {e}")
+            logger.error(f"Error extracting features from {image_path}: {e}")
             return None
 
     def calculate_similarity(self, features1: List[float], features2: List[float]) -> float:
@@ -77,7 +98,7 @@ class ImageProcessor:
             return float(similarity)
             
         except Exception as e:
-            print(f"Error calculating similarity: {e}")
+            logger.error(f"Error calculating similarity: {e}")
             return 0.0
 
     def find_matches(
@@ -94,7 +115,6 @@ class ImageProcessor:
             similarity = self.calculate_similarity(target_features, features)
             if similarity >= threshold:
                 matches.append((candidate_id, similarity))
-        
         matches.sort(key=lambda x: x[1], reverse=True)
         return matches
 
@@ -104,6 +124,7 @@ class ImageProcessor:
         external_images: List[Dict[str, Any]],
         threshold: float = None
     ) -> List[Dict[str, Any]]:
+
         if threshold is None:
             threshold = self.similarity_threshold
             
@@ -111,31 +132,41 @@ class ImageProcessor:
         
         local_features = self.extract_features(local_image_path)
         if not local_features:
+            logger.error(f"Could not extract features from local image: {local_image_path}")
             return matches
+        
+        batch_size = 10
+        for i in range(0, len(external_images), batch_size):
+            batch = external_images[i:i+batch_size]
             
-        for ext_image in external_images:
-            try:
-                ext_features = self.extract_features(ext_image['photo_url'])
-                if not ext_features:
+            for ext_image in batch:
+                try:
+                    ext_features = self.extract_features(ext_image['photo_url'])
+                    if not ext_features:
+                        continue
+                        
+                    similarity = self.calculate_similarity(local_features, ext_features)
+                    
+                    if similarity >= threshold:
+                        match_info = {
+                            'external_id': ext_image['id'],
+                            'similarity_score': similarity,
+                            'photo_url': ext_image['photo_url'],
+                            'breed': ext_image.get('breed'),
+                            'category': ext_image.get('category'),
+                            'location': ext_image.get('location'),
+                            'contact_info': ext_image.get('contact_info')
+                        }
+                        matches.append(match_info)
+                        logger.debug(f"Found match with similarity {similarity:.2f} for external ID {ext_image['id']}")
+                        
+                except Exception as e:
+                    logger.error(f"Error processing external image {ext_image.get('id')}: {e}")
                     continue
-                    
-                similarity = self.calculate_similarity(local_features, ext_features)
-                
-                if similarity >= threshold:
-                    match_info = {
-                        'external_id': ext_image['id'],
-                        'similarity_score': similarity,
-                        'photo_url': ext_image['photo_url'],
-                        'breed': ext_image.get('breed'),
-                        'category': ext_image.get('category'),
-                        'location': ext_image.get('location'),
-                        'contact_info': ext_image.get('contact_info')
-                    }
-                    matches.append(match_info)
-                    
-            except Exception as e:
-                print(f"Error processing external image {ext_image.get('id')}: {e}")
-                continue
         
         matches.sort(key=lambda x: x['similarity_score'], reverse=True)
         return matches
+        
+    def clear_cache(self):
+        self.feature_cache.clear()
+        logger.info("Feature cache cleared")

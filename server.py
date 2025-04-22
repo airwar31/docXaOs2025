@@ -7,10 +7,10 @@ import requests
 import json
 from functools import wraps
 from datetime import datetime
-from image_processor_improved import ImageProcessor
+from image_processor import ImageProcessor
 from task_scheduler import TaskScheduler
 from telegram_bot import start_bot, notify_match, stop_bot
-from animal_api_improved import AnimalAPI
+from animal_api import AnimalAPI
 import asyncio
 
 
@@ -179,6 +179,18 @@ def process_pet_data(pet_data, photo_type='lost'):
 def index():
     return send_from_directory('.', 'pet-finder.html')
 
+@app.route('/pet-finder.css')
+def pet_finder_css():
+    return send_from_directory('.', 'pet-finder.css')
+
+@app.route('/pet-finder.js')
+def pet_finder_js():
+    return send_from_directory('.', 'pet-finder.js')
+
+@app.route('/createPetCard.js')
+def create_pet_card_js():
+    return send_from_directory('.', 'createPetCard.js')
+
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -244,7 +256,7 @@ def get_pets():
     size = request.args.get('size', 8, type=int)
     
     try:
-        animals = AnimalAPI.get_all_animals(animal_type=animal_type, size=size)
+        animals = AnimalAPI.get_all_animals(animal_type=animal_type, size=size, page=page)
         
         processed_animals = []
         for animal in animals:
@@ -255,7 +267,7 @@ def get_pets():
         end_idx = start_idx + size
         paginated_animals = processed_animals[start_idx:end_idx]
         
-        return jsonify(paginated_animals)
+        return jsonify(processed_animals)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -663,6 +675,8 @@ if __name__ == '__main__':
             task_scheduler.shutdown()
         if telegram_bot_task:
             telegram_bot_task.cancel()
+
+
 
 
 

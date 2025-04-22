@@ -8,11 +8,10 @@ import pytz
 import logging
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
-from image_processor_improved import ImageProcessor
+from image_processor import ImageProcessor
 from telegram_bot import notify_match, notify_no_match
 import os
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -23,23 +22,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger('task_scheduler')
 
-EMAIL_NOTIFICATIONS_AVAILABLE = False
+
 
 class TaskScheduler:
     def __init__(self, app, db_name: str):
-        """
-        Initialize the TaskScheduler with the Flask app and database name.
-        
-        Args:
-            app: Flask application instance
-            db_name: Name of the SQLite database file
-        """
         self.app = app
         self.db_name = db_name
         self.image_processor = ImageProcessor()
         self.scheduler = BackgroundScheduler(timezone=pytz.UTC)
         
-        # Add error handling for scheduler
         self.scheduler.add_listener(self._handle_job_error, EVENT_JOB_ERROR)
         
         try:
@@ -127,16 +118,13 @@ class TaskScheduler:
         
         for pet in pets:
             try:
-                # Skip invalid pet data
                 if not isinstance(pet, dict) or 'id' not in pet:
                     continue
                 
-                # Get photo URL for the pet
                 photo_url = self._get_pet_photo_url(pet, pet_type)
                 if not photo_url:
                     continue
                 
-                # Extract basic pet information
                 processed_pet = {
                     'id': pet['id'],
                     'type': pet_type,
@@ -147,7 +135,6 @@ class TaskScheduler:
                     'contact_info': pet.get('contactInfo')
                 }
                 
-                # Add date information based on pet type
                 if pet_type == 'find-home':
                     processed_pet['card_date'] = pet.get('cardDate') or pet.get('shelterArrival') or datetime.now().isoformat()
                 else:
@@ -192,7 +179,6 @@ class TaskScheduler:
         return None
     
     def _extract_breed(self, pet: Dict) -> str:
-        """Extract breed information from pet data"""
         breed = pet.get('breed')
         if isinstance(breed, dict) and 'name' in breed:
             return breed['name']
@@ -201,7 +187,6 @@ class TaskScheduler:
         return None
     
     def _extract_category(self, pet: Dict) -> str:
-        """Extract category information from pet data"""
         category = pet.get('category')
         if isinstance(category, dict) and 'name' in category:
             return category['name']
@@ -210,17 +195,12 @@ class TaskScheduler:
         return None
 
     def process_active_searches(self):
-        """
-        Process all active searches to find potential matches.
-        This is the main job function that runs on a schedule.
-        """
         with self.app.app_context():
             try:
                 logger.info("Starting to process active searches")
                 db = self.get_db()
                 cursor = db.cursor()
                 
-                # Get all active searches with their associated data
                 cursor.execute('''
                     SELECT s.*, p.*, u.id as user_id, u.notification_preferences, u.email,
                            pp.photo_path, u.telegram_chat_id
@@ -249,21 +229,11 @@ class TaskScheduler:
                 logger.info("Finished processing active searches")
     
     def _process_single_search(self, db, cursor, search):
-        """
-        Process a single search for potential matches.
-        
-        Args:
-            db: Database connection
-            cursor: Database cursor
-            search: Search record from database
-        """
         search_id = search['id']
         logger.info(f"Processing search {search_id} for pet {search['pet_id']}")
         
-        # Get the last check time
         last_check = datetime.fromisoformat(search['last_check_time']) if search['last_check_time'] else None
         
-        # Fetch external pets since last check
         external_pets = self.fetch_external_pets(last_check)
         
         if not external_pets:
@@ -271,14 +241,12 @@ class TaskScheduler:
             self._update_last_check_time(db, cursor, search_id)
             return
             
-        # Get the photo path and check if it exists
         photo_path = os.path.join(self.app.config['UPLOAD_FOLDER'], search['photo_path'])
         if not os.path.exists(photo_path):
             logger.error(f"Photo not found at {photo_path} for search {search_id}")
             self._update_last_check_time(db, cursor, search_id)
             return
         
-        # Compare with external images to find matches
         matches = self.image_processor.compare_with_external_images(
             photo_path,
             external_pets,
@@ -292,28 +260,17 @@ class TaskScheduler:
             logger.info(f"No matches found for search {search_id}")
             self._handle_no_matches(search)
         
-        # Update the last check time
         self._update_last_check_time(db, cursor, search_id)
     
     def _process_matches(self, db, cursor, search, matches):
-        """
-        Process matches found for a search.
-        
-        Args:
-            db: Database connection
-            cursor: Database cursor
-            search: Search record
-            matches: List of match dictionaries
-        """
+
         for match in matches:
-            # Check if this match already exists in the database
             cursor.execute('''
                 SELECT id FROM matches
                 WHERE search_id = ? AND external_pet_id = ?
             ''', (search['id'], match['external_id']))
             
             if not cursor.fetchone():
-                # Insert the new match
                 cursor.execute('''
                     INSERT INTO matches (
                         search_id, external_pet_id, similarity_score
@@ -327,17 +284,9 @@ class TaskScheduler:
                 db.commit()
                 logger.info(f"Inserted new match for search {search['id']}, external pet {match['external_id']}")
                 
-                # Send notification if enabled
                 self._send_match_notification(search, match)
     
     def _handle_no_matches(self, search):
-        """
-        Handle the case when no matches are found.
-        
-        Args:
-            search: Search record
-        """
-        # Only send no-match notification on first check
         if search['last_check_time'] is None:
             notification_prefs = json.loads(search['notification_preferences'] or '{}')
             pet_data = {
@@ -354,13 +303,6 @@ class TaskScheduler:
                     logger.error(f"Error sending no-match notification: {e}")
     
     def _send_match_notification(self, search, match):
-        """
-        Send notification about a match.
-        
-        Args:
-            search: Search record
-            match: Match dictionary
-        """
         notification_prefs = json.loads(search['notification_preferences'] or '{}')
         
         if search['telegram_chat_id'] and notification_prefs.get('telegram_enabled', False):
@@ -371,14 +313,6 @@ class TaskScheduler:
                 logger.error(f"Error sending match notification: {e}")
     
     def _update_last_check_time(self, db, cursor, search_id):
-        """
-        Update the last check time for a search.
-        
-        Args:
-            db: Database connection
-            cursor: Database cursor
-            search_id: ID of the search to update
-        """
         try:
             cursor.execute('''
                 UPDATE searches
@@ -393,15 +327,13 @@ class TaskScheduler:
             db.rollback()
 
     def shutdown(self):
-        """
-        Gracefully shut down the scheduler.
-        """
         try:
             logger.info("Shutting down task scheduler")
             self.scheduler.shutdown(wait=False)
             logger.info("Task scheduler shut down successfully")
         except Exception as e:
             logger.error(f"Error shutting down task scheduler: {e}")
+
 
 
 
