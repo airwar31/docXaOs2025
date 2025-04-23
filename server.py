@@ -5,6 +5,7 @@ import sqlite3
 import os
 import requests
 import json
+from filter_utils import filter_matches_api_animal
 from functools import wraps
 from datetime import datetime
 from image_processor import ImageProcessor
@@ -256,37 +257,99 @@ def get_pets():
     page = request.args.get('page', 0, type=int)
     size = request.args.get('size', 8, type=int)
     
+    # Get search and filter parameters
+    search_query = request.args.get('search', '').strip()
+    filter_category = request.args.get('category', '').strip()
+    filter_gender = request.args.get('gender', '').strip()
+    filter_size = request.args.get('size_filter', '').strip()  # Using size_filter to avoid conflict with page size
+    filter_fur = request.args.get('fur', '').strip()
+    filter_color = request.args.get('color', '').strip()
+    filter_district = request.args.get('district', '').strip()
+    filter_special_marks = request.args.get('special_marks', '').strip()
+    
     try:
-        # Get animals from external API
+        # Get animals from external API - fetch all without pagination
         api_animals = []
         if animal_type != 'db_only':  # Add a new option to fetch only from DB
-            api_animals = AnimalAPI.get_all_animals(animal_type=animal_type, size=size, page=page)
+            # Use a large size to get all animals from API without pagination
+            api_animals = AnimalAPI.get_all_animals(animal_type=animal_type, size=1000, page=0)
             
             processed_api_animals = []
             for animal in api_animals:
                 processed_animal = AnimalAPI.extract_animal_info(animal)
+                
+                # Apply filters to API animals
+                if not filter_matches_api_animal(processed_animal, search_query, filter_category, 
+                                               filter_gender, filter_size, filter_fur, 
+                                               filter_color, filter_district, filter_special_marks):
+                    continue
+                    
                 processed_api_animals.append(processed_animal)
         else:
             processed_api_animals = []
         
-        # Get animals from database
+        # Get animals from database with server-side filtering
         db_animals = []
         if animal_type in ['all', 'lost', 'found', 'db_only']:
             db = get_db()
             cursor = db.cursor()
             
-            # Build the query based on the animal type
+            # Build the query based on the animal type and filters
             query = '''
                 SELECT p.*, u.email as user_email, GROUP_CONCAT(pp.photo_path) as photos
                 FROM pets p
                 JOIN users u ON p.user_id = u.id
                 LEFT JOIN pet_photos pp ON p.id = pp.pet_id
+                WHERE 1=1
             '''
             
             params = []
+            
+            # Filter by animal type
             if animal_type not in ['all', 'db_only']:
-                query += ' WHERE p.type = ?'
+                query += ' AND p.type = ?'
                 params.append(animal_type)
+            
+            # Apply search query to multiple fields
+            if search_query:
+                query += ''' AND (
+                    p.breed LIKE ? OR 
+                    p.location LIKE ? OR 
+                    p.district LIKE ? OR 
+                    p.special_marks LIKE ? OR
+                    p.color LIKE ?
+                )'''
+                search_param = f'%{search_query}%'
+                params.extend([search_param, search_param, search_param, search_param, search_param])
+            
+            # Apply filters
+            if filter_category:
+                query += ' AND p.category = ?'
+                params.append(filter_category)
+                
+            if filter_gender:
+                query += ' AND p.gender = ?'
+                params.append(filter_gender)
+                
+            if filter_size:
+                query += ' AND p.size LIKE ?'
+                params.append(f'%{filter_size}%')
+                
+            if filter_fur:
+                query += ' AND p.fur LIKE ?'
+                params.append(f'%{filter_fur}%')
+                
+            if filter_color:
+                query += ' AND p.color LIKE ?'
+                params.append(f'%{filter_color}%')
+                
+            if filter_district:
+                query += ' AND p.district LIKE ?'
+                params.append(f'%{filter_district}%')
+                
+            if filter_special_marks:
+                query += ' AND p.special_marks LIKE ?'
+                params.append(f'%{filter_special_marks}%')
                 
             query += ' GROUP BY p.id ORDER BY p.created_at DESC'
             
@@ -332,7 +395,7 @@ def get_pets():
             
             db.close()
         
-        # Combine animals from both sources
+        # Combine animals from both sources - API animals first, then database animals
         all_animals = processed_api_animals + db_animals
         
         # Apply pagination to the combined list
@@ -343,6 +406,8 @@ def get_pets():
         return jsonify(paginated_animals)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/pets', methods=['POST'])
 @login_required
 def add_pet():
@@ -747,6 +812,9 @@ if __name__ == '__main__':
             task_scheduler.shutdown()
         if telegram_bot_task:
             telegram_bot_task.cancel()
+
+
+
 
 
 

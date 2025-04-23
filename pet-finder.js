@@ -170,52 +170,6 @@ function resetFilters() {
     loadPets();
 }
 
-// Filter pets based on search query and active filters
-function filterPets(pets) {
-    if (!pets) return [];
-    
-    return pets.filter(pet => {
-        // Search query filtering
-        if (searchQuery) {
-            const searchFields = [
-                pet.breed || '',
-                pet.location || '',
-                pet.district || '',
-                pet.municipality || '',
-                pet.description || '',
-                pet.special_marks || ''
-            ];
-            
-            const searchText = searchFields.join(' ').toLowerCase();
-            if (!searchText.includes(searchQuery.toLowerCase())) {
-                return false;
-            }
-        }
-        
-        // Category filtering
-        if (activeFilters.category && pet.type !== activeFilters.category) {
-            return false;
-        }
-        
-        // Gender filtering
-        if (activeFilters.gender && pet.gender !== activeFilters.gender) {
-            return false;
-        }
-        
-        // Size filtering
-        if (activeFilters.size && !pet.size.toLowerCase().includes(activeFilters.size.toLowerCase())) {
-            return false;
-        }
-        
-        // Fur filtering
-        if (activeFilters.fur && !pet.fur.toLowerCase().includes(activeFilters.fur.toLowerCase())) {
-            return false;
-        }
-        
-        return true;
-    });
-}
-
 async function loadPets() {
     try {
         let endpoint = '/api/pets';
@@ -237,10 +191,26 @@ async function loadPets() {
             }
             data = await response.json();
         } else {
-            // Add search query to API request if available
+            // Add search query and filter parameters to API request
             let url = `${endpoint}?type=${animalType}&page=${currentPage}&size=${pageSize}`;
+            
+            // Add search query
             if (searchQuery) {
                 url += `&search=${encodeURIComponent(searchQuery)}`;
+            }
+            
+            // Add filter parameters
+            if (activeFilters.category) {
+                url += `&category=${encodeURIComponent(activeFilters.category)}`;
+            }
+            if (activeFilters.gender) {
+                url += `&gender=${encodeURIComponent(activeFilters.gender)}`;
+            }
+            if (activeFilters.size) {
+                url += `&size_filter=${encodeURIComponent(activeFilters.size)}`;
+            }
+            if (activeFilters.fur) {
+                url += `&fur=${encodeURIComponent(activeFilters.fur)}`;
             }
             
             const response = await fetch(url);
@@ -248,9 +218,6 @@ async function loadPets() {
                 throw new Error('Failed to load pets');
             }
             data = await response.json();
-            
-            // Apply client-side filtering
-            data = filterPets(data);
         }
 
         const petsGrid = document.getElementById('petsGrid');

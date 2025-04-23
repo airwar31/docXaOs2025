@@ -735,3 +735,259 @@
 2025-04-23 12:05:14,662 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 12:05:14] "GET /api/pets?type=lost&page=1&size=8 HTTP/1.1" 200 -
 2025-04-23 12:05:36,558 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 12:05:36] "GET /api/pets?type=found&page=0&size=8 HTTP/1.1" 200 -
 2025-04-23 12:05:39,007 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 12:05:39] "GET /api/pets?type=found&page=1&size=8 HTTP/1.1" 200 -
+2025-04-23 16:46:40,393 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 16:46:40,394 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 16:46:40,394 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 16:46:40,394 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 16:46:40,623 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-23 16:46:40,623 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 16:46:40,634 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 16:46:44,125 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 16:46:44,128 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 16:46:44,129 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 16:46:44,129 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 16:46:44,150 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 16:46:44,155 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 16:46:45,538 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:45] "GET / HTTP/1.1" 200 -
+2025-04-23 16:46:45,765 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:45] "GET /pet-finder.css HTTP/1.1" 200 -
+2025-04-23 16:46:45,767 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:45] "GET /createPetCard.js HTTP/1.1" 200 -
+2025-04-23 16:46:46,088 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:46] "GET /pet-finder.js HTTP/1.1" 200 -
+2025-04-23 16:46:47,652 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:47] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 16:46:49,304 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:49] "[31m[1mPOST /api/login HTTP/1.1[0m" 401 -
+2025-04-23 16:46:53,785 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:53] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
+2025-04-23 16:46:57,450 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:57] "POST /api/login HTTP/1.1" 200 -
+2025-04-23 16:46:57,456 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:57] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 16:46:59,467 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:46:59] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 16:47:03,340 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:47:03] "GET /api/pets?type=lost&page=1&size=8 HTTP/1.1" 200 -
+2025-04-23 16:47:03,678 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:47:03] "GET /api/uploads/1_paper_plane_PNG81.png HTTP/1.1" 200 -
+2025-04-23 16:49:58,191 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:49:58] "GET /api/pets?type=found&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 16:50:02,178 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 16:50:02] "GET /api/pets?type=found&page=1&size=8 HTTP/1.1" 200 -
+2025-04-23 17:01:40,420 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:16:40 UTC)" (scheduled at 2025-04-23 12:01:40.394745+00:00)
+2025-04-23 17:01:40,425 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 17:01:40,427 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-23 17:01:40,428 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 17:01:44,144 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:16:44 UTC)" (scheduled at 2025-04-23 12:01:44.128305+00:00)
+2025-04-23 17:01:44,146 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 17:01:44,148 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-23 17:01:44,149 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 17:01:45,832 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 17:01:45,834 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 17:01:49,179 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 17:01:49,181 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 17:01:49,310 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 17:01:49,310 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 17:01:53,063 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 17:01:53,064 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 17:02:13,948 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 17:02:13,949 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 17:02:13,950 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 06:50:26
+2025-04-23 17:02:13,955 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 17:02:13,971 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 17:02:13,987 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:16:40 UTC)" executed successfully
+2025-04-23 17:02:16,518 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 17:02:16,518 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 17:02:16,520 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 06:50:26
+2025-04-23 17:02:16,524 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 17:02:16,534 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 17:02:16,538 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:16:44 UTC)" executed successfully
+2025-04-23 17:04:03,896 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\server.py', reloading
+2025-04-23 17:04:03,896 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 17:04:03,898 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 17:04:03,899 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 17:04:04,352 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 17:04:08,168 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 17:04:08,169 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 17:04:08,169 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 17:04:08,169 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 17:04:08,196 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 17:04:08,200 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 17:04:20,071 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:20] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-23 17:04:20,102 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:20] "[36mGET /pet-finder.css HTTP/1.1[0m" 304 -
+2025-04-23 17:04:20,117 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:20] "[36mGET /createPetCard.js HTTP/1.1[0m" 304 -
+2025-04-23 17:04:20,428 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:20] "[36mGET /pet-finder.js HTTP/1.1[0m" 304 -
+2025-04-23 17:04:20,806 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:20] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 17:04:22,429 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:22] "POST /api/login HTTP/1.1" 200 -
+2025-04-23 17:04:22,745 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:22] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 17:04:28,953 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:28] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 17:04:37,537 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:37] "GET /api/pets?type=lost&page=1&size=8 HTTP/1.1" 200 -
+2025-04-23 17:04:42,172 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:42] "GET /api/pets?type=lost&page=2&size=8 HTTP/1.1" 200 -
+2025-04-23 17:04:45,808 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:45] "GET /api/pets?type=lost&page=1&size=8 HTTP/1.1" 200 -
+2025-04-23 17:04:50,291 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:50] "GET /api/pets?type=lost&page=2&size=8 HTTP/1.1" 200 -
+2025-04-23 17:04:52,811 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:52] "GET /api/pets?type=lost&page=3&size=8 HTTP/1.1" 200 -
+2025-04-23 17:04:57,901 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:57] "GET /api/pets?type=lost&page=4&size=8 HTTP/1.1" 200 -
+2025-04-23 17:04:58,255 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:04:58] "[36mGET /api/uploads/1_paper_plane_PNG81.png HTTP/1.1[0m" 304 -
+2025-04-23 17:05:00,198 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:00] "GET /api/pets?type=lost&page=5&size=8 HTTP/1.1" 200 -
+2025-04-23 17:05:08,062 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:08] "GET /api/pets?type=lost&page=4&size=8 HTTP/1.1" 200 -
+2025-04-23 17:05:24,748 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\server.py', reloading
+2025-04-23 17:05:24,750 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 17:05:24,750 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 17:05:24,751 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 17:05:25,144 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 17:05:28,558 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 17:05:28,559 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 17:05:28,559 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 17:05:28,560 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 17:05:28,584 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 17:05:28,590 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 17:05:32,426 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:32] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-23 17:05:32,472 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:32] "[36mGET /createPetCard.js HTTP/1.1[0m" 304 -
+2025-04-23 17:05:32,474 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:32] "[36mGET /pet-finder.css HTTP/1.1[0m" 304 -
+2025-04-23 17:05:32,774 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:32] "[36mGET /pet-finder.js HTTP/1.1[0m" 304 -
+2025-04-23 17:05:33,132 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:33] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 17:05:34,117 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:34] "POST /api/login HTTP/1.1" 200 -
+2025-04-23 17:05:34,442 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:34] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 17:05:42,208 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:42] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 17:05:52,590 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:05:52] "GET /api/pets?type=lost&page=1&size=8 HTTP/1.1" 200 -
+2025-04-23 17:06:00,547 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\server.py', reloading
+2025-04-23 17:06:00,547 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 17:06:00,548 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 17:06:00,549 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 17:06:00,904 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 17:06:04,501 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 17:06:04,502 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 17:06:04,502 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 17:06:04,503 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 17:06:04,518 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 17:06:04,522 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 17:06:56,245 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:06:56] "GET /api/pets?type=lost&page=0&size=8&search=Ханты-Мансийск HTTP/1.1" 200 -
+2025-04-23 17:07:02,011 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:07:02] "GET /api/pets?type=lost&page=0&size=8&search=Ханты-Мансийск HTTP/1.1" 200 -
+2025-04-23 17:07:16,323 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:07:16] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 17:16:40,448 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:31:40 UTC)" (scheduled at 2025-04-23 12:16:40.394745+00:00)
+2025-04-23 17:16:40,458 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 17:16:40,466 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-23 17:16:40,468 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 17:16:47,036 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 17:16:47,041 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 17:16:51,093 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 17:16:51,097 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 17:17:15,226 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 17:17:15,226 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 17:17:15,226 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 12:02:16
+2025-04-23 17:17:15,239 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 17:17:15,257 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 17:17:15,273 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:31:40 UTC)" executed successfully
+2025-04-23 17:21:04,524 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:36:04 UTC)" (scheduled at 2025-04-23 12:21:04.502667+00:00)
+2025-04-23 17:21:04,524 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 17:21:04,524 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-23 17:21:04,531 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 17:21:10,302 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 17:21:10,302 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 17:21:14,647 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 17:21:14,647 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 17:21:39,813 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 17:21:39,816 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 17:21:39,816 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 12:17:15
+2025-04-23 17:21:39,818 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 17:21:39,826 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 17:21:39,837 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:36:04 UTC)" executed successfully
+2025-04-23 17:31:40,421 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:46:40 UTC)" (scheduled at 2025-04-23 12:31:40.394745+00:00)
+2025-04-23 17:31:40,421 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 17:31:40,436 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-23 17:31:40,436 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 17:31:46,168 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 17:31:46,174 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 17:31:49,759 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 17:31:49,759 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 17:32:13,780 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 17:32:13,780 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 17:32:13,780 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 12:21:39
+2025-04-23 17:32:13,780 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 17:32:13,797 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 17:32:13,797 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:46:40 UTC)" executed successfully
+2025-04-23 17:36:04,517 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:51:04 UTC)" (scheduled at 2025-04-23 12:36:04.502667+00:00)
+2025-04-23 17:36:04,517 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 17:36:04,524 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-23 17:36:04,524 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 17:36:10,310 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 17:36:10,310 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 17:36:14,258 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 17:36:14,258 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 17:36:39,538 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 17:36:39,538 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 17:36:39,538 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 12:32:13
+2025-04-23 17:36:39,542 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 17:36:39,557 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 17:36:39,557 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 12:51:04 UTC)" executed successfully
+2025-04-23 17:46:40,404 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 13:01:40 UTC)" (scheduled at 2025-04-23 12:46:40.394745+00:00)
+2025-04-23 17:46:40,407 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 17:46:40,407 - task_scheduler - INFO - Found 1 active searches to process
+2025-04-23 17:46:40,407 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 17:46:45,937 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 17:46:45,937 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 17:46:50,767 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 17:46:50,767 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 17:46:51,456 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\server.py', reloading
+2025-04-23 17:46:51,456 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 17:46:51,456 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 17:46:51,464 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 17:46:51,996 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 17:46:55,202 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 17:46:55,202 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 17:46:55,202 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 17:46:55,202 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 17:46:55,231 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 17:46:55,232 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 17:46:59,668 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\server.py', reloading
+2025-04-23 17:46:59,668 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 17:46:59,668 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 17:46:59,668 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 17:47:00,014 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 17:47:02,806 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 17:47:02,807 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 17:47:02,807 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 17:47:02,807 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 17:47:02,824 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 17:47:02,828 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 17:47:14,605 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 17:47:14,605 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 17:47:14,606 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 12:36:39
+2025-04-23 17:47:14,610 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 17:47:14,618 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 17:47:14,622 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 13:01:40 UTC)" executed successfully
+2025-04-23 17:48:44,223 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\server.py', reloading
+2025-04-23 17:48:44,223 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 17:48:44,223 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 17:48:44,223 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 17:48:44,480 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 17:48:44,636 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 17:48:44,639 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 17:48:44,640 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 17:49:11,803 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 17:49:11,806 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 17:49:11,806 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 17:49:11,806 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 17:49:11,855 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-23 17:49:11,856 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 17:49:11,856 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 17:49:14,598 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 17:49:14,602 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 17:49:14,602 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 17:49:14,603 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 17:49:14,650 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 17:49:14,658 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 17:49:20,152 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:20] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-23 17:49:20,524 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:20] "[36mGET /pet-finder.css HTTP/1.1[0m" 304 -
+2025-04-23 17:49:20,524 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:20] "[36mGET /createPetCard.js HTTP/1.1[0m" 304 -
+2025-04-23 17:49:20,832 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:20] "GET /pet-finder.js HTTP/1.1" 200 -
+2025-04-23 17:49:21,261 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:21] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 17:49:23,126 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:23] "POST /api/login HTTP/1.1" 200 -
+2025-04-23 17:49:23,439 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:23] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 17:49:29,461 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:29] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 17:49:40,913 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:40] "GET /api/pets?type=lost&page=0&size=8&size_filter=AVERAGE HTTP/1.1" 200 -
+2025-04-23 17:49:50,737 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:50] "GET /api/pets?type=lost&page=0&size=8&size_filter=LITTLE HTTP/1.1" 200 -
+2025-04-23 17:49:51,053 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:51] "[36mGET /api/uploads/1_paper_plane_PNG81.png HTTP/1.1[0m" 304 -
+2025-04-23 17:49:56,702 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:49:56] "GET /api/pets?type=lost&page=0&size=8&size_filter=LITTLE HTTP/1.1" 200 -
+2025-04-23 17:50:14,758 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:50:14] "GET /api/pets?type=lost&page=0&size=8&category=dog HTTP/1.1" 200 -
+2025-04-23 17:50:21,236 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:50:21] "GET /api/pets?type=lost&page=0&size=8&category=dog HTTP/1.1" 200 -
+2025-04-23 17:50:27,737 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:50:27] "GET /api/pets?type=lost&page=0&size=8&category=dog HTTP/1.1" 200 -
+2025-04-23 17:50:29,953 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:50:29] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 17:50:46,027 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:50:46] "GET /api/pets?type=lost&page=0&size=8&search=Дозор HTTP/1.1" 200 -
+2025-04-23 17:50:50,211 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 17:50:50] "GET /api/matches?page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 18:05:40,052 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 18:05:40,063 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 18:05:40,065 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 18:05:40,367 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 18:05:40,367 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 18:05:40,367 - task_scheduler - INFO - Task scheduler shut down successfully
