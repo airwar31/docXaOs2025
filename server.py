@@ -11,9 +11,10 @@ from datetime import datetime
 from image_processor import ImageProcessor
 from translate_utils import translate_size, translate_fur, translate_tail, translate_ears
 from task_scheduler import TaskScheduler
-from telegram_bot import start_bot, notify_match, stop_bot
+from telegram_bot import start_bot, notify_match, stop_bot, notify_similar_pet
 from animal_api import AnimalAPI
 import asyncio
+from similar_pet_detector import SimilarPetDetector
 
 
 UPLOAD_FOLDER = 'uploads'
@@ -26,6 +27,7 @@ DB_NAME = 'petfinder.db'
 
 
 image_processor = ImageProcessor()
+similar_pet_detector = SimilarPetDetector(DB_NAME, UPLOAD_FOLDER)
 task_scheduler = None
 
 telegram_bot_task = None
@@ -502,6 +504,34 @@ def add_pet():
             VALUES (?, ?, datetime('now'))
         ''', (pet_id, json.dumps(search_params)))
         
+        # Check for similar pets and send notifications
+        try:
+            similar_pets = similar_pet_detector.find_similar_pets(pet_id)
+            
+            if similar_pets:
+                # Get details of the newly added pet
+                new_pet_details = similar_pet_detector.get_pet_details(pet_id)
+                
+                # Send notifications to owners of similar pets
+                for similar_pet in similar_pets:
+                    try:
+                        # Get the original pet details
+                        original_pet = similar_pet_detector.get_pet_details(similar_pet['id'])
+                        
+                        if original_pet and new_pet_details:
+                            # Send notification asynchronously
+                            asyncio.run(notify_similar_pet(
+                                original_pet['user_id'],
+                                original_pet,
+                                new_pet_details,
+                                similar_pet['similarity_score']
+                            ))
+                            print(f"Sent notification about similar pet to user {original_pet['user_id']}")
+                    except Exception as e:
+                        print(f"Error sending notification for similar pet {similar_pet['id']}: {e}")
+        except Exception as e:
+            print(f"Error checking for similar pets: {e}")
+        
         db.commit()
         return jsonify({
             'message': 'Pet added successfully',
@@ -812,6 +842,10 @@ if __name__ == '__main__':
             task_scheduler.shutdown()
         if telegram_bot_task:
             telegram_bot_task.cancel()
+
+
+
+
 
 
 

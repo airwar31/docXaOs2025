@@ -1,4 +1,11 @@
 from requests import get
+import os
+
+# Create images directory if it doesn't exist
+images_dir = 'images'
+if not os.path.exists(images_dir):
+    os.makedirs(images_dir)
+
 url_lost = 'https://animals.admhmao.ru/pets-api/open/lost?sort=placementDate,desc&sort=id'
 url_find = 'https://animals.admhmao.ru/pets-api/open/found?sort=placementDate,desc&sort=id'
 response = get(url_lost).json()

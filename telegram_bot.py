@@ -6,6 +6,7 @@ try:
     from aiogram.fsm.storage.memory import MemoryStorage
     from aiogram.fsm.context import FSMContext
     from aiogram.fsm.state import State, StatesGroup
+    from aiogram.enums.parse_mode import ParseMode
 except ImportError as e:
     print(f"Error importing aiogram components: {e}")
     raise
@@ -17,7 +18,8 @@ import asyncio
 from datetime import datetime
 API_TOKEN = ('7237195300:AAFo-56TNpLaxOl28k49_8htoJCVQfE13sU')
 try:
-    bot = Bot(token=API_TOKEN, parse_mode="HTML")
+    # In aiogram 3.x, parse_mode can be passed directly to Bot constructor
+    bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
     print("Bot and dispatcher initialized successfully")
@@ -215,6 +217,67 @@ async def notify_no_match(user_id: int, pet_data: dict):
         db.close()
     return False
 
+async def notify_similar_pet(user_id: int, original_pet: dict, new_pet: dict, similarity_score: float):
+    """
+    Notify a user when a similar pet to their pet is posted.
+    
+    Args:
+        user_id: ID of the user to notify
+        original_pet: Dictionary with information about the user's pet
+        new_pet: Dictionary with information about the newly posted pet
+        similarity_score: Similarity score between the two pets (0.0 to 1.0)
+    
+    Returns:
+        True if notification was sent successfully, False otherwise
+    """
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        
+        cursor.execute(
+            'SELECT telegram_chat_id, notification_preferences FROM users WHERE id = ?',
+            (user_id,)
+        )
+        user = cursor.fetchone()
+        
+        if user and user['telegram_chat_id']:
+            # Check if user has enabled telegram notifications
+            prefs = json.loads(user['notification_preferences'] or '{}')
+            if not prefs.get('telegram_enabled', False):
+                return False
+                
+            # Format pet types for display
+            original_type = "Пропавший" if original_pet.get('type') == 'lost' else "Найденный"
+            new_type = "Пропавший" if new_pet.get('type') == 'lost' else "Найденный"
+            
+            # Create message
+            message = (
+                "🔍 Найден похожий питомец!\n\n"
+                f"На сайте появился питомец, похожий на вашего {original_pet.get('category', 'питомца')}.\n\n"
+                f"Ваш питомец ({original_type}):\n"
+                f"Порода: {original_pet.get('breed', 'Не указана')}\n"
+                f"Категория: {original_pet.get('category', 'Не указана')}\n"
+                f"Место: {original_pet.get('location', 'Не указано')}\n\n"
+                f"Похожий питомец ({new_type}):\n"
+                f"Порода: {new_pet.get('breed', 'Не указана')}\n"
+                f"Категория: {new_pet.get('category', 'Не указана')}\n"
+                f"Место: {new_pet.get('location', 'Не указано')}\n"
+                f"Контакт: {new_pet.get('user_email', 'Не указан')}\n\n"
+                f"Сходство: {int(similarity_score * 100)}%\n\n"
+                "Для просмотра деталей перейдите на сайт."
+            )
+            
+            await send_notification(user['telegram_chat_id'], message)
+            return True
+    except sqlite3.Error as e:
+        print(f"Database error in notify_similar_pet: {e}")
+    except Exception as e:
+        print(f"Error in notify_similar_pet: {e}")
+    finally:
+        if 'db' in locals():
+            db.close()
+    return False
+
 async def start_bot():
     try:
         print("Starting Telegram bot...")
@@ -241,6 +304,10 @@ if __name__ == "__main__":
         print("Bot stopped by user")
     except Exception as e:
         print(f"Unexpected error: {e}")
+
+
+
+
 
 
 

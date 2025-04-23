@@ -991,3 +991,202 @@
 2025-04-23 18:05:40,367 - task_scheduler - INFO - Shutting down task scheduler
 2025-04-23 18:05:40,367 - apscheduler.scheduler - INFO - Scheduler has been shut down
 2025-04-23 18:05:40,367 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 18:26:57,327 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 18:26:57,327 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 18:26:57,331 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 18:26:57,331 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 18:26:57,365 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-23 18:26:57,365 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 18:26:57,368 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 18:27:00,354 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 18:27:00,354 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 18:27:00,354 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 18:27:00,354 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 18:27:00,367 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 18:27:00,383 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 18:36:38,586 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\telegram_bot.py', reloading
+2025-04-23 18:36:38,586 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 18:36:38,602 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 18:36:38,602 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 18:36:38,903 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 18:36:46,524 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 18:36:46,524 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 18:36:46,524 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 18:45:59,584 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 18:45:59,588 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 18:45:59,588 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 18:45:59,588 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 18:45:59,740 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-23 18:45:59,740 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 18:45:59,754 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 18:46:02,195 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 18:46:02,195 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 18:46:02,195 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 18:46:02,195 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 18:46:02,215 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 18:46:02,223 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 18:50:19,930 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\telegram_bot.py', reloading
+2025-04-23 18:50:19,930 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 18:50:19,930 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 18:50:19,930 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 18:50:20,205 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 18:50:23,150 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 18:50:23,151 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 18:50:23,151 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 18:59:03,691 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 18:59:03,691 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 18:59:03,691 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 18:59:03,691 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 18:59:03,753 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-23 18:59:03,753 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 18:59:03,753 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 18:59:06,374 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 18:59:06,374 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 18:59:06,374 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 18:59:06,374 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 18:59:06,387 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 18:59:06,396 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 19:06:31,939 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\telegram_bot.py', reloading
+2025-04-23 19:06:31,939 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 19:06:31,939 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 19:06:31,939 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 19:06:32,232 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 19:06:35,240 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 19:06:35,240 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 19:06:35,240 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 19:15:38,496 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 19:15:38,499 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 19:15:38,499 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 19:15:38,499 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 19:15:38,535 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-23 19:15:38,536 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 19:15:38,537 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 19:15:41,649 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 19:15:41,652 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 19:15:41,654 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 19:15:41,654 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 19:15:41,675 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 19:15:41,684 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 19:15:55,071 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:15:55] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-23 19:15:55,219 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:15:55] "[36mGET /pet-finder.css HTTP/1.1[0m" 304 -
+2025-04-23 19:15:55,220 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:15:55] "[36mGET /createPetCard.js HTTP/1.1[0m" 304 -
+2025-04-23 19:15:55,520 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:15:55] "[36mGET /pet-finder.js HTTP/1.1[0m" 304 -
+2025-04-23 19:15:55,911 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:15:55] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 19:16:01,891 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:01] "[31m[1mPOST /api/register HTTP/1.1[0m" 400 -
+2025-04-23 19:16:09,181 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:09] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
+2025-04-23 19:16:13,856 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:13] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-23 19:16:14,167 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:14] "[36mGET /pet-finder.css HTTP/1.1[0m" 304 -
+2025-04-23 19:16:14,200 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:14] "[36mGET /pet-finder.js HTTP/1.1[0m" 304 -
+2025-04-23 19:16:14,200 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:14] "[36mGET /createPetCard.js HTTP/1.1[0m" 304 -
+2025-04-23 19:16:14,578 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:14] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 19:16:15,670 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:15] "POST /api/login HTTP/1.1" 200 -
+2025-04-23 19:16:15,999 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:15] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 19:16:20,483 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:20] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 19:16:24,819 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:24] "POST /api/login HTTP/1.1" 200 -
+2025-04-23 19:16:24,971 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:24] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 19:16:29,230 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:29] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 19:16:47,064 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:16:47] "GET /api/pets?type=lost&page=0&size=8&search=Нягань HTTP/1.1" 200 -
+2025-04-23 19:17:31,607 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:17:31] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 19:17:35,820 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:17:35] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 19:20:19,948 - werkzeug - INFO -  * Detected change in 'c:\\Users\\danil\\Desktop\\docXaOs2025\\search_images\\get_imeges.py', reloading
+2025-04-23 19:20:19,962 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 19:20:19,965 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 19:20:19,974 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 19:20:20,700 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 19:20:24,772 - task_scheduler - INFO - Shutting down task scheduler
+2025-04-23 19:20:24,780 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-04-23 19:20:24,796 - task_scheduler - INFO - Task scheduler shut down successfully
+2025-04-23 19:24:03,869 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 19:24:03,870 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 19:24:03,870 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 19:24:03,870 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 19:24:03,906 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-23 19:24:03,906 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 19:24:03,907 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 19:24:06,844 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 19:24:06,847 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 19:24:06,847 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 19:24:06,847 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 19:24:06,859 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 19:24:06,865 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 19:25:26,115 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:26] "[31m[1mPOST /api/pets HTTP/1.1[0m" 401 -
+2025-04-23 19:25:30,515 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:30] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-23 19:25:30,572 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:30] "[36mGET /pet-finder.css HTTP/1.1[0m" 304 -
+2025-04-23 19:25:30,885 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:30] "[36mGET /createPetCard.js HTTP/1.1[0m" 304 -
+2025-04-23 19:25:30,886 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:30] "[36mGET /pet-finder.js HTTP/1.1[0m" 304 -
+2025-04-23 19:25:31,240 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:31] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 19:25:31,786 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:31] "POST /api/login HTTP/1.1" 200 -
+2025-04-23 19:25:32,099 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:32] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-23 19:25:36,287 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:36] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 19:25:47,187 - similar_pet_detector - WARNING - No photos found for pet 2
+2025-04-23 19:25:47,193 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:47] "[35m[1mPOST /api/pets HTTP/1.1[0m" 201 -
+2025-04-23 19:25:52,769 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:25:52] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-23 19:30:42,805 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:30:42] "GET /api/pets?type=lost&page=0&size=8&search=Ханты-Мансийск HTTP/1.1" 200 -
+2025-04-23 19:30:51,888 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:30:51] "GET /api/pets?type=lost&page=1&size=8&search=Ханты-Мансийск HTTP/1.1" 200 -
+2025-04-23 19:30:51,902 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:30:51] "[36mGET /api/uploads/1_paper_plane_PNG81.png HTTP/1.1[0m" 304 -
+2025-04-23 19:31:21,520 - werkzeug - INFO - 127.0.0.1 - - [23/Apr/2025 19:31:21] "GET /api/pets?type=lost&page=0&size=8&search=Ханты-Мансийск HTTP/1.1" 200 -
+2025-04-23 19:38:03,252 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 19:38:03,253 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 19:38:03,253 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 19:38:03,253 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 19:38:03,334 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-04-23 19:38:03,335 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-23 19:38:03,337 - werkzeug - INFO -  * Restarting with stat
+2025-04-23 19:38:07,589 - apscheduler.scheduler - INFO - Scheduler started
+2025-04-23 19:38:07,589 - task_scheduler - INFO - Task scheduler started successfully
+2025-04-23 19:38:07,589 - apscheduler.scheduler - INFO - Added job "Process active searches" to job store "default"
+2025-04-23 19:38:07,590 - task_scheduler - INFO - Added job: process_active_searches (every 15 minutes)
+2025-04-23 19:38:07,612 - werkzeug - WARNING -  * Debugger is active!
+2025-04-23 19:38:07,621 - werkzeug - INFO -  * Debugger PIN: 756-225-563
+2025-04-23 19:53:03,275 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 15:08:03 UTC)" (scheduled at 2025-04-23 14:53:03.253978+00:00)
+2025-04-23 19:53:03,279 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 19:53:03,284 - task_scheduler - INFO - Found 2 active searches to process
+2025-04-23 19:53:03,284 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 19:53:07,604 - apscheduler.executors.default - INFO - Running job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 15:08:07 UTC)" (scheduled at 2025-04-23 14:53:07.589400+00:00)
+2025-04-23 19:53:07,607 - task_scheduler - INFO - Starting to process active searches
+2025-04-23 19:53:07,609 - task_scheduler - INFO - Found 2 active searches to process
+2025-04-23 19:53:07,610 - task_scheduler - INFO - Processing search 1 for pet 1
+2025-04-23 19:53:07,655 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 19:53:07,655 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 19:53:10,486 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 19:53:10,487 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 19:53:11,951 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 19:53:11,951 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 19:53:14,809 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 19:53:14,809 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 19:53:30,806 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 19:53:30,807 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 19:53:30,807 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 12:47:14
+2025-04-23 19:53:30,809 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 19:53:30,816 - task_scheduler - INFO - Processing search 2 for pet 2
+2025-04-23 19:53:34,818 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 19:53:34,819 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 19:53:34,819 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 12:47:14
+2025-04-23 19:53:34,820 - task_scheduler - INFO - No new external pets found for search 1
+2025-04-23 19:53:34,824 - task_scheduler - INFO - Processing search 2 for pet 2
+2025-04-23 19:53:34,923 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 19:53:34,923 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 19:53:37,706 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 19:53:37,706 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 19:53:38,841 - task_scheduler - INFO - Processed 27 pets of type lost
+2025-04-23 19:53:38,841 - task_scheduler - INFO - Successfully fetched 27 pets from lost
+2025-04-23 19:53:41,670 - task_scheduler - INFO - Processed 23 pets of type found
+2025-04-23 19:53:41,670 - task_scheduler - INFO - Successfully fetched 50 pets from found
+2025-04-23 19:53:58,551 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 19:53:58,551 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 19:53:58,551 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 14:25:47
+2025-04-23 19:53:58,554 - task_scheduler - INFO - No new external pets found for search 2
+2025-04-23 19:53:58,559 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 19:53:58,560 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 15:08:03 UTC)" executed successfully
+2025-04-23 19:54:02,131 - task_scheduler - INFO - Processed 0 pets of type find-home
+2025-04-23 19:54:02,131 - task_scheduler - INFO - Successfully fetched 50 pets from find-home
+2025-04-23 19:54:02,131 - task_scheduler - INFO - Filtered to 0 pets newer than 2025-04-23 14:25:47
+2025-04-23 19:54:02,133 - task_scheduler - INFO - No new external pets found for search 2
+2025-04-23 19:54:02,138 - task_scheduler - INFO - Finished processing active searches
+2025-04-23 19:54:02,139 - apscheduler.executors.default - INFO - Job "Process active searches (trigger: interval[0:15:00], next run at: 2025-04-23 15:08:07 UTC)" executed successfully
