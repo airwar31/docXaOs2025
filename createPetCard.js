@@ -72,7 +72,13 @@ function createPetCard(pet) {
             'OTHER': 'Другое'
         }[pet.characters.petCategory] || pet.characters.petCategory;
     } else if (pet.type) {
-        type = pet.type;
+        if (pet.type === 'dog') {
+            type = 'Собака';
+        } else if (pet.type === 'cat') {
+            type = 'Кошка';
+        } else {
+            type = pet.type;
+        }
     }
     
     let breed = 'Не указана';
@@ -247,6 +253,7 @@ function createPetCard(pet) {
     
     return card;
 }
+
 
 
 
