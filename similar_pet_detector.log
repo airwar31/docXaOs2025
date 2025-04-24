@@ -1,0 +1,27 @@
+2025-04-24 14:51:01,248 - aiogram.dispatcher - INFO - Start polling
+2025-04-24 14:51:01,600 - aiogram.dispatcher - INFO - Run polling for bot @docXaOs_bot id=7237195300 - 'Hantaton'
+2025-04-24 14:51:12,408 - aiogram.event - INFO - Update id=769083614 is handled. Duration 280 ms by bot id=7237195300
+2025-04-24 14:51:19,720 - aiogram.event - INFO - Update id=769083615 is handled. Duration 155 ms by bot id=7237195300
+2025-04-24 14:51:22,157 - aiogram.event - INFO - Update id=769083616 is handled. Duration 218 ms by bot id=7237195300
+2025-04-24 14:51:32,828 - similar_pet_detector - INFO - Found similar pet: 2 with similarity 1.00
+2025-04-24 14:51:32,996 - similar_pet_detector - INFO - Found similar pet: 4 with similarity 1.00
+2025-04-24 14:51:33,363 - aiogram.event - INFO - Update id=769083617 is handled. Duration 1094 ms by bot id=7237195300
+2025-04-24 14:51:50,935 - similar_pet_detector - INFO - Found similar pet: 2 with similarity 1.00
+2025-04-24 14:51:51,087 - similar_pet_detector - INFO - Found similar pet: 4 with similarity 1.00
+2025-04-24 14:51:51,417 - aiogram.event - INFO - Update id=769083618 is handled. Duration 983 ms by bot id=7237195300
+2025-04-24 14:53:29,780 - similar_pet_detector - INFO - Found similar pet: 2 with similarity 1.00
+2025-04-24 14:53:29,926 - similar_pet_detector - INFO - Found similar pet: 3 with similarity 1.00
+2025-04-24 14:53:30,281 - aiogram.event - INFO - Update id=769083619 is handled. Duration 1234 ms by bot id=7237195300
+2025-04-24 14:53:34,792 - similar_pet_detector - INFO - Found similar pet: 2 with similarity 1.00
+2025-04-24 14:53:34,947 - similar_pet_detector - INFO - Found similar pet: 4 with similarity 1.00
+2025-04-24 14:53:35,470 - aiogram.event - INFO - Update id=769083620 is handled. Duration 1280 ms by bot id=7237195300
+2025-04-24 14:54:48,380 - aiogram.event - INFO - Update id=769083621 is handled. Duration 125 ms by bot id=7237195300
+2025-04-24 14:54:53,360 - aiogram.event - INFO - Update id=769083622 is handled. Duration 156 ms by bot id=7237195300
+2025-04-24 14:55:02,287 - aiogram.event - INFO - Update id=769083623 is not handled. Duration 0 ms by bot id=7237195300
+2025-04-24 14:55:05,307 - aiogram.event - INFO - Update id=769083624 is handled. Duration 125 ms by bot id=7237195300
+2025-04-24 14:55:06,641 - aiogram.event - INFO - Update id=769083625 is handled. Duration 140 ms by bot id=7237195300
+2025-04-24 14:55:08,783 - aiogram.event - INFO - Update id=769083626 is handled. Duration 93 ms by bot id=7237195300
+2025-04-24 14:55:14,262 - aiogram.event - INFO - Update id=769083627 is handled. Duration 172 ms by bot id=7237195300
+2025-04-24 14:55:57,496 - aiogram.event - INFO - Update id=769083628 is handled. Duration 219 ms by bot id=7237195300
+2025-04-24 14:55:59,088 - similar_pet_detector - INFO - Found similar pet: 2 with similarity 0.93
+2025-04-24 14:55:59,316 - aiogram.event - INFO - Update id=769083629 is handled. Duration 641 ms by bot id=7237195300

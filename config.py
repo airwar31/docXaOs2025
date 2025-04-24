@@ -8,7 +8,6 @@ class Config:
     
     TELEGRAM_API_TOKEN = '7237195300:AAFo-56TNpLaxOl28k49_8htoJCVQfE13sU'
     
-    # Translation dictionaries for pet attributes
     SIZE_TRANSLATIONS = {
         'LITTLE': 'Маленький',
         'AVERAGE': 'Средний',

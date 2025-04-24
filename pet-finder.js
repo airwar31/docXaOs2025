@@ -191,15 +191,13 @@ async function loadPets() {
             }
             data = await response.json();
         } else {
-            // Add search query and filter parameters to API request
+
             let url = `${endpoint}?type=${animalType}&page=${currentPage}&size=${pageSize}`;
             
-            // Add search query
             if (searchQuery) {
                 url += `&search=${encodeURIComponent(searchQuery)}`;
             }
             
-            // Add filter parameters
             if (activeFilters.category) {
                 url += `&category=${encodeURIComponent(activeFilters.category)}`;
             }
@@ -415,7 +413,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     }
 });
 
-// Add event listener for search input to allow searching by pressing Enter
 document.getElementById('searchInput').addEventListener('keyup', function(event) {
     if (event.key === 'Enter') {
         performSearch();

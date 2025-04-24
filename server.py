@@ -510,6 +510,34 @@ def add_pet():
             
             if similar_pets:
                 # Get details of the newly added pet
+                
+                # Get the current user's notification preferences
+                cursor.execute(
+                    'SELECT notification_preferences, telegram_chat_id FROM users WHERE id = ?',
+                    (session['user_id'],)
+                )
+                current_user = cursor.fetchone()
+                
+                # Send notification to the current user about similar pets found
+                if current_user and current_user['telegram_chat_id']:
+                    notification_prefs = json.loads(current_user['notification_preferences'] or '{}')
+                    if notification_prefs.get('telegram_enabled', False):
+                        for similar_pet in similar_pets:
+                            try:
+                                # Get the similar pet details
+                                similar_pet_details = similar_pet_detector.get_pet_details(similar_pet['id'])
+                                
+                                if similar_pet_details and new_pet_details:
+                                    # Send notification to current user about the similar pet
+                                    asyncio.run(notify_similar_pet(
+                                        session['user_id'],
+                                        new_pet_details,
+                                        similar_pet_details,
+                                        similar_pet['similarity_score']
+                                    ))
+                                    print(f"Sent notification to current user {session['user_id']} about similar pet {similar_pet['id']}")
+                            except Exception as e:
+                                print(f"Error sending notification to current user about similar pet {similar_pet['id']}: {e}")
                 new_pet_details = similar_pet_detector.get_pet_details(pet_id)
                 
                 # Send notifications to owners of similar pets
@@ -842,6 +870,7 @@ if __name__ == '__main__':
             task_scheduler.shutdown()
         if telegram_bot_task:
             telegram_bot_task.cancel()
+
 
 
 

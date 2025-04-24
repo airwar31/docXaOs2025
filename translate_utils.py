@@ -2,11 +2,10 @@ from typing import Dict
 from config import active_config
 
 def translate_attribute(attribute_value: str, translation_dict: Dict[str, str]) -> str:
-    """Translate attribute values using the provided dictionary"""
+
     if not attribute_value:
         return translation_dict.get('UNKNOWN', 'Не указан')
         
-    # Convert to uppercase for case-insensitive matching
     upper_value = attribute_value.upper()
     
     if upper_value in translation_dict:

@@ -21,7 +21,6 @@ function createPetCard(pet) {
                     pet.municipality || 
                     'Не указано';
     
-    // Define district before using it
     let district = 'Не указан';
     if (pet.dicMunicipality) {
         if (pet.dicMunicipality.showOkrug && pet.dicMunicipality.showOkrug.name) {
@@ -113,7 +112,6 @@ function createPetCard(pet) {
                        (pet.characters?.specialSigns ? `${pet.characters.specialSigns}` : 
                        (pet.additionalInfo ? `${pet.additionalInfo}` : 'Контактная информация отсутствует'))));
     
-    // Use the translated values from the backend
     const size = pet.size || (pet.characters?.petSize || 'Не указан');
     const fur = pet.fur || (pet.characters?.hair || 'Не указана');
     const tail = pet.tail || (pet.characters?.tail || 'Не указан');

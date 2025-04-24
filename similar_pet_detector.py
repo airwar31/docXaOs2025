@@ -18,32 +18,19 @@ logger = logging.getLogger('similar_pet_detector')
 
 class SimilarPetDetector:
     def __init__(self, db_name: str, upload_folder: str, similarity_threshold: float = 0.7):
-        """
-        Initialize the SimilarPetDetector.
-        
-        Args:
-            db_name: Path to the SQLite database
-            upload_folder: Path to the folder where pet images are stored
-            similarity_threshold: Threshold for considering pets as similar (0.0 to 1.0)
-        """
+
         self.db_name = db_name
         self.upload_folder = upload_folder
         self.similarity_threshold = similarity_threshold
         self.sift = cv2.SIFT_create()
         
     def get_db(self) -> sqlite3.Connection:
-        """Get a database connection."""
         conn = sqlite3.connect(self.db_name)
         conn.row_factory = sqlite3.Row
         return conn
         
     def build_index(self) -> List[Dict[str, Any]]:
-        """
-        Build an index of all pet images in the database.
-        
-        Returns:
-            A list of dictionaries containing pet information and descriptors
-        """
+
         db = self.get_db()
         cursor = db.cursor()
         
@@ -81,19 +68,10 @@ class SimilarPetDetector:
         return pet_index
         
     def find_similar_pets(self, new_pet_id: int) -> List[Dict[str, Any]]:
-        """
-        Find pets similar to the given pet ID.
-        
-        Args:
-            new_pet_id: ID of the newly added pet
-            
-        Returns:
-            A list of dictionaries containing similar pet information and similarity scores
-        """
+
         db = self.get_db()
         cursor = db.cursor()
         
-        # Get the new pet's photos
         cursor.execute('''
             SELECT pp.photo_path
             FROM pet_photos pp
@@ -107,7 +85,6 @@ class SimilarPetDetector:
             db.close()
             return []
             
-        # Build index of existing pets (excluding the new one)
         cursor.execute('''
             SELECT p.id, p.user_id, p.type, p.breed, p.category, p.location, pp.photo_path
             FROM pets p
@@ -124,7 +101,6 @@ class SimilarPetDetector:
             
         similar_pets = []
         
-        # For each photo of the new pet
         for new_photo in new_pet_photos:
             new_img_path = os.path.join(self.upload_folder, new_photo['photo_path'])
             if not os.path.exists(new_img_path):
@@ -135,7 +111,6 @@ class SimilarPetDetector:
             if new_descriptors is None:
                 continue
                 
-            # Compare with each existing pet
             for pet in existing_pets:
                 try:
                     img_path = os.path.join(self.upload_folder, pet['photo_path'])
@@ -158,7 +133,6 @@ class SimilarPetDetector:
                     logger.error(f"Error comparing with pet {pet['id']}: {e}")
                     continue
                     
-        # Remove duplicates (keep the highest similarity score)
         unique_pets = {}
         for pet in similar_pets:
             pet_id = pet['id']
@@ -171,7 +145,6 @@ class SimilarPetDetector:
         return result
         
     def _extract_sift_descriptors(self, img_path: str) -> Optional[np.ndarray]:
-        """Extract SIFT descriptors from an image."""
         try:
             img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
             if img is None:
@@ -183,7 +156,6 @@ class SimilarPetDetector:
                 logger.warning(f"No descriptors found in image: {img_path}")
                 return None
                 
-            # Use the mean of all descriptors as a single feature vector
             avg_des = np.mean(des, axis=0)
             return avg_des
             
@@ -192,7 +164,6 @@ class SimilarPetDetector:
             return None
             
     def _calculate_similarity(self, desc1: np.ndarray, desc2: np.ndarray) -> float:
-        """Calculate cosine similarity between two descriptor vectors."""
         try:
             similarity = np.dot(desc1, desc2) / (np.linalg.norm(desc1) * np.linalg.norm(desc2))
             return float(similarity)
@@ -201,7 +172,6 @@ class SimilarPetDetector:
             return 0.0
             
     def get_pet_details(self, pet_id: int) -> Optional[Dict[str, Any]]:
-        """Get detailed information about a pet."""
         try:
             db = self.get_db()
             cursor = db.cursor()
