@@ -1,0 +1,66 @@
+2025-04-25 07:16:53,404 - petfinder - INFO - Database initialized successfully
+2025-04-25 07:16:53,405 - petfinder - INFO - Bot and dispatcher initialized successfully
+2025-04-25 07:16:53,405 - petfinder - INFO - Starting API server on port 5000...
+2025-04-25 07:16:53,406 - petfinder - INFO - Starting Telegram bot...
+2025-04-25 07:16:53,407 - aiogram.dispatcher - INFO - Start polling
+2025-04-25 07:16:53,727 - aiogram.dispatcher - INFO - Run polling for bot @docXaOs_bot id=7237195300 - 'Hantaton'
+2025-04-25 07:17:05,680 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.6:5000
+2025-04-25 07:17:05,680 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-25 07:17:13,398 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:13] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-25 07:17:13,464 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:13] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-25 07:17:13,467 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:13] "[36mGET /static/js/createPetCard.js HTTP/1.1[0m" 304 -
+2025-04-25 07:17:13,467 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:13] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-04-25 07:17:13,587 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:13] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-25 07:17:16,838 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:16] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
+2025-04-25 07:17:20,722 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:20] "POST /api/login HTTP/1.1" 200 -
+2025-04-25 07:17:20,727 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:20] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-25 07:17:20,739 - petfinder - INFO - Fetching pets from external API...
+2025-04-25 07:17:22,159 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:22] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-25 07:17:22,169 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:22] "[36mGET /static/images/noPhotoAnimals.png HTTP/1.1[0m" 304 -
+2025-04-25 07:17:41,764 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:41] "[35m[1mPOST /api/pets HTTP/1.1[0m" 201 -
+2025-04-25 07:17:43,013 - petfinder - INFO - Fetching pets from external API...
+2025-04-25 07:17:44,568 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:44] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-25 07:17:44,578 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:17:44] "GET /api/uploads/20250425071741_9c08c33444691bf50b0a0f53a181bd99.jpg HTTP/1.1" 200 -
+2025-04-25 07:25:28,533 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-04-25 07:25:28,533 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 7237195300)
+2025-04-25 07:25:39,796 - aiogram.dispatcher - INFO - Connection established (tryings = 1, bot id = 7237195300)
+2025-04-25 07:29:16,356 - petfinder - INFO - Database initialized successfully
+2025-04-25 07:29:16,356 - petfinder - INFO - Bot and dispatcher initialized successfully
+2025-04-25 07:29:16,357 - petfinder - INFO - Starting API server on port 5000...
+2025-04-25 07:29:16,358 - petfinder - INFO - Starting Telegram bot...
+2025-04-25 07:29:16,358 - aiogram.dispatcher - INFO - Start polling
+2025-04-25 07:29:16,667 - aiogram.dispatcher - INFO - Run polling for bot @docXaOs_bot id=7237195300 - 'Hantaton'
+2025-04-25 07:29:28,631 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.6:5000
+2025-04-25 07:29:28,632 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-25 07:29:31,030 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:31] "[36mGET / HTTP/1.1[0m" 304 -
+2025-04-25 07:29:31,098 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:31] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-04-25 07:29:31,099 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:31] "GET /static/js/createPetCard.js HTTP/1.1" 200 -
+2025-04-25 07:29:31,101 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:31] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-04-25 07:29:31,225 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:31] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-25 07:29:33,501 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:33] "POST /api/login HTTP/1.1" 200 -
+2025-04-25 07:29:33,508 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:33] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-25 07:29:33,516 - petfinder - INFO - Fetching pets from external API...
+2025-04-25 07:29:35,087 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:35] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-25 07:29:35,098 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:35] "[36mGET /static/images/noPhotoAnimals.png HTTP/1.1[0m" 304 -
+2025-04-25 07:29:35,103 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:35] "GET /uploads/20250425071741_9c08c33444691bf50b0a0f53a181bd99.jpg HTTP/1.1" 200 -
+2025-04-25 07:29:50,480 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:50] "POST /api/logout HTTP/1.1" 200 -
+2025-04-25 07:29:56,623 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:56] "POST /api/login HTTP/1.1" 200 -
+2025-04-25 07:29:56,628 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:56] "GET /api/check-auth HTTP/1.1" 200 -
+2025-04-25 07:29:56,638 - petfinder - INFO - Fetching pets from external API...
+2025-04-25 07:29:58,131 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:29:58] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-25 07:30:01,648 - aiogram.event - INFO - Update id=769083644 is handled. Duration 296 ms by bot id=7237195300
+2025-04-25 07:30:02,807 - aiogram.event - INFO - Update id=769083645 is handled. Duration 109 ms by bot id=7237195300
+2025-04-25 07:30:04,102 - aiogram.event - INFO - Update id=769083646 is not handled. Duration 0 ms by bot id=7237195300
+2025-04-25 07:30:13,600 - aiogram.event - INFO - Update id=769083647 is not handled. Duration 0 ms by bot id=7237195300
+2025-04-25 07:30:37,750 - aiogram.event - INFO - Update id=769083648 is not handled. Duration 0 ms by bot id=7237195300
+2025-04-25 07:30:55,084 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:30:55] "[35m[1mPOST /api/pets HTTP/1.1[0m" 201 -
+2025-04-25 07:30:56,202 - petfinder - INFO - Fetching pets from external API...
+2025-04-25 07:30:57,714 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:30:57] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
+2025-04-25 07:30:57,731 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:30:57] "GET /uploads/20250425073055_NSvuk8uEK3Q.jpg HTTP/1.1" 200 -
+2025-04-25 07:31:01,124 - aiogram.event - INFO - Update id=769083649 is not handled. Duration 0 ms by bot id=7237195300
