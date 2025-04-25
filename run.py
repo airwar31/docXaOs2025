@@ -7,22 +7,21 @@ import sqlite3
 import threading
 import hashlib
 import json
+import atexit
 from pathlib import Path
 from datetime import datetime, timedelta
+from flask import Flask, send_from_directory, request, jsonify, session, make_response
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler()
-    ]
+    handlers=[logging.StreamHandler()]
 )
 file_handler = logging.FileHandler('petfinder.log', encoding='utf-8')
 file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 logging.getLogger().addHandler(file_handler)
 logger = logging.getLogger('petfinder')
 
-import atexit
 def close_handlers():
     for handler in logging.getLogger().handlers:
         if isinstance(handler, logging.FileHandler):
@@ -35,19 +34,17 @@ sys.path.insert(0, project_root)
 try:
     from config.settings import active_config
     from backend.bots.telegram_bot import bot, dp
-    import backend.bots.telegram_bot_part2  # Import telegram_bot_part2.py to register its handlers
+    import backend.bots.telegram_bot_part2
     from backend.core.similar_pet_detector import SimilarPetDetector
     from backend.api.animal_api import AnimalAPI
     from backend.utils.translate_utils import translate_size, translate_fur, translate_gender, translate_category, translate_tail, translate_ears
-    
-    from flask import Flask, send_from_directory, request, jsonify, session, make_response
 except ImportError as e:
     logger.error(f"Failed to import required modules: {e}")
     logger.error("Please install required packages: pip install flask aiogram opencv-python")
     sys.exit(1)
 
-# Use configuration from config/settings.py
-DB_NAME = active_config.DB_NAME
+# Allow overriding the database name for testing
+DB_NAME = os.environ.get('TEST_DB_NAME', active_config.DB_NAME)
 UPLOAD_FOLDER = active_config.UPLOAD_FOLDER
 HOST = active_config.SERVER_HOST
 API_PORT = active_config.API_PORT
@@ -81,62 +78,61 @@ def validate_password(password):
 
 def init_database():
     try:
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            telegram_chat_id TEXT,
-            notification_preferences TEXT
-        )
-        ''')
-        
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS pets (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            type TEXT NOT NULL,
-            category TEXT NOT NULL,
-            breed TEXT,
-            gender TEXT,
-            size TEXT,
-            fur TEXT,
-            tail TEXT,
-            ears TEXT,
-            location TEXT,
-            chip_number TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-        ''')
-        
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS pet_photos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            pet_id INTEGER NOT NULL,
-            photo_path TEXT NOT NULL,
-            FOREIGN KEY (pet_id) REFERENCES pets (id)
-        )
-        ''')
-        
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS matches (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            pet1_id INTEGER NOT NULL,
-            pet2_id INTEGER NOT NULL,
-            similarity_score REAL NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (pet1_id) REFERENCES pets (id),
-            FOREIGN KEY (pet2_id) REFERENCES pets (id)
-        )
-        ''')
-        
-        conn.commit()
-        conn.close()
-        logger.info("Database initialized successfully")
+        with sqlite3.connect(DB_NAME) as conn:
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                telegram_chat_id TEXT,
+                notification_preferences TEXT
+            )
+            ''')
+            
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS pets (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                type TEXT NOT NULL,
+                category TEXT NOT NULL,
+                breed TEXT,
+                gender TEXT,
+                size TEXT,
+                fur TEXT,
+                tail TEXT,
+                ears TEXT,
+                location TEXT,
+                chip_number TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+            ''')
+            
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS pet_photos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                pet_id INTEGER NOT NULL,
+                photo_path TEXT NOT NULL,
+                FOREIGN KEY (pet_id) REFERENCES pets (id)
+            )
+            ''')
+            
+            cursor.execute('''
+            CREATE TABLE IF NOT EXISTS matches (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                pet1_id INTEGER NOT NULL,
+                pet2_id INTEGER NOT NULL,
+                similarity_score REAL NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (pet1_id) REFERENCES pets (id),
+                FOREIGN KEY (pet2_id) REFERENCES pets (id)
+            )
+            ''')
+            
+            conn.commit()
+            logger.info("Database initialized successfully")
     except sqlite3.Error as e:
         logger.error(f"Database initialization error: {e}")
         sys.exit(1)
@@ -160,10 +156,9 @@ def register():
             
         password_hash = hash_password(password)
         
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-        
-        try:
+        with sqlite3.connect(DB_NAME) as conn:
+            cursor = conn.cursor()
+            
             cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
             if cursor.fetchone():
                 return jsonify({"error": "Пользователь с таким email уже существует"}), 400
@@ -176,12 +171,9 @@ def register():
             
             return jsonify({"message": "Регистрация успешна"}), 201
             
-        except sqlite3.Error as e:
-            logger.error(f"Database error during registration: {e}")
-            return jsonify({"error": "Произошла ошибка при регистрации"}), 500
-        finally:
-            conn.close()
-            
+    except sqlite3.Error as e:
+        logger.error(f"Database error during registration: {e}")
+        return jsonify({"error": "Произошла ошибка при регистрации"}), 500
     except Exception as e:
         logger.error(f"Error during registration: {e}")
         return jsonify({"error": "Произошла ошибка при регистрации"}), 500
@@ -196,14 +188,12 @@ def login():
             
         email = data['email']
         password = data['password']
-        
         password_hash = hash_password(password)
         
-        conn = sqlite3.connect(DB_NAME)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        try:
+        with sqlite3.connect(DB_NAME) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
             cursor.execute(
                 "SELECT id, email FROM users WHERE email = ? AND password_hash = ?",
                 (email, password_hash)
@@ -223,12 +213,9 @@ def login():
                 "email": user['email']
             }), 200
             
-        except sqlite3.Error as e:
-            logger.error(f"Database error during login: {e}")
-            return jsonify({"error": "Произошла ошибка при входе в систему"}), 500
-        finally:
-            conn.close()
-            
+    except sqlite3.Error as e:
+        logger.error(f"Database error during login: {e}")
+        return jsonify({"error": "Произошла ошибка при входе в систему"}), 500
     except Exception as e:
         logger.error(f"Error during login: {e}")
         return jsonify({"error": "Произошла ошибка при входе в систему"}), 500
@@ -265,12 +252,11 @@ def notification_preferences():
             
         user_id = session['user_id']
         
-        conn = sqlite3.connect(DB_NAME)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        if request.method == 'GET':
-            try:
+        with sqlite3.connect(DB_NAME) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
+            if request.method == 'GET':
                 cursor.execute(
                     "SELECT notification_preferences FROM users WHERE id = ?",
                     (user_id,)
@@ -287,14 +273,7 @@ def notification_preferences():
                 preferences = json.loads(user['notification_preferences'])
                 return jsonify(preferences), 200
                 
-            except sqlite3.Error as e:
-                logger.error(f"Database error getting notification preferences: {e}")
-                return jsonify({"error": "Произошла ошибка при получении настроек уведомлений"}), 500
-            finally:
-                conn.close()
-                
-        elif request.method == 'PUT':
-            try:
+            elif request.method == 'PUT':
                 data = request.get_json()
                 
                 if not data:
@@ -310,16 +289,12 @@ def notification_preferences():
                 
                 return jsonify({"message": "Настройки уведомлений обновлены"}), 200
                 
-            except sqlite3.Error as e:
-                logger.error(f"Database error updating notification preferences: {e}")
-                return jsonify({"error": "Произошла ошибка при обновлении настроек уведомлений"}), 500
-            finally:
-                conn.close()
-                
+    except sqlite3.Error as e:
+        logger.error(f"Database error with notification preferences: {e}")
+        return jsonify({"error": "Произошла ошибка при работе с настройками уведомлений"}), 500
     except Exception as e:
         logger.error(f"Error with notification preferences: {e}")
         return jsonify({"error": "Произошла ошибка при работе с настройками уведомлений"}), 500
-
 @app.route('/api/pets', methods=['GET', 'POST'])
 def pets():
     if request.method == 'GET':
@@ -333,54 +308,99 @@ def pets():
             size_filter = request.args.get('size_filter', '')
             fur_filter = request.args.get('fur', '')
             
-            conn = sqlite3.connect(DB_NAME)
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-            SELECT p.*, u.email as user_email, GROUP_CONCAT(pp.photo_path) as photos
-            FROM pets p
-            JOIN users u ON p.user_id = u.id
-            LEFT JOIN pet_photos pp ON p.id = pp.pet_id
-            GROUP BY p.id
-            ''')
-            
-            pets = [dict(row) for row in cursor.fetchall()]
-            for pet in pets:
-                if pet['photos']:
-                    pet['photos'] = pet['photos'].split(',')
-                    # Set photo_url to the first photo's path for use in the frontend
-                    pet['photo_url'] = f"/uploads/{pet['photos'][0]}"
-                else:
-                    pet['photos'] = []
-                    # Set a default photo URL instead of None
-                    pet['photo_url'] = "/static/images/noPhotoAnimals.png"
+            with sqlite3.connect(DB_NAME) as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
                 
-                if pet['size']:
-                    pet['size_original'] = pet['size']
-                    pet['size'] = translate_size(pet['size'])
+                # Build the SQL query with filters
+                query = '''
+                SELECT p.*, u.email as user_email, GROUP_CONCAT(pp.photo_path) as photos
+                FROM pets p
+                JOIN users u ON p.user_id = u.id
+                LEFT JOIN pet_photos pp ON p.id = pp.pet_id
+                '''
                 
-                if pet['fur']:
-                    pet['fur_original'] = pet['fur']
-                    pet['fur'] = translate_fur(pet['fur'])
+                # Add WHERE clause if filters are applied
+                where_clauses = []
+                query_params = []
                 
-                if pet['gender']:
-                    pet['gender_original'] = pet['gender']
-                    pet['gender'] = translate_gender(pet['gender'])
+                # Filter by animal type if specified
+                if animal_type != 'all':
+                    where_clauses.append("p.type = ?")
+                    query_params.append(animal_type)
                 
-                if pet['type']:
-                    pet['type_original'] = pet['type']
-                    pet['type'] = translate_category(pet['type'])
+                # Filter by category if specified
+                if category_filter:
+                    where_clauses.append("LOWER(p.type) = LOWER(?)")
+                    query_params.append(category_filter)
                 
-                if pet['tail']:
-                    pet['tail_original'] = pet['tail']
-                    pet['tail'] = translate_tail(pet['tail'])
+                # Filter by gender if specified
+                if gender_filter:
+                    where_clauses.append("LOWER(p.gender) = LOWER(?)")
+                    query_params.append(gender_filter)
                 
-                if pet['ears']:
-                    pet['ears_original'] = pet['ears']
-                    pet['ears'] = translate_ears(pet['ears'])
+                # Filter by size if specified
+                if size_filter:
+                    where_clauses.append("LOWER(p.size) = LOWER(?)")
+                    query_params.append(size_filter)
+                
+                # Filter by fur if specified
+                if fur_filter:
+                    where_clauses.append("LOWER(p.fur) = LOWER(?)")
+                    query_params.append(fur_filter)
+                
+                # Add the WHERE clause to the query if there are any conditions
+                if where_clauses:
+                    query += " WHERE " + " AND ".join(where_clauses)
+                
+                # Add GROUP BY clause
+                query += " GROUP BY p.id"
+                
+                # Execute the query with parameters
+                cursor.execute(query, query_params)
+                
+                pets = [dict(row) for row in cursor.fetchall()]
+                
+                # Apply text search filter if specified
+                if search:
+                    filtered_pets = []
+                    for pet in pets:
+                        if any(search.lower() in str(value).lower() for value in pet.values() if isinstance(value, (str, int, float))):
+                            filtered_pets.append(pet)
+                    pets = filtered_pets
+                
+                # Process pet data
+                for pet in pets:
+                    if pet['photos']:
+                        pet['photos'] = pet['photos'].split(',')
+                        pet['photo_url'] = f"/uploads/{pet['photos'][0]}"
+                    else:
+                        pet['photos'] = []
+                        pet['photo_url'] = "/static/images/noPhotoAnimals.png"
                     
-            conn.close()
+                    if pet['size']:
+                        pet['size_original'] = pet['size']
+                        pet['size'] = translate_size(pet['size'])
+                    
+                    if pet['fur']:
+                        pet['fur_original'] = pet['fur']
+                        pet['fur'] = translate_fur(pet['fur'])
+                    
+                    if pet['gender']:
+                        pet['gender_original'] = pet['gender']
+                        pet['gender'] = translate_gender(pet['gender'])
+                    
+                    if pet['type']:
+                        pet['type_original'] = pet['type']
+                        pet['type'] = translate_category(pet['type'])
+                    
+                    if pet['tail']:
+                        pet['tail_original'] = pet['tail']
+                        pet['tail'] = translate_tail(pet['tail'])
+                    
+                    if pet['ears']:
+                        pet['ears_original'] = pet['ears']
+                        pet['ears'] = translate_ears(pet['ears'])
             
             api_animals = []
             try:
@@ -388,70 +408,64 @@ def pets():
                 api_animals = AnimalAPI.get_all_animals(animal_type=animal_type, size=size, page=page)
                 
                 if api_animals:
-                    processed_animals = []
-                    for animal in api_animals:
-                        animal_info = AnimalAPI.extract_animal_info(animal)
-                        processed_animals.append(animal_info)
+                    processed_animals = [AnimalAPI.extract_animal_info(animal) for animal in api_animals]
                     
                     filtered_animals = []
                     for animal in processed_animals:
-                        # Apply search filter
                         if search and not any(search.lower() in str(value).lower() for value in animal.values() if isinstance(value, (str, int, float))):
                             continue
                         
-                        # Apply category filter
                         if category_filter and animal.get('type_original', '').lower() != category_filter.lower():
                             continue
                         
-                        # Apply gender filter
                         if gender_filter and animal.get('gender_original', '').lower() != gender_filter.lower():
                             continue
                         
-                        # Apply size filter
                         if size_filter and animal.get('size_original', '').lower() != size_filter.lower():
                             continue
                         
-                        # Apply fur filter
                         if fur_filter and animal.get('fur_original', '').lower() != fur_filter.lower():
                             continue
                         
                         filtered_animals.append(animal)
                     
-                    # Combine database pets and API pets
                     combined_pets = pets + filtered_animals
                     
-                    # Apply pagination to combined results
                     start_idx = page * size
                     end_idx = start_idx + size
                     
-                    # Make sure we have enough data for the requested page
                     if start_idx < len(combined_pets):
                         paginated_pets = combined_pets[start_idx:end_idx]
                         return jsonify(paginated_pets)
                     else:
-                        # If the requested page is beyond our data, return an empty list
-                        # This should not happen with our updated AnimalAPI.get_all_animals method
                         logger.warning(f"Requested page {page} is beyond available data (total items: {len(combined_pets)})")
                         return jsonify([])
                 
             except Exception as api_error:
                 logger.error(f"Error fetching animals from external API: {api_error}")
             
-            # If API fetch failed or returned no results, return just the database pets
-            return jsonify(pets)
+            # Apply pagination to local pets if API fetch failed
+            start_idx = page * size
+            end_idx = start_idx + size
+            
+            if start_idx < len(pets):
+                paginated_pets = pets[start_idx:end_idx]
+                return jsonify(paginated_pets)
+            else:
+                logger.warning(f"Requested page {page} is beyond available data (total items: {len(pets)})")
+                return jsonify([])
+                
         except Exception as e:
             logger.error(f"Error getting pets: {e}")
             return jsonify({"error": str(e)}), 500
     
     elif request.method == 'POST':
         try:
-            # Check if the user is authenticated
             if 'user_id' not in session:
                 return jsonify({"error": "Требуется аутентификация"}), 401
                 
             user_id = session['user_id']
             
-            # Get form data
             type = request.form.get('type')
             category = request.form.get('category')
             breed = request.form.get('breed')
@@ -463,16 +477,12 @@ def pets():
             location = request.form.get('location')
             chip_number = request.form.get('chip_number')
             
-            # Validate required fields
             if not type or not category:
                 return jsonify({"error": "Тип и категория животного обязательны"}), 400
                 
-            # Connect to the database
-            conn = sqlite3.connect(DB_NAME)
-            cursor = conn.cursor()
-            
-            try:
-                # Insert the new pet
+            with sqlite3.connect(DB_NAME) as conn:
+                cursor = conn.cursor()
+                
                 cursor.execute('''
                 INSERT INTO pets (user_id, type, category, breed, gender, size, fur, tail, ears, location, chip_number)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -480,20 +490,16 @@ def pets():
                 
                 pet_id = cursor.lastrowid
                 
-                # Handle photo uploads
                 if 'photos' in request.files:
                     photos = request.files.getlist('photos')
                     
                     for photo in photos:
                         if photo and photo.filename:
-                            # Generate a unique filename
                             filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{photo.filename}"
                             photo_path = os.path.join(project_root, UPLOAD_FOLDER, filename)
                             
-                            # Save the photo
                             photo.save(photo_path)
                             
-                            # Save the photo path in the database
                             cursor.execute('''
                             INSERT INTO pet_photos (pet_id, photo_path)
                             VALUES (?, ?)
@@ -506,20 +512,15 @@ def pets():
                     "pet_id": pet_id
                 }), 201
                 
-            except sqlite3.Error as e:
-                conn.rollback()
-                logger.error(f"Database error adding pet: {e}")
-                return jsonify({"error": "Произошла ошибка при добавлении питомца"}), 500
-            finally:
-                conn.close()
-                
+        except sqlite3.Error as e:
+            logger.error(f"Database error adding pet: {e}")
+            return jsonify({"error": "Произошла ошибка при добавлении питомца"}), 500
         except Exception as e:
             logger.error(f"Error adding pet: {e}")
             return jsonify({"error": "Произошла ошибка при добавлении питомца"}), 500
 
 @app.route('/api/pets/<int:pet_id>', methods=['GET'])
 def get_pet(pet_id):
-    """API endpoint to get a specific pet."""
     try:
         detector = SimilarPetDetector(DB_NAME, UPLOAD_FOLDER)
         pet = detector.get_pet_details(pet_id)
@@ -558,41 +559,28 @@ def get_pet(pet_id):
 
 @app.route('/api/pets/<int:pet_id>', methods=['DELETE'])
 def delete_pet(pet_id):
-    """API endpoint to delete a specific pet."""
     try:
-        # Check if the user is authenticated
         if 'user_id' not in session:
             return jsonify({"error": "Требуется аутентификация"}), 401
             
         user_id = session['user_id']
         
-        # Connect to the database
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-        
-        try:
-            # Check if the pet exists and belongs to the current user
-            cursor.execute('''
-            SELECT id FROM pets WHERE id = ? AND user_id = ?
-            ''', (pet_id, user_id))
+        with sqlite3.connect(DB_NAME) as conn:
+            cursor = conn.cursor()
             
+            cursor.execute('SELECT id FROM pets WHERE id = ? AND user_id = ?', (pet_id, user_id))
             pet = cursor.fetchone()
             
             if not pet:
-                # Check if the pet exists at all
                 cursor.execute('SELECT id FROM pets WHERE id = ?', (pet_id,))
                 if cursor.fetchone():
-                    # Pet exists but doesn't belong to the current user
                     return jsonify({"error": "У вас нет прав на удаление этого питомца"}), 403
                 else:
-                    # Pet doesn't exist
                     return jsonify({"error": "Питомец не найден"}), 404
             
-            # Get the photo paths before deleting them from the database
             cursor.execute('SELECT photo_path FROM pet_photos WHERE pet_id = ?', (pet_id,))
             photos = cursor.fetchall()
             
-            # Delete the photos from the file system
             for photo in photos:
                 photo_path = os.path.join(UPLOAD_FOLDER, photo[0])
                 try:
@@ -601,27 +589,17 @@ def delete_pet(pet_id):
                 except Exception as e:
                     logger.error(f"Error deleting photo file {photo_path}: {e}")
             
-            # Delete the photo records from the database
             cursor.execute('DELETE FROM pet_photos WHERE pet_id = ?', (pet_id,))
-            
-            # Delete any matches involving this pet
             cursor.execute('DELETE FROM matches WHERE pet1_id = ? OR pet2_id = ?', (pet_id, pet_id))
-            
-            # Delete the pet
             cursor.execute('DELETE FROM pets WHERE id = ?', (pet_id,))
             
-            # Commit the transaction
             conn.commit()
             
             return jsonify({"message": "Питомец успешно удален"}), 200
             
-        except sqlite3.Error as e:
-            conn.rollback()
-            logger.error(f"Database error deleting pet {pet_id}: {e}")
-            return jsonify({"error": "Произошла ошибка при удалении питомца"}), 500
-        finally:
-            conn.close()
-            
+    except sqlite3.Error as e:
+        logger.error(f"Database error deleting pet {pet_id}: {e}")
+        return jsonify({"error": "Произошла ошибка при удалении питомца"}), 500
     except Exception as e:
         logger.error(f"Error deleting pet {pet_id}: {e}")
         return jsonify({"error": "Произошла ошибка при удалении питомца"}), 500
@@ -666,7 +644,6 @@ def find_similar(pet_id):
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_frontend(path):
-    """Serve frontend files."""
     if path == "" or path == "index.html":
         return send_from_directory('frontend', 'index.html')
     
@@ -691,9 +668,7 @@ async def start_bot():
 def run_bot():
     asyncio.run(start_bot())
 
-# Main function
 def main():
-    """Main entry point for the application."""
     global app
     
     parser = argparse.ArgumentParser(description='Pet Finder Application')
@@ -701,22 +676,29 @@ def main():
     parser.add_argument('--no-bot', action='store_true', help='Disable Telegram bot')
     args = parser.parse_args()
     
-    # Initialize database
     init_database()
     
-    # Start Telegram bot in a separate thread if enabled
     if not args.no_bot:
         bot_thread = threading.Thread(target=run_bot)
         bot_thread.daemon = True
         bot_thread.start()
         logger.info("Bot and dispatcher initialized successfully")
     
-    # Start the Flask app
     logger.info(f"Starting API server on port {args.api_port}...")
     app.run(host=HOST, port=args.api_port, debug=False)
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+
+
+
+
+
 
 
 
