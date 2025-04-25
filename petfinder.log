@@ -64,3 +64,123 @@
 2025-04-25 07:30:57,714 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:30:57] "GET /api/pets?type=lost&page=0&size=8 HTTP/1.1" 200 -
 2025-04-25 07:30:57,731 - werkzeug - INFO - 127.0.0.1 - - [25/Apr/2025 07:30:57] "GET /uploads/20250425073055_NSvuk8uEK3Q.jpg HTTP/1.1" 200 -
 2025-04-25 07:31:01,124 - aiogram.event - INFO - Update id=769083649 is not handled. Duration 0 ms by bot id=7237195300
+2025-04-25 07:44:09,497 - petfinder - INFO - Database initialized successfully
+2025-04-25 07:44:09,499 - petfinder - INFO - Bot and dispatcher initialized successfully
+2025-04-25 07:44:09,499 - petfinder - INFO - Starting API server on port 5000...
+2025-04-25 07:44:09,499 - petfinder - INFO - Starting Telegram bot...
+2025-04-25 07:44:09,500 - aiogram.dispatcher - INFO - Start polling
+2025-04-25 07:44:09,800 - aiogram.dispatcher - INFO - Run polling for bot @docXaOs_bot id=7237195300 - 'Hantaton'
+2025-04-25 07:44:17,272 - aiogram.event - INFO - Update id=769083650 is handled. Duration 296 ms by bot id=7237195300
+2025-04-25 07:44:18,789 - aiogram.event - INFO - Update id=769083651 is handled. Duration 202 ms by bot id=7237195300
+2025-04-25 07:44:21,774 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.6:5000
+2025-04-25 07:44:21,774 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-25 07:44:54,302 - aiogram.event - INFO - Update id=769083652 is not handled. Duration 16 ms by bot id=7237195300
+2025-04-25 07:44:57,471 - aiogram.event - INFO - Update id=769083653 is handled. Duration 108 ms by bot id=7237195300
+2025-04-25 07:44:58,558 - aiogram.event - INFO - Update id=769083654 is handled. Duration 109 ms by bot id=7237195300
+2025-04-25 07:44:59,985 - aiogram.event - INFO - Update id=769083655 is not handled. Duration 0 ms by bot id=7237195300
+2025-04-25 07:44:59,985 - aiogram.event - ERROR - Cause exception while process update id=769083655 by bot id=7237195300
+NameError: name 'sqlite3' is not defined
+Traceback (most recent call last):
+  File "c:\Users\danil\Desktop\docXaOs2025\docXaOs2025\backend\bots\telegram_bot_part2.py", line 88, in cmd_my_pets
+    f"Особые приметы: {pet_dict['special_marks']}"
+KeyError: 'special_marks'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "c:\Users\danil\Desktop\docXaOs2025\docXaOs2025\backend\bots\telegram_bot_part2.py", line 94, in cmd_my_pets
+    except sqlite3.Error as e:
+NameError: name 'sqlite3' is not defined
+2025-04-25 07:49:30,134 - petfinder - INFO - Database initialized successfully
+2025-04-25 07:49:30,134 - petfinder - INFO - Bot and dispatcher initialized successfully
+2025-04-25 07:49:30,134 - petfinder - INFO - Starting API server on port 5000...
+2025-04-25 07:49:30,135 - petfinder - INFO - Starting Telegram bot...
+2025-04-25 07:49:30,135 - aiogram.dispatcher - INFO - Start polling
+2025-04-25 07:49:30,438 - aiogram.dispatcher - INFO - Run polling for bot @docXaOs_bot id=7237195300 - 'Hantaton'
+2025-04-25 07:49:42,407 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.6:5000
+2025-04-25 07:49:42,408 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-25 07:49:45,878 - aiogram.event - INFO - Update id=769083656 is handled. Duration 297 ms by bot id=7237195300
+2025-04-25 07:49:47,139 - aiogram.event - INFO - Update id=769083657 is handled. Duration 125 ms by bot id=7237195300
+2025-04-25 07:49:48,299 - aiogram.event - INFO - Update id=769083658 is not handled. Duration 0 ms by bot id=7237195300
+2025-04-25 07:49:48,299 - aiogram.event - ERROR - Cause exception while process update id=769083658 by bot id=7237195300
+KeyError: 'special_marks'
+Traceback (most recent call last):
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 56, in __call__
+    return await handler(event, data)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\router.py", line 146, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\router.py", line 141, in _wrapped
+    return await self._propagate_event(
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\router.py", line 166, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "C:\Users\danil\Desktop\docXaOs2025\docXaOs2025\venv\lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+  File "c:\Users\danil\Desktop\docXaOs2025\docXaOs2025\backend\bots\telegram_bot_part2.py", line 90, in cmd_my_pets
+    f"Особые приметы: {pet_dict['special_marks']}"
+KeyError: 'special_marks'
+2025-04-25 08:00:16,797 - petfinder - INFO - Database initialized successfully
+2025-04-25 08:00:16,797 - petfinder - INFO - Bot and dispatcher initialized successfully
+2025-04-25 08:00:16,797 - petfinder - INFO - Starting API server on port 5000...
+2025-04-25 08:00:16,799 - petfinder - INFO - Starting Telegram bot...
+2025-04-25 08:00:16,799 - aiogram.dispatcher - INFO - Start polling
+2025-04-25 08:00:17,110 - aiogram.dispatcher - INFO - Run polling for bot @docXaOs_bot id=7237195300 - 'Hantaton'
+2025-04-25 08:00:20,470 - aiogram.event - INFO - Update id=769083659 is handled. Duration 265 ms by bot id=7237195300
+2025-04-25 08:00:28,068 - aiogram.event - INFO - Update id=769083660 is handled. Duration 218 ms by bot id=7237195300
+2025-04-25 08:00:29,074 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.6:5000
+2025-04-25 08:00:29,075 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-04-25 08:00:29,141 - aiogram.event - INFO - Update id=769083661 is handled. Duration 202 ms by bot id=7237195300
+2025-04-25 08:00:31,724 - similar_pet_detector - INFO - Found similar pet: 1 with similarity 0.93
+2025-04-25 08:00:31,943 - aiogram.event - INFO - Update id=769083662 is handled. Duration 672 ms by bot id=7237195300
+2025-04-25 08:00:43,886 - similar_pet_detector - INFO - Found similar pet: 2 with similarity 0.93
+2025-04-25 08:00:44,126 - aiogram.event - INFO - Update id=769083663 is handled. Duration 625 ms by bot id=7237195300

@@ -154,3 +154,4 @@ async def cmd_status(message: types.Message):
     finally:
         db.close()
 
+

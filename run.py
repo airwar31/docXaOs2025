@@ -35,6 +35,7 @@ sys.path.insert(0, project_root)
 try:
     from config.settings import active_config
     from backend.bots.telegram_bot import bot, dp
+    import backend.bots.telegram_bot_part2  # Import telegram_bot_part2.py to register its handlers
     from backend.core.similar_pet_detector import SimilarPetDetector
     from backend.api.animal_api import AnimalAPI
     from backend.utils.translate_utils import translate_size, translate_fur, translate_gender, translate_category, translate_tail, translate_ears
@@ -716,6 +717,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

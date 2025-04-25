@@ -1,3 +1,10 @@
+# Import necessary components from telegram_bot.py
+from backend.bots.telegram_bot import dp, bot, get_db, Command, F, types, InlineKeyboardBuilder, SimilarPetDetector, DB_NAME, UPLOAD_FOLDER
+from backend.bots.telegram_bot import translate_size, translate_fur, translate_gender, translate_category, translate_tail, translate_ears
+import json
+import sqlite3
+import asyncio
+
 @dp.message(Command("my_pets"))
 async def cmd_my_pets(message: types.Message):
     """Show the user's pets with buttons to find similar pets"""
@@ -80,7 +87,7 @@ async def cmd_my_pets(message: types.Message):
                 f"Размер: {pet_dict['size']}\n"
                 f"Шерсть: {pet_dict['fur']}\n"
                 f"Место: {pet_dict['location']}\n"
-                f"Особые приметы: {pet_dict['special_marks']}"
+                f"Особые приметы: {pet_dict.get('special_marks', 'Не указаны')}"
             )
             
             # Send the message with the button
@@ -169,7 +176,7 @@ async def process_find_similar(callback_query: types.CallbackQuery):
                 f"Размер: {pet_details['size']}\n"
                 f"Шерсть: {pet_details['fur']}\n"
                 f"Место: {pet_details['location']}\n"
-                f"Особые приметы: {pet_details['special_marks']}\n"
+                f"Особые приметы: {pet_details.get('special_marks', 'Не указаны')}\n"
                 f"Контакт: {pet_details['user_email']}"
             )
             
@@ -325,4 +332,8 @@ if __name__ == "__main__":
         print("Bot stopped by user")
     except Exception as e:
         print(f"Unexpected error: {e}")
+
+
+
+
 
