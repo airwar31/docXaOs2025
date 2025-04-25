@@ -1,1 +1,0 @@
-# Image processing package initialization

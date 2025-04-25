@@ -1,4 +1,3 @@
-# Import necessary components from telegram_bot.py
 from backend.bots.telegram_bot import dp, bot, get_db, Command, F, types, InlineKeyboardBuilder, SimilarPetDetector, DB_NAME, UPLOAD_FOLDER
 from backend.bots.telegram_bot import translate_size, translate_fur, translate_gender, translate_category, translate_tail, translate_ears
 import json
@@ -12,7 +11,6 @@ async def cmd_my_pets(message: types.Message):
         db = get_db()
         cursor = db.cursor()
         
-        # First, get the user ID from the telegram_chat_id
         cursor.execute(
             'SELECT id FROM users WHERE telegram_chat_id = ?',
             (str(message.chat.id),)
@@ -48,11 +46,9 @@ async def cmd_my_pets(message: types.Message):
             db.close()
             return
             
-        # Send a message for each pet with a button to find similar pets
         for pet in pets:
             pet_dict = dict(pet)
             
-            # Apply translations to pet attributes
             if pet_dict['size']:
                 pet_dict['size'] = translate_size(pet_dict['size'])
             
@@ -68,18 +64,15 @@ async def cmd_my_pets(message: types.Message):
             if pet_dict['ears']:
                 pet_dict['ears'] = translate_ears(pet_dict['ears'])
             
-            # Create a keyboard with a button to find similar pets
             builder = InlineKeyboardBuilder()
             builder.button(
                 text="Найти похожих животных", 
                 callback_data=f"find_similar:{pet_dict['id']}"
             )
             
-            # Format pet type and category
             pet_type = "Пропавший" if pet_dict['type'] == 'lost' else "Найденный"
             pet_category = translate_category(pet_dict['category']) if pet_dict['category'] else "Неизвестно"
             
-            # Create the message text
             message_text = (
                 f"<b>{pet_type} {pet_category}</b>\n"
                 f"Порода: {pet_dict['breed']}\n"
@@ -90,7 +83,6 @@ async def cmd_my_pets(message: types.Message):
                 f"Особые приметы: {pet_dict.get('special_marks', 'Не указаны')}"
             )
             
-            # Send the message with the button
             await message.answer(message_text, reply_markup=builder.as_markup())
             
     except sqlite3.Error as e:
@@ -101,21 +93,15 @@ async def cmd_my_pets(message: types.Message):
 
 @dp.callback_query(F.data.startswith("find_similar:"))
 async def process_find_similar(callback_query: types.CallbackQuery):
-    """Handle the button click to find similar pets"""
     try:
-        # Extract the pet ID from the callback data
         pet_id = int(callback_query.data.split(":")[1])
         
-        # Answer the callback query to stop the loading animation
         await callback_query.answer()
         
-        # Send a message that we're searching
         await callback_query.message.answer("Ищем похожих животных...")
         
-        # Initialize the SimilarPetDetector
         similar_pet_detector = SimilarPetDetector(DB_NAME, UPLOAD_FOLDER)
         
-        # Find similar pets
         similar_pets = similar_pet_detector.find_similar_pets(pet_id)
         
         if not similar_pets:
@@ -124,7 +110,6 @@ async def process_find_similar(callback_query: types.CallbackQuery):
             )
             return
             
-        # Get the original pet details
         original_pet = similar_pet_detector.get_pet_details(pet_id)
         
         if not original_pet:
@@ -133,19 +118,16 @@ async def process_find_similar(callback_query: types.CallbackQuery):
             )
             return
             
-        # Send a message with information about each similar pet
         await callback_query.message.answer(
             f"Найдено {len(similar_pets)} похожих животных:"
         )
         
         for similar_pet in similar_pets:
-            # Get detailed information about the similar pet
-            pet_details = similar_pet_detector.get_pet_details(similar_pet['id'])
+            pet_details = similar_pet
             
             if not pet_details:
                 continue
                 
-            # Apply translations to pet attributes
             if pet_details['size']:
                 pet_details['size'] = translate_size(pet_details['size'])
             
@@ -161,23 +143,32 @@ async def process_find_similar(callback_query: types.CallbackQuery):
             if pet_details['ears']:
                 pet_details['ears'] = translate_ears(pet_details['ears'])
                 
-            # Format pet type and category
             pet_type = "Пропавший" if pet_details['type'] == 'lost' else "Найденный"
             pet_category = translate_category(pet_details['category']) if pet_details['category'] else "Неизвестно"
             
-            # Calculate similarity percentage
-            similarity_percent = int(similar_pet['similarity_score'] * 100)
+            combined_percent = int(similar_pet['similarity_score'] * 100)
             
-            # Create the message text
+            text_similarity = similar_pet.get('text_similarity', None)
+            image_similarity = similar_pet.get('image_similarity', None)
+            
+            source = "внешнего API" if similar_pet.get('from_api', False) else "базы данных"
+            
+            similarity_text = f"Общее сходство: {combined_percent}%"
+            if text_similarity is not None and image_similarity is not None:
+                text_percent = int(text_similarity * 100)
+                image_percent = int(image_similarity * 100)
+                similarity_text += f"\nСходство по описанию: {text_percent}%\nСходство по фото: {image_percent}%"
+            
             message_text = (
-                f"<b>{pet_type} {pet_category}</b> (Сходство: {similarity_percent}%)\n"
+                f"<b>{pet_type} {pet_category}</b> (из {source})\n"
                 f"Порода: {pet_details['breed']}\n"
                 f"Пол: {pet_details['gender']}\n"
                 f"Размер: {pet_details['size']}\n"
                 f"Шерсть: {pet_details['fur']}\n"
                 f"Место: {pet_details['location']}\n"
                 f"Особые приметы: {pet_details.get('special_marks', 'Не указаны')}\n"
-                f"Контакт: {pet_details['user_email']}"
+                f"Контакт: {pet_details['user_email']}\n\n"
+                f"<b>{similarity_text}</b>"
             )
             
             await callback_query.message.answer(message_text)
@@ -208,12 +199,26 @@ async def notify_match(user_id: int, match_data: dict):
         user = cursor.fetchone()
         
         if user and user['telegram_chat_id']:
+            text_similarity = match_data.get('text_similarity', None)
+            image_similarity = match_data.get('image_similarity', None)
+            
+            combined_percent = int(match_data.get('similarity_score', 0) * 100)
+            
+            source = "внешнего API" if match_data.get('from_api', False) else "базы данных"
+            
+            similarity_details = f"Общее сходство: {combined_percent}%"
+            if text_similarity is not None and image_similarity is not None:
+                text_percent = int(text_similarity * 100)
+                image_percent = int(image_similarity * 100)
+                similarity_details += f"\nСходство по описанию: {text_percent}%\nСходство по фото: {image_percent}%"
+            
             message = (
                 "🔍 Найдено возможное совпадение!\n\n"
                 f"Порода: {match_data.get('breed', 'Не указана')}\n"
                 f"Категория: {match_data.get('category', 'Не указана')}\n"
                 f"Место: {match_data.get('location', 'Не указано')}\n"
-                f"Сходство: {int(match_data.get('similarity_score', 0) * 100)}%\n\n"
+                f"Источник: {source}\n"
+                f"{similarity_details}\n\n"
                 "Для просмотра деталей перейдите на сайт."
             )
             
@@ -279,6 +284,19 @@ async def notify_similar_pet(user_id: int, original_pet: dict, new_pet: dict, si
             original_type = "Пропавший" if original_pet.get('type') == 'lost' else "Найденный"
             new_type = "Пропавший" if new_pet.get('type') == 'lost' else "Найденный"
             
+            text_similarity = new_pet.get('text_similarity', 0.0)
+            image_similarity = new_pet.get('image_similarity', 0.0)
+            
+            combined_percent = int(similarity_score * 100)
+            text_percent = int(text_similarity * 100) if text_similarity else None
+            image_percent = int(image_similarity * 100) if image_similarity else None
+            
+            similarity_details = f"Общее сходство: {combined_percent}%"
+            if text_percent is not None and image_percent is not None:
+                similarity_details += f"\nСходство по описанию: {text_percent}%\nСходство по фото: {image_percent}%"
+            
+            source = "внешнего API" if new_pet.get('from_api', False) else "базы данных"
+            
             message = (
                 "🔍 Найден похожий питомец!\n\n"
                 f"На сайте появился питомец, похожий на вашего {original_pet.get('category', 'питомца')}.\n\n"
@@ -286,12 +304,12 @@ async def notify_similar_pet(user_id: int, original_pet: dict, new_pet: dict, si
                 f"Порода: {original_pet.get('breed', 'Не указана')}\n"
                 f"Категория: {original_pet.get('category', 'Не указана')}\n"
                 f"Место: {original_pet.get('location', 'Не указано')}\n\n"
-                f"Похожий питомец ({new_type}):\n"
+                f"Похожий питомец ({new_type}) из {source}:\n"
                 f"Порода: {new_pet.get('breed', 'Не указана')}\n"
                 f"Категория: {new_pet.get('category', 'Не указана')}\n"
                 f"Место: {new_pet.get('location', 'Не указано')}\n"
                 f"Контакт: {new_pet.get('user_email', 'Не указан')}\n\n"
-                f"Сходство: {int(similarity_score * 100)}%\n\n"
+                f"{similarity_details}\n\n"
                 "Для просмотра деталей перейдите на сайт."
             )
             
@@ -332,6 +350,12 @@ if __name__ == "__main__":
         print("Bot stopped by user")
     except Exception as e:
         print(f"Unexpected error: {e}")
+
+
+
+
+
+
 
 
 

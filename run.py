@@ -1,32 +1,14 @@
 import os
 import sys
 import argparse
-import logging
 import asyncio
 import sqlite3
 import threading
 import hashlib
 import json
-import atexit
 from pathlib import Path
 from datetime import datetime, timedelta
 from flask import Flask, send_from_directory, request, jsonify, session, make_response
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler()]
-)
-file_handler = logging.FileHandler('petfinder.log', encoding='utf-8')
-file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-logging.getLogger().addHandler(file_handler)
-logger = logging.getLogger('petfinder')
-
-def close_handlers():
-    for handler in logging.getLogger().handlers:
-        if isinstance(handler, logging.FileHandler):
-            handler.close()
-atexit.register(close_handlers)
 
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
@@ -39,11 +21,11 @@ try:
     from backend.api.animal_api import AnimalAPI
     from backend.utils.translate_utils import translate_size, translate_fur, translate_gender, translate_category, translate_tail, translate_ears
 except ImportError as e:
-    logger.error(f"Failed to import required modules: {e}")
-    logger.error("Please install required packages: pip install flask aiogram opencv-python")
+    print(f"Failed to import required modules: {e}")
+    print("Please install required packages: pip install flask aiogram opencv-python")
     sys.exit(1)
 
-# Allow overriding the database name for testing
+
 DB_NAME = os.environ.get('TEST_DB_NAME', active_config.DB_NAME)
 UPLOAD_FOLDER = active_config.UPLOAD_FOLDER
 HOST = active_config.SERVER_HOST
@@ -139,9 +121,9 @@ def init_database():
             ''')
             
             conn.commit()
-            logger.info("Database initialized successfully")
+            print("Database initialized successfully")
     except sqlite3.Error as e:
-        logger.error(f"Database initialization error: {e}")
+        print(f"Database initialization error: {e}")
         sys.exit(1)
 
 @app.route('/api/register', methods=['POST'])
@@ -179,10 +161,10 @@ def register():
             return jsonify({"message": "Регистрация успешна"}), 201
             
     except sqlite3.Error as e:
-        logger.error(f"Database error during registration: {e}")
+        print(f"Database error during registration: {e}")
         return jsonify({"error": "Произошла ошибка при регистрации"}), 500
     except Exception as e:
-        logger.error(f"Error during registration: {e}")
+        print(f"Error during registration: {e}")
         return jsonify({"error": "Произошла ошибка при регистрации"}), 500
 
 @app.route('/api/login', methods=['POST'])
@@ -221,10 +203,10 @@ def login():
             }), 200
             
     except sqlite3.Error as e:
-        logger.error(f"Database error during login: {e}")
+        print(f"Database error during login: {e}")
         return jsonify({"error": "Произошла ошибка при входе в систему"}), 500
     except Exception as e:
-        logger.error(f"Error during login: {e}")
+        print(f"Error during login: {e}")
         return jsonify({"error": "Произошла ошибка при входе в систему"}), 500
 
 @app.route('/api/logout', methods=['POST'])
@@ -233,7 +215,7 @@ def logout():
         session.clear()
         return jsonify({"message": "Выход выполнен успешно"}), 200
     except Exception as e:
-        logger.error(f"Error during logout: {e}")
+        print(f"Error during logout: {e}")
         return jsonify({"error": "Произошла ошибка при выходе из системы"}), 500
 
 @app.route('/api/check-auth', methods=['GET'])
@@ -248,7 +230,7 @@ def check_auth():
         else:
             return jsonify({"authenticated": False}), 200
     except Exception as e:
-        logger.error(f"Error checking authentication: {e}")
+        print(f"Error checking authentication: {e}")
         return jsonify({"error": "Произошла ошибка при проверке аутентификации"}), 500
 
 @app.route('/api/notification-preferences', methods=['GET', 'PUT'])
@@ -297,10 +279,10 @@ def notification_preferences():
                 return jsonify({"message": "Настройки уведомлений обновлены"}), 200
                 
     except sqlite3.Error as e:
-        logger.error(f"Database error with notification preferences: {e}")
+        print(f"Database error with notification preferences: {e}")
         return jsonify({"error": "Произошла ошибка при работе с настройками уведомлений"}), 500
     except Exception as e:
-        logger.error(f"Error with notification preferences: {e}")
+        print(f"Error with notification preferences: {e}")
         return jsonify({"error": "Произошла ошибка при работе с настройками уведомлений"}), 500
 @app.route('/api/pets', methods=['GET', 'POST'])
 def pets():
@@ -319,7 +301,6 @@ def pets():
                 conn.row_factory = sqlite3.Row
                 cursor = conn.cursor()
                 
-                # Build the SQL query with filters
                 query = '''
                 SELECT p.*, u.email as user_email, GROUP_CONCAT(pp.photo_path) as photos
                 FROM pets p
@@ -327,48 +308,38 @@ def pets():
                 LEFT JOIN pet_photos pp ON p.id = pp.pet_id
                 '''
                 
-                # Add WHERE clause if filters are applied
                 where_clauses = []
                 query_params = []
                 
-                # Filter by animal type if specified
                 if animal_type != 'all':
                     where_clauses.append("p.type = ?")
                     query_params.append(animal_type)
                 
-                # Filter by category if specified
                 if category_filter:
                     where_clauses.append("LOWER(p.type) = LOWER(?)")
                     query_params.append(category_filter)
                 
-                # Filter by gender if specified
                 if gender_filter:
                     where_clauses.append("LOWER(p.gender) = LOWER(?)")
                     query_params.append(gender_filter)
                 
-                # Filter by size if specified
                 if size_filter:
                     where_clauses.append("LOWER(p.size) = LOWER(?)")
                     query_params.append(size_filter)
                 
-                # Filter by fur if specified
                 if fur_filter:
                     where_clauses.append("LOWER(p.fur) = LOWER(?)")
                     query_params.append(fur_filter)
                 
-                # Add the WHERE clause to the query if there are any conditions
                 if where_clauses:
                     query += " WHERE " + " AND ".join(where_clauses)
                 
-                # Add GROUP BY clause
                 query += " GROUP BY p.id"
                 
-                # Execute the query with parameters
                 cursor.execute(query, query_params)
                 
                 pets = [dict(row) for row in cursor.fetchall()]
                 
-                # Apply text search filter if specified
                 if search:
                     filtered_pets = []
                     for pet in pets:
@@ -376,7 +347,6 @@ def pets():
                             filtered_pets.append(pet)
                     pets = filtered_pets
                 
-                # Process pet data
                 for pet in pets:
                     if pet['photos']:
                         pet['photos'] = pet['photos'].split(',')
@@ -409,7 +379,6 @@ def pets():
                         pet['ears_original'] = pet['ears']
                         pet['ears'] = translate_ears(pet['ears'])
                         
-                    # Set default values for missing fields
                     if not pet.get('age'):
                         pet['age'] = 'Не указан'
                     if not pet.get('color'):
@@ -427,7 +396,7 @@ def pets():
             
             api_animals = []
             try:
-                logger.info("Fetching pets from external API...")
+                print("Fetching pets from external API...")
                 api_animals = AnimalAPI.get_all_animals(animal_type=animal_type, size=size, page=page)
                 
                 if api_animals:
@@ -461,13 +430,12 @@ def pets():
                         paginated_pets = combined_pets[start_idx:end_idx]
                         return jsonify(paginated_pets)
                     else:
-                        logger.warning(f"Requested page {page} is beyond available data (total items: {len(combined_pets)})")
+                        print(f"Requested page {page} is beyond available data (total items: {len(combined_pets)})")
                         return jsonify([])
                 
             except Exception as api_error:
-                logger.error(f"Error fetching animals from external API: {api_error}")
+                print(f"Error fetching animals from external API: {api_error}")
             
-            # Apply pagination to local pets if API fetch failed
             start_idx = page * size
             end_idx = start_idx + size
             
@@ -475,11 +443,11 @@ def pets():
                 paginated_pets = pets[start_idx:end_idx]
                 return jsonify(paginated_pets)
             else:
-                logger.warning(f"Requested page {page} is beyond available data (total items: {len(pets)})")
+                print(f"Requested page {page} is beyond available data (total items: {len(pets)})")
                 return jsonify([])
                 
         except Exception as e:
-            logger.error(f"Error getting pets: {e}")
+            print(f"Error getting pets: {e}")
             return jsonify({"error": str(e)}), 500
     
     elif request.method == 'POST':
@@ -543,10 +511,10 @@ def pets():
                 }), 201
                 
         except sqlite3.Error as e:
-            logger.error(f"Database error adding pet: {e}")
+            print(f"Database error adding pet: {e}")
             return jsonify({"error": "Произошла ошибка при добавлении питомца"}), 500
         except Exception as e:
-            logger.error(f"Error adding pet: {e}")
+            print(f"Error adding pet: {e}")
             return jsonify({"error": "Произошла ошибка при добавлении питомца"}), 500
 
 @app.route('/api/pets/<int:pet_id>', methods=['GET'])
@@ -584,7 +552,7 @@ def get_pet(pet_id):
         else:
             return jsonify({"error": "Pet not found"}), 404
     except Exception as e:
-        logger.error(f"Error getting pet {pet_id}: {e}")
+        print(f"Error getting pet {pet_id}: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/pets/<int:pet_id>', methods=['DELETE'])
@@ -617,7 +585,7 @@ def delete_pet(pet_id):
                     if os.path.exists(photo_path):
                         os.remove(photo_path)
                 except Exception as e:
-                    logger.error(f"Error deleting photo file {photo_path}: {e}")
+                    print(f"Error deleting photo file {photo_path}: {e}")
             
             cursor.execute('DELETE FROM pet_photos WHERE pet_id = ?', (pet_id,))
             cursor.execute('DELETE FROM matches WHERE pet1_id = ? OR pet2_id = ?', (pet_id, pet_id))
@@ -628,10 +596,10 @@ def delete_pet(pet_id):
             return jsonify({"message": "Питомец успешно удален"}), 200
             
     except sqlite3.Error as e:
-        logger.error(f"Database error deleting pet {pet_id}: {e}")
+        print(f"Database error deleting pet {pet_id}: {e}")
         return jsonify({"error": "Произошла ошибка при удалении питомца"}), 500
     except Exception as e:
-        logger.error(f"Error deleting pet {pet_id}: {e}")
+        print(f"Error deleting pet {pet_id}: {e}")
         return jsonify({"error": "Произошла ошибка при удалении питомца"}), 500
 
 @app.route('/api/similar/<int:pet_id>', methods=['GET'])
@@ -668,7 +636,7 @@ def find_similar(pet_id):
         
         return jsonify(similar_pets)
     except Exception as e:
-        logger.error(f"Error finding similar pets for {pet_id}: {e}")
+        print(f"Error finding similar pets for {pet_id}: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/', defaults={'path': ''})
@@ -690,10 +658,10 @@ def uploaded_file(filename):
 
 async def start_bot():
     try:
-        logger.info("Starting Telegram bot...")
+        print("Starting Telegram bot...")
         await dp.start_polling(bot)
     except Exception as e:
-        logger.error(f"Error starting Telegram bot: {e}")
+        print(f"Error starting Telegram bot: {e}")
 
 def run_bot():
     asyncio.run(start_bot())
@@ -712,13 +680,27 @@ def main():
         bot_thread = threading.Thread(target=run_bot)
         bot_thread.daemon = True
         bot_thread.start()
-        logger.info("Bot and dispatcher initialized successfully")
+        print("Bot and dispatcher initialized successfully")
     
-    logger.info(f"Starting API server on port {args.api_port}...")
+    print(f"Starting API server on port {args.api_port}...")
     app.run(host=HOST, port=args.api_port, debug=False)
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -132,7 +132,6 @@ function nextPage() {
     loadPets();
 }
 
-// Search and Filter Functions
 function toggleFilters() {
     const filtersContainer = document.getElementById('filtersContainer');
     filtersContainer.classList.toggle('hidden');
@@ -216,7 +215,6 @@ async function loadPets() {
             
             if (activeFilters.category) {
                 let category = activeFilters.category;
-                // Handle Russian category values
                 if (category.toLowerCase() === 'собака') {
                     category = 'dog';
                 } else if (category.toLowerCase() === 'кошка') {

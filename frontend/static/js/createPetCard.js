@@ -4,14 +4,10 @@ function createPetCard(pet) {
     
     const petName = pet.name || pet.petName || (typeof pet.breed === 'object' ? pet.breed?.name : pet.breed) || 'Неизвестное животное';
     
-    // Define all variables before using them in the template
-    // Always set status to "Найденный" as per requirements
     let status = 'Найденный';
     
-    // Get animal category (dog/cat/etc) and translate it
     let category = 'Не указан';
     if (pet.category) {
-        // Ensure category is translated
         if (pet.category.toLowerCase() === 'dog') {
             category = 'Собака';
         } else if (pet.category.toLowerCase() === 'cat') {
@@ -106,7 +102,6 @@ function createPetCard(pet) {
     
     let cardContent = '';
     
-    // Check if pet has photos and they are valid
     if (pet.photos && Array.isArray(pet.photos) && pet.photos.length > 0 && pet.photos[0]) {
         if (typeof pet.photos[0] === 'string' && pet.photos[0].startsWith('http')) {
             cardContent += `<img src="${pet.photos[0]}" class="pet-image" alt="Фото животного" onerror="this.src='/static/images/noPhotoAnimals.png';">`;
@@ -117,7 +112,6 @@ function createPetCard(pet) {
     } else if (pet.photo_url && typeof pet.photo_url === 'string') {
         cardContent += `<img src="${pet.photo_url}" class="pet-image" alt="Фото животного" onerror="this.src='/static/images/noPhotoAnimals.png';">`;
     } else {
-        // No valid photos found, display default image
         cardContent += `<img src="/static/images/noPhotoAnimals.png" class="pet-image" alt="Фото животного">`;
     }
 
@@ -145,7 +139,6 @@ function createPetCard(pet) {
 
     cardContent += `<div class="pet-details hidden-details">`;
 
-    // Only show weight in the details section since it's not in the main summary
     if (weight !== 'Не указан') {
         cardContent += `<p><strong>Вес:</strong> ${weight}</p>`;
     }
