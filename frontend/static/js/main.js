@@ -7,7 +7,11 @@ let activeFilters = {
     category: '',
     gender: '',
     size: '',
-    fur: ''
+    fur: '',
+    tail: '',
+    ears: '',
+    city: '',
+    district: ''
 };
 
 window.addEventListener('load', async function() {
@@ -145,7 +149,11 @@ function applyFilters() {
         category: document.getElementById('filterCategory').value,
         gender: document.getElementById('filterGender').value,
         size: document.getElementById('filterSize').value,
-        fur: document.getElementById('filterFur').value
+        fur: document.getElementById('filterFur').value,
+        tail: document.getElementById('filterTail').value,
+        ears: document.getElementById('filterEars').value,
+        city: document.getElementById('filterCity').value,
+        district: document.getElementById('filterDistrict').value
     };
     currentPage = 0;
     loadPets();
@@ -156,6 +164,10 @@ function resetFilters() {
     document.getElementById('filterGender').value = '';
     document.getElementById('filterSize').value = '';
     document.getElementById('filterFur').value = '';
+    document.getElementById('filterTail').value = '';
+    document.getElementById('filterEars').value = '';
+    document.getElementById('filterCity').value = '';
+    document.getElementById('filterDistrict').value = '';
     document.getElementById('searchInput').value = '';
     
     searchQuery = '';
@@ -163,7 +175,11 @@ function resetFilters() {
         category: '',
         gender: '',
         size: '',
-        fur: ''
+        fur: '',
+        tail: '',
+        ears: '',
+        city: '',
+        district: ''
     };
     
     currentPage = 0;
@@ -205,6 +221,14 @@ async function loadPets() {
                     category = 'dog';
                 } else if (category.toLowerCase() === 'кошка') {
                     category = 'cat';
+                } else if (category.toLowerCase() === 'птица') {
+                    category = 'bird';
+                } else if (category.toLowerCase() === 'грызун') {
+                    category = 'rodent';
+                } else if (category.toLowerCase() === 'рептилия') {
+                    category = 'reptile';
+                } else if (category.toLowerCase() === 'другое') {
+                    category = 'other';
                 }
                 url += `&category=${encodeURIComponent(category)}`;
             }
@@ -216,6 +240,18 @@ async function loadPets() {
             }
             if (activeFilters.fur) {
                 url += `&fur=${encodeURIComponent(activeFilters.fur)}`;
+            }
+            if (activeFilters.tail) {
+                url += `&tail=${encodeURIComponent(activeFilters.tail)}`;
+            }
+            if (activeFilters.ears) {
+                url += `&ears=${encodeURIComponent(activeFilters.ears)}`;
+            }
+            if (activeFilters.city) {
+                url += `&city=${encodeURIComponent(activeFilters.city)}`;
+            }
+            if (activeFilters.district) {
+                url += `&district=${encodeURIComponent(activeFilters.district)}`;
             }
             
             const response = await fetch(url);
@@ -425,3 +461,8 @@ document.getElementById('searchInput').addEventListener('keyup', function(event)
         performSearch();
     }
 });
+
+
+
+
+

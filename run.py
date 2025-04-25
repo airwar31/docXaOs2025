@@ -105,6 +105,13 @@ def init_database():
                 ears TEXT,
                 location TEXT,
                 chip_number TEXT,
+                age TEXT,
+                color TEXT,
+                special_marks TEXT,
+                lost_date TEXT,
+                additional_info TEXT,
+                city TEXT,
+                district TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
@@ -401,6 +408,22 @@ def pets():
                     if pet['ears']:
                         pet['ears_original'] = pet['ears']
                         pet['ears'] = translate_ears(pet['ears'])
+                        
+                    # Set default values for missing fields
+                    if not pet.get('age'):
+                        pet['age'] = 'Не указан'
+                    if not pet.get('color'):
+                        pet['color'] = 'Не указан'
+                    if not pet.get('special_marks'):
+                        pet['special_marks'] = 'Нет'
+                    if not pet.get('lost_date'):
+                        pet['lost_date'] = 'Не указана'
+                    if not pet.get('additional_info'):
+                        pet['additional_info'] = 'Нет дополнительной информации'
+                    if not pet.get('city'):
+                        pet['city'] = 'Не указан'
+                    if not pet.get('district'):
+                        pet['district'] = 'Не указан'
             
             api_animals = []
             try:
@@ -475,7 +498,14 @@ def pets():
             tail = request.form.get('tail')
             ears = request.form.get('ears')
             location = request.form.get('location')
-            chip_number = request.form.get('chip_number')
+            chip_number = request.form.get('chip')
+            age = request.form.get('age')
+            color = request.form.get('color')
+            special_marks = request.form.get('special_marks')
+            lost_date = request.form.get('lost_date')
+            additional_info = request.form.get('additional_info')
+            city = request.form.get('city')
+            district = request.form.get('district')
             
             if not type or not category:
                 return jsonify({"error": "Тип и категория животного обязательны"}), 400
@@ -484,9 +514,9 @@ def pets():
                 cursor = conn.cursor()
                 
                 cursor.execute('''
-                INSERT INTO pets (user_id, type, category, breed, gender, size, fur, tail, ears, location, chip_number)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (user_id, type, category, breed, gender, size, fur, tail, ears, location, chip_number))
+                INSERT INTO pets (user_id, type, category, breed, gender, size, fur, tail, ears, location, chip_number, age, color, special_marks, lost_date, additional_info, city, district)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (user_id, type, category, breed, gender, size, fur, tail, ears, location, chip_number, age, color, special_marks, lost_date, additional_info, city, district))
                 
                 pet_id = cursor.lastrowid
                 
@@ -689,6 +719,10 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+
+
 
 
 

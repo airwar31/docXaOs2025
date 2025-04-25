@@ -72,7 +72,7 @@ button:hover {
 
 .pets-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     margin-bottom: 20px;
 }
@@ -93,7 +93,7 @@ button:hover {
 .pet-image {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 4px;
     margin-bottom: 10px;
 }
@@ -227,11 +227,14 @@ button:hover {
     padding: 10px;
     background-color: #f8f8f8;
     border-radius: 4px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .pet-summary p {
     margin: 5px 0;
     line-height: 1.4;
+    font-size: 14px;
 }
 
 .pet-summary strong {
@@ -351,3 +354,5 @@ button:hover {
 .filter-button.reset {
     background-color: #f44336;
 }
+
+

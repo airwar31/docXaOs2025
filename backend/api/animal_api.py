@@ -17,6 +17,8 @@ class AnimalAPI:
         }
         
         animals = []
+        api_errors = []
+        
         for api_type, config in endpoints.items():
             if animal_type != "all" and api_type != animal_type:
                 continue
@@ -26,9 +28,18 @@ class AnimalAPI:
                 # First request to get total pages
                 initial_params = config['params'].copy()
                 initial_params["page"] = 0
-                response = requests.get(url, params=initial_params, timeout=10)
-                response.raise_for_status()
-                response_data = response.json()
+                
+                # Add timeout and error handling
+                try:
+                    response = requests.get(url, params=initial_params, timeout=10)
+                    response.raise_for_status()
+                    response_data = response.json()
+                except requests.exceptions.RequestException as req_err:
+                    api_errors.append(f"Ошибка запроса к API {api_type}: {str(req_err)}")
+                    continue
+                except ValueError as json_err:
+                    api_errors.append(f"Ошибка парсинга JSON для {api_type}: {str(json_err)}")
+                    continue
                 
                 if isinstance(response_data, dict) and "content" in response_data:
                     # Get total pages from the response
@@ -41,9 +52,16 @@ class AnimalAPI:
                         page_params = config['params'].copy()
                         page_params["page"] = current_page
                         
-                        page_response = requests.get(url, params=page_params, timeout=10)
-                        page_response.raise_for_status()
-                        page_data = page_response.json()
+                        try:
+                            page_response = requests.get(url, params=page_params, timeout=10)
+                            page_response.raise_for_status()
+                            page_data = page_response.json()
+                        except requests.exceptions.RequestException as req_err:
+                            api_errors.append(f"Ошибка запроса к API {api_type} (страница {current_page}): {str(req_err)}")
+                            continue
+                        except ValueError as json_err:
+                            api_errors.append(f"Ошибка парсинга JSON для {api_type} (страница {current_page}): {str(json_err)}")
+                            continue
                         
                         if isinstance(page_data, dict) and "content" in page_data:
                             data = page_data.get("content", [])
@@ -60,7 +78,7 @@ class AnimalAPI:
                                 animal['pagination'] = pagination
                                 animals.append(animal)
                         else:
-                            print(f"Неверный формат ответа для {api_type}, страница {current_page+1}")
+                            api_errors.append(f"Неверный формат ответа для {api_type}, страница {current_page+1}")
                 else:
                     # Handle non-paginated response
                     data = response_data if isinstance(response_data, list) else []
@@ -73,7 +91,18 @@ class AnimalAPI:
                         animals.append(animal)
                     
             except Exception as e:
-                print(f"Ошибка при загрузке {api_type}: {str(e)}")
+                api_errors.append(f"Ошибка при загрузке {api_type}: {str(e)}")
+        
+        # If we have errors but also some animals, log the errors but return the animals we have
+        if api_errors:
+            print("Произошли ошибки при загрузке данных о животных:")
+            for error in api_errors:
+                print(f"  - {error}")
+            
+            # If we have no animals at all, raise an exception
+            if not animals:
+                error_msg = "; ".join(api_errors)
+                raise Exception(f"Не удалось загрузить данные о животных: {error_msg}")
         
         return animals
         
@@ -92,16 +121,29 @@ class AnimalAPI:
                 
         return attribute_value
         
+
+        
     @staticmethod
     def extract_animal_info(animal: Dict) -> Dict:
+        """
+        Extract and format animal information from API response.
+        
+        Args:
+            animal: Dictionary containing animal data from API
+            
+        Returns:
+            Dictionary with formatted animal information
+        """
         info = {
             "id": animal.get("id", "N/A"),
-            "category": translate_pet_type(animal.get("api_type", "UNKNOWN")),
+            "status": "Найденный",  # Always set status to "Найденный" as per requirements
+            "category": None,
             "type": None,
             "gender": None,
             "breed": None,
             "color": None,
             "district": None,
+            "city": None,
             "chip": None,
             "sterilization": None,
             "special_marks": None,
@@ -124,54 +166,97 @@ class AnimalAPI:
             "petName": None,
             "foundDate": None,
             "placementDate": None,
-            "phone": None
+            "phone": None,
+            "lost_date": None,
+            "email": None
         }
 
+        # Extract basic information
         info["petName"] = animal.get("petName")
         info["phone"] = animal.get("phone")
+        info["email"] = animal.get("email")
         info["foundDate"] = animal.get("foundDate")
         info["placementDate"] = animal.get("placementDate")
         info["location"] = animal.get("location")
         info["additional_info"] = animal.get("additionalInfo")
         info["age"] = animal.get("age")
-
+        info["city"] = animal.get("city") or animal.get("location")
+        info["lost_date"] = animal.get("lostDate") or animal.get("lost_date")
+        
+        # If type is provided directly in the animal object, use it
+        if animal.get("type"):
+            info["type"] = animal.get("type")
+            if isinstance(info["type"], str):
+                if info["type"].lower() == "dog" or info["type"].lower() == "собака":
+                    info["type"] = "dog"
+                    info["type_display"] = "Собака"
+                    info["category"] = "Собака"
+                elif info["type"].lower() == "cat" or info["type"].lower() == "кошка":
+                    info["type"] = "cat"
+                    info["type_display"] = "Кошка"
+                    info["category"] = "Кошка"
+                else:
+                    # For other animal types, set category to the same as type_display
+                    info["category"] = translate_category(info["type"])
+        
+        # Extract information from characters object
         characters = animal.get("characters", {})
         if isinstance(characters, dict):
+            # Extract pet category (type)
             pet_category = characters.get("petCategory")
             if pet_category:
                 info["type_original"] = pet_category
-                info["type"] = translate_category(pet_category)
+                # Ensure specific translations for dog and cat
+                if pet_category.upper() == "DOG" or pet_category.lower() == "dog":
+                    info["type"] = "dog"
+                    info["category"] = "Собака"
+                elif pet_category.upper() == "CAT" or pet_category.lower() == "cat":
+                    info["type"] = "cat"
+                    info["category"] = "Кошка"
+                else:
+                    info["type"] = translate_category(pet_category)
+                    info["category"] = translate_category(pet_category)
             
+            # Extract gender
             if "gender" in characters:
                 gender_value = "MALE" if characters["gender"] else "FEMALE"
                 info["gender_original"] = gender_value
                 info["gender"] = translate_gender(gender_value)
             
+            # Extract color
             info["color"] = characters.get("color")
+            
+            # Extract special marks
             info["special_marks"] = characters.get("specialSigns")
             
+            # Extract size
             size_value = characters.get("petSize")
             if size_value:
                 info["size_original"] = size_value
                 info["size"] = translate_size(size_value)
             
+            # Extract fur
             fur_value = characters.get("hair")
             if fur_value:
                 info["fur_original"] = fur_value
                 info["fur"] = translate_fur(fur_value)
-                
+            
+            # Extract tail
             tail_value = characters.get("tail")
             if tail_value:
                 info["tail_original"] = tail_value
                 info["tail"] = translate_tail(tail_value)
-                
+            
+            # Extract ears
             ears_value = characters.get("ears")
             if ears_value:
                 info["ears_original"] = ears_value
                 info["ears"] = translate_ears(ears_value)
-                
+            
+            # Extract weight
             info["weight"] = characters.get("weight")
         
+        # Extract breed information
         breed = animal.get("breed")
         if breed:
             if isinstance(breed, dict):
@@ -182,10 +267,12 @@ class AnimalAPI:
                 info["breed_original"] = str(breed)
                 info["breed"] = str(breed)
         
+        # Extract municipality and district information
         municipality = animal.get("dicMunicipality")
         if municipality and isinstance(municipality, dict):
             info["municipality"] = municipality.get("name")
             
+            # Extract coordinates
             coordinates = municipality.get("coordinate")
             if coordinates and isinstance(coordinates, dict):
                 info["coordinates"] = {
@@ -193,15 +280,24 @@ class AnimalAPI:
                     "lng": coordinates.get("coordX")
                 }
             
+            # Extract district
             if "showOkrug" in municipality and isinstance(municipality["showOkrug"], dict):
                 info["district"] = municipality["showOkrug"].get("name")
         
-        # Use phone number as contact info if available
-        if info["phone"]:
+        # Set contact information
+        if info["phone"] and info["email"]:
+            info["contact_info"] = f"Телефон: {info['phone']}, Email: {info['email']}"
+        elif info["phone"]:
             info["contact_info"] = f"Телефон: {info['phone']}"
+        elif info["email"]:
+            info["contact_info"] = f"Email: {info['email']}"
+        elif animal.get("user_email"):
+            info["contact_info"] = f"Email: {animal.get('user_email')}"
         
-        info["date"] = info["placementDate"] or info["foundDate"]
+        # Set date information
+        info["date"] = info["placementDate"] or info["foundDate"] or info["lost_date"]
         
+        # Get photos
         if animal.get("id") and animal.get("api_type"):
             info["photos"] = AnimalAPI.get_animal_photos(animal["id"], animal["api_type"])
             # If no photos were found, ensure photo_url is set to a default image
@@ -214,12 +310,14 @@ class AnimalAPI:
             info["photos"] = []
             info["photo_url"] = "/static/images/noPhotoAnimals.png"
         
+        # Set default display messages for missing values
         display_messages = {
             "type": "Не указан",
             "gender": "Не указан",
             "breed": "Не указана",
             "color": "Не указан",
             "district": "Не указан",
+            "city": "Не указан",
             "chip": "Нет данных",
             "sterilization": "Нет данных",
             "special_marks": "Нет",
@@ -239,17 +337,24 @@ class AnimalAPI:
             "petName": "Без имени",
             "foundDate": "Не указана",
             "placementDate": "Не указана",
-            "phone": "Не указан"
+            "phone": "Не указан",
+            "lost_date": "Не указана",
+            "email": "Не указан",
+            "status": "Найденный",
+            "category": "Не указан"
         }
         
+        # Apply default messages for missing values
         for key, default_msg in display_messages.items():
-            if info[key] is None:
+            if info[key] is None or info[key] == "":
                 info[key] = default_msg
+        
+        # Build description from available information
         description_parts = []
         if info["breed"] != "Не указана":
             description_parts.append(f"Порода: {info['breed']}")
-        if info["type"] != "Не указан":
-            description_parts.append(f"Категория: {info['type']}")
+        if info["category"] != "Не указан" and info["category"] is not None:
+            description_parts.append(f"Категория: {info['category']}")
         if info["gender"] != "Не указан":
             description_parts.append(f"Пол: {info['gender']}")
         if info["size"] != "Не указан":
@@ -264,6 +369,10 @@ class AnimalAPI:
             description_parts.append(f"Вес: {info['weight']}")
         if info["date"] != "Не указана":
             description_parts.append(f"Дата: {info['date']}")
+        if info["lost_date"] != "Не указана":
+            description_parts.append(f"Дата пропажи: {info['lost_date']}")
+        if info["city"] != "Не указан":
+            description_parts.append(f"Город: {info['city']}")
         if info["district"] != "Не указан":
             description_parts.append(f"Район: {info['district']}")
         if info["municipality"] != "Не указан":
@@ -276,7 +385,8 @@ class AnimalAPI:
             description_parts.append(f"Особые приметы: {info['special_marks']}")
         if info["additional_info"] != "Нет дополнительной информации":
             description_parts.append(f"Дополнительная информация: {info['additional_info']}")
-            
+        
+        # Set description
         if description_parts:
             info["description"] = ". ".join(description_parts)
         else:
@@ -298,17 +408,56 @@ class AnimalAPI:
         url = f"{AnimalAPI.BASE_URL}{endpoints[api_type]}/{animal_id}/files"
         
         try:
-            response = requests.get(url, timeout=5)
-            response.raise_for_status()
-            photos = response.json()
+            # Add more specific error handling
+            try:
+                response = requests.get(url, timeout=5)
+                response.raise_for_status()
+                photos = response.json()
+            except requests.exceptions.Timeout:
+                print(f"Timeout fetching photos for animal {animal_id} of type {api_type}")
+                return []
+            except requests.exceptions.HTTPError as http_err:
+                print(f"HTTP error fetching photos for animal {animal_id} of type {api_type}: {http_err}")
+                return []
+            except requests.exceptions.ConnectionError:
+                print(f"Connection error fetching photos for animal {animal_id} of type {api_type}")
+                return []
+            except ValueError as json_err:
+                print(f"JSON parsing error for photos of animal {animal_id} of type {api_type}: {json_err}")
+                return []
             
             if isinstance(photos, list):
-                return [f"{url}/{photo['id']}" for photo in photos 
-                       if isinstance(photo, dict) and 'id' in photo]
+                photo_urls = []
+                for photo in photos:
+                    if isinstance(photo, dict) and 'id' in photo:
+                        photo_urls.append(f"{url}/{photo['id']}")
+                return photo_urls
+            else:
+                print(f"Unexpected response format for photos of animal {animal_id} of type {api_type}")
         except Exception as e:
-            print(f"Error fetching photos for animal {animal_id}: {e}")
+            print(f"Error fetching photos for animal {animal_id} of type {api_type}: {e}")
             
         return []
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

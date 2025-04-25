@@ -105,6 +105,17 @@ def translate_category(category_value: str) -> str:
         'ЧЛЕНИСТОНОГОЕ': 'Членистоногое'
     }
     
+    # Handle lowercase inputs like "dog" or "собака"
+    if isinstance(category_value, str):
+        if category_value.lower() == "dog":
+            return "Собака"
+        elif category_value.lower() == "собака":
+            return "Собака"
+        elif category_value.lower() == "cat":
+            return "Кошка"
+        elif category_value.lower() == "кошка":
+            return "Кошка"
+    
     return _translate_attribute(category_value, CATEGORY_TRANSLATIONS)
 
 def translate_tail(tail_value: str) -> str:
@@ -170,15 +181,24 @@ def translate_pet_type(type_value: str) -> str:
     """
     TYPE_TRANSLATIONS = {
         'LOST': 'Пропавшие',
-        'FOUND': 'Найденные',
+        'FOUND': 'Найденный',
         'FIND-HOME': 'Ищут дом',
         'ПРОПАВШИЕ': 'Пропавшие',
-        'НАЙДЕННЫЕ': 'Найденные',
+        'НАЙДЕННЫЕ': 'Найденный',
+        'НАЙДЕННЫЙ': 'Найденный',
         'ИЩУТ ДОМ': 'Ищут дом',
         'ПРОПАВШИЙ': 'Пропавшие',
-        'НАЙДЕННЫЙ': 'Найденные',
-        'UNKNOWN': 'Неизвестно'
+        'UNKNOWN': 'Найденный'  # Default to "Найденный" instead of "Неизвестно"
     }
+    
+    # Handle lowercase inputs like "lost" or "пропавшие"
+    if isinstance(type_value, str):
+        if type_value.lower() == "lost":
+            return "Пропавшие"
+        elif type_value.lower() == "пропавшие" or type_value.lower() == "пропавший":
+            return "Пропавшие"
+        elif type_value.lower() == "found" or type_value.lower() == "найденный" or type_value.lower() == "найденные":
+            return "Найденный"
     
     return _translate_attribute(type_value, TYPE_TRANSLATIONS)
 
@@ -196,16 +216,32 @@ def _translate_attribute(attribute_value: str, translation_dict: dict) -> str:
     if not attribute_value:
         return translation_dict.get('UNKNOWN', 'Не указан')
     
+    if not isinstance(attribute_value, str):
+        attribute_value = str(attribute_value)
+    
     upper_value = attribute_value.upper()
     
     if upper_value in translation_dict:
         return translation_dict[upper_value]
-        
+    
+    # Try to match with lowercase values
+    lower_value = attribute_value.lower()
+    for key, value in translation_dict.items():
+        if key.lower() == lower_value:
+            return value
+    
+    # Try partial matching
     for key, value in translation_dict.items():
         if key in upper_value:
             return value
             
     return attribute_value
+
+
+
+
+
+
 
 
 

@@ -94,6 +94,7 @@
             </div>
 
             <div id="formOverlay" class="overlay hidden"></div>
+            
             <div id="addPetForm" class="form-section hidden">
                 <h2>Добавить питомца</h2>
                 <form id="petForm" enctype="multipart/form-data">
@@ -110,6 +111,10 @@
                         <select id="petCategory" name="category" required>
                             <option value="dog">Собака</option>
                             <option value="cat">Кошка</option>
+                            <option value="bird">Птица</option>
+                            <option value="rodent">Грызун</option>
+                            <option value="reptile">Рептилия</option>
+                            <option value="other">Другое</option>
                         </select>
                     </div>
 
@@ -125,6 +130,16 @@
                             <option value="FEMALE">Девочка</option>
                             <option value="UNKNOWN">Не указан</option>
                         </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petAge">Возраст:</label>
+                        <input type="text" id="petAge" name="age" placeholder="Например: 2 года" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petColor">Окрас:</label>
+                        <input type="text" id="petColor" name="color" placeholder="Например: рыжий, черно-белый" />
                     </div>
 
                     <div class="form-group">
@@ -162,6 +177,7 @@
                             <option value="STRAIGHT">Прямой</option>
                             <option value="SHORT">Короткий</option>
                             <option value="DOCKED">Купированный</option>
+                            <option value="NONE">Отсутствует</option>
                             <option value="UNKNOWN">Не указан</option>
                         </select>
                     </div>
@@ -180,15 +196,45 @@
                             <option value="UNKNOWN">Не указаны</option>
                         </select>
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="petSpecialMarks">Особые приметы:</label>
+                        <textarea id="petSpecialMarks" name="special_marks" rows="3" placeholder="Опишите особые приметы питомца"></textarea>
+                    </div>
 
                     <div class="form-group">
-                        <label for="petLocation">Населенный пункт:</label>
-                        <input type="text" id="petLocation" name="location" required />
+                        <label for="petCity">Город:</label>
+                        <input type="text" id="petCity" name="city" placeholder="Например: Москва" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petDistrict">Район:</label>
+                        <input type="text" id="petDistrict" name="district" placeholder="Например: Центральный" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petLocation">Место пропажи/находки:</label>
+                        <input type="text" id="petLocation" name="location" required placeholder="Укажите точное место" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petLostDate">Дата пропажи/находки:</label>
+                        <input type="date" id="petLostDate" name="lost_date" />
                     </div>
 
                     <div class="form-group">
                         <label for="petChipNumber">Номер чипа (если есть):</label>
                         <input type="text" id="petChipNumber" name="chip" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petPhone">Контакты для связи (телефон):</label>
+                        <input type="tel" id="petPhone" name="phone" placeholder="+7 (XXX) XXX-XX-XX" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petAdditionalInfo">Дополнительная информация:</label>
+                        <textarea id="petAdditionalInfo" name="additional_info" rows="3" placeholder="Любая дополнительная информация о питомце"></textarea>
                     </div>
 
                     <div class="form-group">
@@ -229,6 +275,10 @@
                             <option value="">Все</option>
                             <option value="dog">Собака</option>
                             <option value="cat">Кошка</option>
+                            <option value="bird">Птица</option>
+                            <option value="rodent">Грызун</option>
+                            <option value="reptile">Рептилия</option>
+                            <option value="other">Другое</option>
                         </select>
                     </div>
                     
@@ -247,9 +297,11 @@
                             <option value="">Все</option>
                             <option value="LITTLE">Маленький</option>
                             <option value="AVERAGE">Средний</option>
+                            <option value="MEDIUM">Средний</option>
                             <option value="LARGE">Большой</option>
                             <option value="GIANT">Огромный</option>
                             <option value="TINY">Крошечный</option>
+                            <option value="BIG">Большой</option>
                         </select>
                     </div>
                     
@@ -264,6 +316,44 @@
                             <option value="CURLY">Кудрявый</option>
                             <option value="HAIRLESS">Бесшерстный</option>
                         </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterTail">Хвост:</label>
+                        <select id="filterTail">
+                            <option value="">Все</option>
+                            <option value="RAISED">Поднятый</option>
+                            <option value="LONG">Длинный</option>
+                            <option value="STRAIGHT">Прямой</option>
+                            <option value="SHORT">Короткий</option>
+                            <option value="DOCKED">Купированный</option>
+                            <option value="NONE">Отсутствует</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterEars">Уши:</label>
+                        <select id="filterEars">
+                            <option value="">Все</option>
+                            <option value="SHORT">Короткие</option>
+                            <option value="STANDS">Стоячие</option>
+                            <option value="FLOPPY">Висячие</option>
+                            <option value="HANGING">Висящие</option>
+                            <option value="DOCKED">Купированные</option>
+                            <option value="NOT_DOCKED">Некупированные</option>
+                            <option value="HALF_LIES">Полулежачие</option>
+                            <option value="LIES">Лежачие</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterCity">Город:</label>
+                        <input type="text" id="filterCity" placeholder="Введите город" />
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterDistrict">Район:</label>
+                        <input type="text" id="filterDistrict" placeholder="Введите район" />
                     </div>
                     
                     <div class="filter-group">
@@ -287,3 +377,5 @@
     <script src="/static/js/main.js"></script>
 </body>
 </html>
+
+

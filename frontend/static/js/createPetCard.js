@@ -4,6 +4,46 @@ function createPetCard(pet) {
     
     const petName = pet.name || pet.petName || (typeof pet.breed === 'object' ? pet.breed?.name : pet.breed) || 'Неизвестное животное';
     
+    // Define all variables before using them in the template
+    // Always set status to "Найденный" as per requirements
+    let status = 'Найденный';
+    
+    // Get animal category (dog/cat/etc) and translate it
+    let category = 'Не указан';
+    if (pet.category) {
+        // Ensure category is translated
+        if (pet.category.toLowerCase() === 'dog') {
+            category = 'Собака';
+        } else if (pet.category.toLowerCase() === 'cat') {
+            category = 'Кошка';
+        } else {
+            category = pet.category;
+        }
+    } else if (pet.characters && pet.characters.petCategory) {
+        category = {
+            'DOG': 'Собака',
+            'CAT': 'Кошка',
+            'OTHER': 'Другое'
+        }[pet.characters.petCategory] || pet.characters.petCategory;
+    } else if (pet.type) {
+        if (pet.type.toLowerCase() === 'dog' || pet.type.toLowerCase() === 'собака') {
+            category = 'Собака';
+        } else if (pet.type.toLowerCase() === 'cat' || pet.type.toLowerCase() === 'кошка') {
+            category = 'Кошка';
+        } else {
+            category = pet.type;
+        }
+    }
+    
+    let breed = 'Не указана';
+    if (pet.breed) {
+        if (typeof pet.breed === 'object') {
+            breed = pet.breed.name || 'Не указана';
+        } else {
+            breed = pet.breed;
+        }
+    }
+    
     let gender = 'Не указан';
     if (pet.characters && pet.characters.gender !== undefined) {
         gender = pet.characters.gender ? 'Мальчик' : 'Девочка';
@@ -32,6 +72,38 @@ function createPetCard(pet) {
         district = pet.district;
     }
     
+    let city = pet.city || 'Не указан';
+    const color = pet.characters?.color || pet.color || 'Не указан';
+    const date = pet.placementDate || pet.foundDate || pet.date || 'Не указана';
+    const age = pet.age !== undefined ? pet.age : 'Не указан';
+    const size = pet.size || (pet.characters?.petSize || 'Не указан');
+    const fur = pet.fur || (pet.characters?.hair || 'Не указана');
+    const tail = pet.tail || (pet.characters?.tail || 'Не указан');
+    const ears = pet.ears || (pet.characters?.ears || 'Не указаны');
+    const weight = pet.weight || (pet.characters?.weight || 'Не указан');
+    const specialMarks = pet.special_marks || (pet.characters?.specialSigns || 'Нет');
+    const additionalInfo = pet.additional_info || pet.additionalInfo || '';
+    const shelter = pet.shelter || 'Не указано';
+    const aviary = pet.aviary || 'Не указан';
+    
+    let description = pet.description || '';
+    if (!description) {
+        const descParts = [];
+        if (category !== 'Не указан') descParts.push(`Категория: ${category}`);
+        if (breed !== 'Не указана') descParts.push(`Порода: ${breed}`);
+        if (color !== 'Не указан') descParts.push(`Окрас: ${color}`);
+        if (pet.additionalInfo) descParts.push(pet.additionalInfo);
+        
+        description = descParts.length > 0 ? descParts.join('. ') : 'Описание отсутствует';
+    }
+    
+    const contactInfo = pet.contact_info || 
+                       (pet.phone ? `Телефон: ${pet.phone}${pet.user_email ? `, Email: ${pet.user_email}` : ''}` : 
+                       (pet.user_email ? `Email: ${pet.user_email}` : 
+                       (pet.email ? `Email: ${pet.email}` : 
+                       (pet.characters?.specialSigns ? `${pet.characters.specialSigns}` : 
+                       (pet.additionalInfo ? `${pet.additionalInfo}` : 'Контактная информация отсутствует')))));
+    
     let cardContent = '';
     
     // Check if pet has photos and they are valid
@@ -53,123 +125,33 @@ function createPetCard(pet) {
         <h3>${petName}</h3>
         <div class="pet-summary">
             <p><strong>Пол:</strong> ${gender}</p>
-            <p><strong>Город:</strong> ${district}</p>
+            <p><strong>Город:</strong> ${city}</p>
+            <p><strong>Статус:</strong> ${status}</p>
+            <p><strong>Категория:</strong> ${category}</p>
+            <p><strong>Порода:</strong> ${breed}</p>
+            <p><strong>Возраст:</strong> ${age}</p>
+            <p><strong>Окрас:</strong> ${color}</p>
+            <p><strong>Размер:</strong> ${size}</p>
+            <p><strong>Шерсть:</strong> ${fur}</p>
+            <p><strong>Хвост:</strong> ${tail}</p>
+            <p><strong>Уши:</strong> ${ears}</p>
+            <p><strong>Особые приметы:</strong> ${specialMarks}</p>
+            <p><strong>Район:</strong> ${district}</p>
+            <p><strong>Дата пропажи:</strong> ${pet.lost_date || date}</p>
+            <p><strong>Контакты для связи:</strong> ${contactInfo}</p>
+            <p><strong>Дополнительная информация:</strong> ${additionalInfo || 'Нет дополнительной информации'}</p>
         </div>
     `;
 
     cardContent += `<div class="pet-details hidden-details">`;
 
-    const category = pet.api_type ? {
-        'lost': 'Пропавшие',
-        'found': 'Найденные',
-        'find-home': 'Ищут дом'
-    }[pet.api_type] || pet.category || 'Неизвестно' : (pet.category || 'Неизвестно');
-    
-    let type = 'Не указан';
-    if (pet.characters && pet.characters.petCategory) {
-        type = {
-            'DOG': 'Собака',
-            'CAT': 'Кошка',
-            'OTHER': 'Другое'
-        }[pet.characters.petCategory] || pet.characters.petCategory;
-    } else if (pet.type) {
-        if (pet.type.toLowerCase() === 'dog' || pet.type.toLowerCase() === 'собака') {
-            type = 'Собака';
-        } else if (pet.type.toLowerCase() === 'cat' || pet.type.toLowerCase() === 'кошка') {
-            type = 'Кошка';
-        } else {
-            type = pet.type;
-        }
-    }
-    
-    let breed = 'Не указана';
-    if (pet.breed) {
-        if (typeof pet.breed === 'object') {
-            breed = pet.breed.name || 'Не указана';
-        } else {
-            breed = pet.breed;
-        }
-    }
-    
-    const color = pet.characters?.color || pet.color || 'Не указан';
-    
-    const date = pet.placementDate || pet.foundDate || pet.date || 'Не указана';
-    
-    const age = pet.age !== undefined ? pet.age : 'Не указан';
-    
-    let description = pet.description || '';
-    if (!description) {
-        const descParts = [];
-        if (type !== 'Не указан') descParts.push(`Тип: ${type}`);
-        if (breed !== 'Не указана') descParts.push(`Порода: ${breed}`);
-        if (color !== 'Не указан') descParts.push(`Окрас: ${color}`);
-        if (pet.additionalInfo) descParts.push(pet.additionalInfo);
-        
-        description = descParts.length > 0 ? descParts.join('. ') : 'Описание отсутствует';
-    }
-    
-    const contactInfo = pet.contact_info || 
-                       (pet.phone ? `Телефон: ${pet.phone}${pet.user_email ? `, Email: ${pet.user_email}` : ''}` : 
-                       (pet.user_email ? `Email: ${pet.user_email}` : 
-                       (pet.email ? `Email: ${pet.email}` : 
-                       (pet.characters?.specialSigns ? `${pet.characters.specialSigns}` : 
-                       (pet.additionalInfo ? `${pet.additionalInfo}` : 'Контактная информация отсутствует')))));
-    
-    const size = pet.size || (pet.characters?.petSize || 'Не указан');
-    const fur = pet.fur || (pet.characters?.hair || 'Не указана');
-    const tail = pet.tail || (pet.characters?.tail || 'Не указан');
-    const ears = pet.ears || (pet.characters?.ears || 'Не указаны');
-    const weight = pet.weight || (pet.characters?.weight || 'Не указан');
-    
-    const specialMarks = pet.special_marks || (pet.characters?.specialSigns || 'Нет');
-    
-    const additionalInfo = pet.additional_info || pet.additionalInfo || '';
-
-    const shelter = pet.shelter || 'Не указано';
-    const aviary = pet.aviary || 'Не указан';
-
-    cardContent += `<p><strong>Категория:</strong> ${category}</p>`;
-    cardContent += `<p><strong>Тип:</strong> ${type}</p>`;
-    cardContent += `<p><strong>Порода:</strong> ${breed}</p>`;
-    
-    if (age !== 'Не указан') {
-        cardContent += `<p><strong>Возраст:</strong> ${age}</p>`;
-    }
-    
-    if (color !== 'Не указан') {
-        cardContent += `<p><strong>Окрас:</strong> ${color}</p>`;
-    }
-    
-    if (size !== 'Не указан') {
-        cardContent += `<p><strong>Размер:</strong> ${size}</p>`;
-    }
-    
-    if (fur !== 'Не указана') {
-        cardContent += `<p><strong>Шерсть:</strong> ${fur}</p>`;
-    }
-    
-    if (tail !== 'Не указан') {
-        cardContent += `<p><strong>Хвост:</strong> ${tail}</p>`;
-    }
-    
-    if (ears !== 'Не указаны') {
-        cardContent += `<p><strong>Уши:</strong> ${ears}</p>`;
-    }
-    
+    // Only show weight in the details section since it's not in the main summary
     if (weight !== 'Не указан') {
         cardContent += `<p><strong>Вес:</strong> ${weight}</p>`;
     }
-    
-    if (specialMarks !== 'Нет') {
-        cardContent += `<p><strong>Особые приметы:</strong> ${specialMarks}</p>`;
-    }
 
     if (location !== 'Не указано') {
-        cardContent += `<p><strong>Район:</strong> ${location}</p>`;
-    }
-    
-    if (date !== 'Не указана') {
-        cardContent += `<p><strong>Дата пропажи:</strong> ${date}</p>`;
+        cardContent += `<p><strong>Место пропажи/находки:</strong> ${location}</p>`;
     }
 
     let coordinates = pet.coordinates;
@@ -189,14 +171,6 @@ function createPetCard(pet) {
                 <p><a href="https://maps.google.com/?q=${lat},${lng}" target="_blank">Открыть на карте</a></p>
             `;
         }
-    }
-
-    cardContent += `<p><strong>Контакты для связи:</strong> ${contactInfo}</p>`;
-
-
-
-    if (additionalInfo) {
-        cardContent += `<p><strong>Дополнительная информация:</strong> ${additionalInfo}</p>`;
     }
 
     cardContent += `</div>`;
@@ -254,6 +228,11 @@ function createPetCard(pet) {
     
     return card;
 }
+
+
+
+
+
 
 
 
