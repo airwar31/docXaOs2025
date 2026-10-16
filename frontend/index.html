@@ -1,0 +1,494 @@
+﻿<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PetFinder (docXaOs) — Интеллектуальный поиск животных</title>
+    <meta name="description" content="Сервис автоматического поиска и идентификации животных с использованием компьютерного зрения и открытых данных ХМАО" />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Navigation Bar -->
+        <header class="navbar">
+            <a href="/" class="brand">
+                <div class="brand-icon">🐾</div>
+                <div>
+                    <div>PetFinder <span style="font-size: 0.8em; font-weight: 500; opacity: 0.8;">docXaOs</span></div>
+                </div>
+                <span class="brand-badge">AI Vision</span>
+            </a>
+
+            <div class="nav-actions">
+                <!-- Theme Toggle -->
+                <button type="button" class="icon-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Переключить тему">
+                    <span id="themeIcon">🌙</span>
+                </button>
+
+                <!-- Telegram Modal Trigger -->
+                <button type="button" class="btn btn-telegram" onclick="openTelegramModal()" title="Подключить Telegram-бота">
+                    <span>✈️</span>
+                    <span>Telegram Бот</span>
+                </button>
+
+                <!-- Add Pet Button -->
+                <button type="button" class="btn btn-primary" id="addPetBtn" onclick="openAddPetModal()">
+                    <span>➕</span>
+                    <span>Подать объявление</span>
+                </button>
+
+                <!-- User profile / Auth buttons -->
+                <div id="userProfileNav" class="hidden" style="display: flex; align-items: center; gap: 8px;">
+                    <span id="userEmailBadge" class="tag-chip" style="font-weight: 700; padding: 6px 12px;">user@example.com</span>
+                    <button type="button" class="btn btn-secondary" onclick="logout()" title="Выйти из аккаунта">
+                        Выйти
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Auth Section (Visible if not authenticated) -->
+        <div id="authSection" class="auth-wrapper">
+            <div class="auth-header">
+                <div style="font-size: 2.5rem; margin-bottom: 8px;">🐶🐱</div>
+                <h2>Добро пожаловать</h2>
+                <p>Войдите или зарегистрируйтесь для управления объявлениями и поиска совпадений</p>
+            </div>
+
+            <div class="nav-tabs">
+                <div class="nav-tab active" id="tabAuthLogin" onclick="switchAuthTab('login')">Вход</div>
+                <div class="nav-tab" id="tabAuthRegister" onclick="switchAuthTab('register')">Регистрация</div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" required autocomplete="email" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password" />
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px; padding: 12px;">
+                    Войти в систему
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label class="form-label" for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" class="form-control" placeholder="name@example.com" required autocomplete="email" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerPassword">Пароль (не менее 6 символов)</label>
+                    <input type="password" id="registerPassword" class="form-control" placeholder="••••••••" required minlength="6" autocomplete="new-password" />
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px; padding: 12px;">
+                    Создать аккаунт
+                </button>
+            </form>
+        </div>
+
+        <!-- Main Application View -->
+        <main id="mainApp" class="hidden">
+            <!-- Hero Banner -->
+            <section class="hero-banner">
+                <div>
+                    <h1 class="hero-title">Найдем <span>вашего питомца</span> вместе</h1>
+                    <p class="hero-subtitle">
+                        Единая база животных на основе Open API ХМАО, нейросетевого анализа параметров и алгоритма компьютерного зрения OpenCV SIFT.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-primary" onclick="openAddPetModal()">
+                        ➕ Разместить анкету
+                    </button>
+                </div>
+            </section>
+
+            <!-- Navigation Tabs -->
+            <nav class="nav-tabs" style="margin-bottom: 20px;">
+                <div class="nav-tab active" data-tab="lost" onclick="switchCategoryTab('lost')">
+                    🔍 Потерянные
+                </div>
+                <div class="nav-tab" data-tab="found" onclick="switchCategoryTab('found')">
+                    🏠 Найденные
+                </div>
+                <div class="nav-tab" data-tab="find-home" onclick="switchCategoryTab('find-home')">
+                    🏡 Ищут дом (Приют)
+                </div>
+                <div class="nav-tab" data-tab="matches" onclick="switchCategoryTab('matches')">
+                    ⚡ AI Совпадения
+                </div>
+                <div class="nav-tab" data-tab="my_pets" onclick="switchCategoryTab('my_pets')">
+                    🐾 Мои объявления
+                </div>
+            </nav>
+
+            <!-- Search & Filter Toolbar -->
+            <section class="toolbar">
+                <div class="toolbar-main">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Быстрый поиск по породе, городу, окрасу, номеру чипа..." />
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="toggleFiltersDrawer()" id="filterToggleBtn">
+                        <span>⚙️ Фильтры</span>
+                        <span id="activeFilterBadge" class="brand-badge hidden">0</span>
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="performSearch()">
+                        Найти
+                    </button>
+                </div>
+
+                <!-- Extended Filter Drawer -->
+                <div id="filtersDrawer" class="filters-drawer hidden">
+                    <div class="filter-item">
+                        <label class="form-label" for="filterCategory">Категория</label>
+                        <select id="filterCategory" class="form-control">
+                            <option value="">Все категории</option>
+                            <option value="dog">Собака</option>
+                            <option value="cat">Кошка</option>
+                            <option value="bird">Птица</option>
+                            <option value="rodent">Грызун</option>
+                            <option value="other">Другое</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label class="form-label" for="filterGender">Пол</label>
+                        <select id="filterGender" class="form-control">
+                            <option value="">Все</option>
+                            <option value="MALE">Самец (мальчик)</option>
+                            <option value="FEMALE">Самка (девочка)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label class="form-label" for="filterSize">Размер</label>
+                        <select id="filterSize" class="form-control">
+                            <option value="">Любой размер</option>
+                            <option value="TINY">Крошечный</option>
+                            <option value="LITTLE">Маленький</option>
+                            <option value="AVERAGE">Средний</option>
+                            <option value="LARGE">Большой</option>
+                            <option value="GIANT">Огромный</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label class="form-label" for="filterFur">Шерсть</label>
+                        <select id="filterFur" class="form-control">
+                            <option value="">Любая шерсть</option>
+                            <option value="SHORTHAIR">Короткошерстный</option>
+                            <option value="MEDIUMHAIRED">Среднешерстный</option>
+                            <option value="LONGHAIR">Длинношерстный</option>
+                            <option value="WIREHAIR">Жесткошерстный</option>
+                            <option value="HAIRLESS">Бесшерстный</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label class="form-label" for="filterCity">Город</label>
+                        <input type="text" id="filterCity" class="form-control" placeholder="Например: Сургут" />
+                    </div>
+
+                    <div class="filter-item">
+                        <label class="form-label" for="filterDistrict">Район</label>
+                        <input type="text" id="filterDistrict" class="form-control" placeholder="Например: Центральный" />
+                    </div>
+
+                    <div class="filter-item" style="grid-column: 1 / -1; display: flex; flex-direction: row; gap: 10px; justify-content: flex-end; margin-top: 6px;">
+                        <button type="button" class="btn btn-secondary" onclick="resetFilters()">
+                            Сбросить фильтры
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="applyFilters()">
+                            Применить
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cards Grid -->
+            <section id="petsGrid" class="pets-grid"></section>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button type="button" class="btn btn-secondary" id="prevButton" onclick="previousPage()">
+                    ← Назад
+                </button>
+                <span class="page-info" id="pageInfo">Страница 1</span>
+                <button type="button" class="btn btn-secondary" id="nextButton" onclick="nextPage()">
+                    Вперед →
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- =============================================================
+         MODAL 1: Pet Details
+         ============================================================= -->
+    <div id="petDetailsModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'petDetailsModal')">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalPetName">Информация о питомце</h3>
+                <button type="button" class="close-btn" onclick="closeModal('petDetailsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="width: 100%; height: 280px; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px; background: var(--bg-muted);">
+                    <img id="modalPetPhoto" src="/static/images/noPhotoAnimals.png" style="width: 100%; height: 100%; object-fit: cover;" alt="Фото питомца" />
+                </div>
+
+                <div id="modalTraitGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+                    <!-- Injected via JS -->
+                </div>
+
+                <div style="background: var(--bg-muted); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 6px; color: var(--text-primary);">📝 Дополнительно</h4>
+                    <p id="modalPetDesc" style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;"></p>
+                </div>
+
+                <div id="modalContactCard" style="background: var(--primary-light); border: 1px solid var(--border-focus); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 4px; color: var(--primary);">📞 Контакты для связи</h4>
+                    <p id="modalPetContact" style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);"></p>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <a id="modalMapLink" href="#" target="_blank" class="btn btn-secondary hidden">
+                        🗺️ Открыть на карте
+                    </a>
+                    <button type="button" id="modalFindSimilarBtn" class="btn btn-primary">
+                        🔍 Найти похожих через AI
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================================
+         MODAL 2: Add Pet Form
+         ============================================================= -->
+    <div id="addPetModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'addPetModal')">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Подать объявление о питомце</h3>
+                <button type="button" class="close-btn" onclick="closeModal('addPetModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="petForm" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="petType">Тип объявления *</label>
+                            <select id="petType" name="type" class="form-control" required>
+                                <option value="lost">🔍 Потерян питомец</option>
+                                <option value="found">🏠 Найден питомец</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="petCategory">Категория *</label>
+                            <select id="petCategory" name="category" class="form-control" required>
+                                <option value="dog">Собака</option>
+                                <option value="cat">Кошка</option>
+                                <option value="bird">Птица</option>
+                                <option value="rodent">Грызун</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="petBreed">Порода *</label>
+                            <input type="text" id="petBreed" name="breed" class="form-control" placeholder="Например: Хаски или Метис" required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="petGender">Пол *</label>
+                            <select id="petGender" name="gender" class="form-control" required>
+                                <option value="MALE">Мальчик</option>
+                                <option value="FEMALE">Девочка</option>
+                                <option value="UNKNOWN">Неизвестно</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="petSize">Размер</label>
+                            <select id="petSize" name="size" class="form-control">
+                                <option value="LITTLE">Маленький</option>
+                                <option value="AVERAGE" selected>Средний</option>
+                                <option value="LARGE">Большой</option>
+                                <option value="GIANT">Огромный</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="petFur">Шерсть</label>
+                            <select id="petFur" name="fur" class="form-control">
+                                <option value="SHORTHAIR">Короткошерстный</option>
+                                <option value="MEDIUMHAIRED" selected>Среднешерстный</option>
+                                <option value="LONGHAIR">Длинношерстный</option>
+                                <option value="HAIRLESS">Бесшерстный</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="petColor">Окрас</label>
+                            <input type="text" id="petColor" name="color" class="form-control" placeholder="Например: Рыжий с белой грудью" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="petAge">Возраст</label>
+                            <input type="text" id="petAge" name="age" class="form-control" placeholder="Например: 2 года или щенок" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="petCity">Город</label>
+                            <input type="text" id="petCity" name="city" class="form-control" placeholder="Например: Ханты-Мансийск" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="petDistrict">Район</label>
+                            <input type="text" id="petDistrict" name="district" class="form-control" placeholder="Например: Самарово" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="petLocation">Точное место пропажи / находки *</label>
+                        <input type="text" id="petLocation" name="location" class="form-control" placeholder="Улица, дом, парк..." required />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="petLostDate">Дата события</label>
+                            <input type="date" id="petLostDate" name="lost_date" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="petChipNumber">Номер микрочипа</label>
+                            <input type="text" id="petChipNumber" name="chip" class="form-control" placeholder="15-значный номер чипа" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="petSpecialMarks">Особые приметы</label>
+                        <textarea id="petSpecialMarks" name="special_marks" class="form-control" rows="2" placeholder="Ошейник, шрамы, купированные уши, пятна..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="petPhone">Контактный телефон *</label>
+                        <input type="tel" id="petPhone" name="phone" class="form-control" placeholder="+7 (999) 000-00-00" required />
+                    </div>
+
+                    <!-- Photo Upload Dropzone -->
+                    <div class="form-group">
+                        <label class="form-label">Фотографии питомца *</label>
+                        <div class="file-dropzone" onclick="document.getElementById('petPhotosInput').click()">
+                            <div class="dropzone-icon">📷</div>
+                            <div class="dropzone-text"><strong>Нажмите для выбора</strong> или перетащите фотографии сюда</div>
+                            <input type="file" id="petPhotosInput" name="photos" multiple accept="image/*" style="display: none;" onchange="handlePhotoSelect(event)" required />
+                        </div>
+                        <div id="photosPreviewGrid" class="preview-grid"></div>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addPetModal')">
+                            Отмена
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submitPetBtn">
+                            Опубликовать объявление
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================================
+         MODAL 3: Similar Pets AI Matcher Results
+         ============================================================= -->
+    <div id="similarPetsModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'similarPetsModal')">
+        <div class="modal-card" style="max-width: 800px;">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title">⚡ AI Совпадения для питомца</h3>
+                    <p style="font-size: 0.82rem; color: var(--text-muted);">Сравнение по компьютерному зрению OpenCV SIFT и признакам</p>
+                </div>
+                <button type="button" class="close-btn" onclick="closeModal('similarPetsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="similarResultsContainer">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================================
+         MODAL 4: Telegram Bot Integration
+         ============================================================= -->
+    <div id="telegramModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'telegramModal')">
+        <div class="modal-card" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">✈️ Telegram-уведомления</h3>
+                <button type="button" class="close-btn" onclick="closeModal('telegramModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #229ED9 0%, #1778A8 100%); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #fff; margin: 0 auto 14px; box-shadow: 0 4px 16px rgba(34, 158, 217, 0.4);">
+                        ✈️
+                    </div>
+                    <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 6px;">Бот поиска @docXaOs_bot</h4>
+                    <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                        Получайте моментальные пуш-уведомления на смартфон при обнаружении совпадений вашего питомца в реестре ХМАО!
+                    </p>
+                </div>
+
+                <div style="background: var(--bg-muted); padding: 18px; border-radius: var(--radius-lg); margin-bottom: 20px;">
+                    <h5 style="font-size: 0.88rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: var(--text-primary);">Инструкция по подключению:</h5>
+                    <ol style="margin-left: 20px; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.8;">
+                        <li>Перейдите к нашему боту: <a href="https://t.me/docXaOs_bot" target="_blank" style="color: #229ED9; font-weight: 600;">@docXaOs_bot</a></li>
+                        <li>Нажмите кнопку <code>Start</code> или отправьте команду <code>/start</code></li>
+                        <li>Введите ваш email, под которым вы зарегистрированы в сервисе</li>
+                        <li>Готово! Бот подтвердит привязку аккаунта.</li>
+                    </ol>
+                </div>
+
+                <form id="telegramSettingsForm">
+                    <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface-elevated); padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md);">
+                        <label for="tgEnabledSwitch" style="font-weight: 600; font-size: 0.9rem; cursor: pointer;">
+                            Включить Telegram-уведомления
+                        </label>
+                        <input type="checkbox" id="tgEnabledSwitch" style="width: 20px; height: 20px; cursor: pointer;" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="tgSimilarityRange">
+                            Минимальный порог сходства: <span id="tgSimilarityVal" style="color: var(--primary); font-weight: 700;">70%</span>
+                        </label>
+                        <input type="range" id="tgSimilarityRange" class="form-control" min="50" max="95" value="70" oninput="document.getElementById('tgSimilarityVal').textContent = this.value + '%'" />
+                    </div>
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                        <a href="https://t.me/docXaOs_bot" target="_blank" class="btn btn-telegram">
+                            Открыть @docXaOs_bot ↗
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            Сохранить настройки
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="/static/js/createPetCard.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
